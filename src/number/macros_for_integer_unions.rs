@@ -13,7 +13,7 @@
 // #![warn(missing_docs)]
 // #![warn(rustdoc::missing_doc_code_examples)]
 #![allow(missing_docs)]
-#![allow(rustdoc::missing_doc_code_examples)]
+// #![allow(rustdoc::missing_doc_code_examples)]
 
 macro_rules! calc_assign_to_calc
 {
@@ -19552,6 +19552,7 @@ macro_rules! shift_ops_for_integer_unions_impl {
             ///     let c_longunion = a_longunion >> b_uint;
             ///     println!("{:b} >> {} = {:b}", a_longunion, b_uint, c_longunion);
             ///     assert_eq!(c_longunion.get(), 0b_00000000_10110011_10001111_00001111_10000011_11110000_00111111_10000000_u64);
+            /// }
             /// ```
             /// 
             /// # Example 9 for LongUnion
@@ -20245,6 +20246,7 @@ macro_rules! shift_ops_for_integer_unions_impl {
         ///     #[cfg(target_pointer_width = "16")] assert_eq!(a_sizeunion.get(), 0b_00000000_00000010_usize);
         ///     #[cfg(target_pointer_width = "32")] assert_eq!(a_sizeunion.get(), 0b_00000000_00000000_00000000_00000010_usize);
         ///     #[cfg(target_pointer_width = "64")] assert_eq!(a_sizeunion.get(), 0b_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000010_usize);
+        /// }
         /// ```
         impl ShrAssign<$f> for $u
         {
@@ -20350,7 +20352,7 @@ macro_rules! shift_ops_for_integer_unions_by_union_impl {
             /// 
             /// # Example 5 for IntUnion
             /// ```
-            /// use cryptocol::number::{ IntUnion, LongUnion |;
+            /// use cryptocol::number::{ IntUnion, LongUnion };
             /// 
             /// #[cfg(not(debug_assertions))]
             /// {
@@ -20394,7 +20396,7 @@ macro_rules! shift_ops_for_integer_unions_by_union_impl {
             /// 
             /// # Example 8 for LongUnion
             /// ```
-            /// use cryptocol::number::{ LongUnion, LongerUnion |;
+            /// use cryptocol::number::{ LongUnion, LongerUnion };
             /// 
             /// #[cfg(not(debug_assertions))]
             /// {
@@ -22063,8 +22065,7 @@ macro_rules! shift_ops_for_integer_unions_by_union_impl {
             ///     println!("After a_longerunion >>= {}, = {:b}", b_longerunion, a_longerunion);
             ///     assert_eq!(b_longerunion.get(), 340282366920938463463374607431768211454_u128);
             ///     assert_eq!(a_longerunion.get(), 0b_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000010_u128);
-            /// }
-            /// 
+            ///
             ///     #[cfg(target_pointer_width = "16")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111);
             ///     #[cfg(target_pointer_width = "32")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011);
             ///     #[cfg(target_pointer_width = "64")] let mut a_sizeunion = SizeUnion::new_with(0b_10110011_10001111_00001111_10000011_11110000_00111111_10000000_11111111);
@@ -22335,6 +22336,330 @@ macro_rules! format_for_integer_unions_impl {
             /// this function only returns a Result because writing to the underlying
             /// stream might fail and it must provide a way to propagate the fact that
             /// an error has occurred back up the stack.
+            /// 
+            /// # Example 1
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:X}", a_uint);
+            /// let txt = format!("{:X}", a_uint);
+            /// assert_eq!(txt, "3039");
+            /// ```
+            /// 
+            /// # Example 2
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:15X}", a_uint);
+            /// let txt = format!("{:15X}", a_uint);
+            /// assert_eq!(txt, "499602D2       ");
+            /// ```
+            /// 
+            /// # Example 3
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:025X}", a_uint);
+            /// let txt = format!("{:025X}", a_uint);
+            /// assert_eq!(txt, "000000000AB54A98CEB1F0AD2");
+            /// ```
+            /// 
+            /// # Example 4
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:#X}", a_uint);
+            /// let txt = format!("{:#X}", a_uint);
+            /// assert_eq!(txt, "0X5CE0E9A56015FEC5AADFA328AE398115");
+            /// ```
+            /// 
+            /// # Example 5
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:#45X}", a_uint);
+            /// let txt = format!("{:#45X}", a_uint);
+            /// assert_eq!(txt, "0X5CE0E9A56015FEC5AADFA328AE398115           ");
+            /// ```
+            /// 
+            /// # Example 6
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:#045X}", a_uint);
+            /// let txt = format!("{:#045X}", a_uint);
+            /// assert_eq!(txt, "0X000000000005CE0E9A56015FEC5AADFA328AE398115");
+            /// ```
+            /// 
+            /// # Example 7
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:<X}", a_uint);
+            /// let txt = format!("{:<X}", a_uint);
+            /// assert_eq!(txt, "3039");
+            /// ```
+            /// 
+            /// # Example 8
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:<15X}", a_uint);
+            /// let txt = format!("{:<15X}", a_uint);
+            /// assert_eq!(txt, "499602D2       ");
+            /// ```
+            /// 
+            /// # Example 9
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:<025X}", a_uint);
+            /// let txt = format!("{:<025X}", a_uint);
+            /// assert_eq!(txt, "000000000AB54A98CEB1F0AD2");
+            /// ```
+            /// 
+            /// # Example 10
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:<#X}", a_uint);
+            /// let txt = format!("{:<#X}", a_uint);
+            /// assert_eq!(txt, "0X5CE0E9A56015FEC5AADFA328AE398115");
+            /// ```
+            /// 
+            /// # Example 11
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:<#45X}", a_uint);
+            /// let txt = format!("{:<#45X}", a_uint);
+            /// assert_eq!(txt, "0X5CE0E9A56015FEC5AADFA328AE398115      
+            /// ```
+            /// 
+            /// # Example 12
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:<#045X}", a_uint);
+            /// let txt = format!("{:<#045X}", a_uint);
+            /// assert_eq!(txt, "0X000000000005CE0E9A56015FEC5AADFA328AE398115");
+            /// ```
+            /// 
+            /// # Example 13
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:>X}", a_uint);
+            /// let txt = format!("{:>X}", a_uint);
+            /// assert_eq!(txt, "3039");
+            /// ```
+            /// 
+            /// # Example 14
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:>15X}", a_uint);
+            /// let txt = format!("{:>15X}", a_uint);
+            /// assert_eq!(txt, "       499602D2");
+            /// ```
+            /// 
+            /// # Example 15
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:>025X}", a_uint);
+            /// let txt = format!("{:>025X}", a_uint);
+            /// assert_eq!(txt, "000000000AB54A98CEB1F0AD2");
+            /// ```
+            /// 
+            /// # Example 16
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:>#X}", a_uint);
+            /// let txt = format!("{:>#X}", a_uint);
+            /// assert_eq!(txt, "0X5CE0E9A56015FEC5AADFA328AE398115");
+            /// ```
+            /// 
+            /// # Example 17
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:>#45X}", a_uint);
+            /// let txt = format!("{:>#45X}", a_uint);
+            /// assert_eq!(txt, "           0X5CE0E9A56015FEC5AADFA328AE398115");
+            /// ```
+            /// 
+            /// # Example 18
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:>#045X}", a_uint);
+            /// let txt = format!("{:>#045X}", a_uint);
+            /// assert_eq!(txt, "0X000000000005CE0E9A56015FEC5AADFA328AE398115");
+            /// ```
+            /// 
+            /// # Example 19
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:^X}", a_uint);
+            /// let txt = format!("{:^X}", a_uint);
+            /// assert_eq!(txt, "3039");
+            /// ```
+            /// 
+            /// # Example 20
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:^15X}", a_uint);
+            /// let txt = format!("{:^15X}", a_uint);
+            /// assert_eq!(txt, "   499602D2    ");
+            /// ```
+            /// 
+            /// # Example 21
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:^025X}", a_uint);
+            /// let txt = format!("{:^025X}", a_uint);
+            /// assert_eq!(txt, "000000000AB54A98CEB1F0AD2");
+            /// ```
+            /// 
+            /// # Example 22
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:^#X}", a_uint);
+            /// let txt = format!("{:^#X}", a_uint);
+            /// assert_eq!(txt, "0X5CE0E9A56015FEC5AADFA328AE398115");
+            /// ```
+            /// 
+            /// # Example 23
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:^#45X}", a_uint);
+            /// let txt = format!("{:^#45X}", a_uint);
+            /// assert_eq!(txt, "     0X5CE0E9A56015FEC5AADFA328AE398115      ");
+            /// ```
+            /// 
+            /// # Example 24
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:^#045X}", a_uint);
+            /// let txt = format!("{:^#045X}", a_uint);
+            /// assert_eq!(txt, "0X000000000005CE0E9A56015FEC5AADFA328AE398115");
+            /// ```
+            /// 
+            /// # Example 25
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:#<25X}", a_uint);
+            /// let txt = format!("{:#<25X}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "3039#####################");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "499602D2#################");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "AB54A98CEB1F0AD2#########");
+            /// ```
+            /// 
+            /// # Example 26
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:$<#25X}", a_uint);
+            /// let txt = format!("{:$<25X}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "3039$$$$$$$$$$$$$$$$$$$$$");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "499602D2$$$$$$$$$$$$$$$$$");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "AB54A98CEB1F0AD2$$$$$$$$$");
+            /// ```
+            /// 
+            /// # Example 27
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:!>25X}", a_uint);
+            /// let txt = format!("{:!>25X}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "!!!!!!!!!!!!!!!!!!!!!3039");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "!!!!!!!!!!!!!!!!!499602D2");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "!!!!!!!!!AB54A98CEB1F0AD2");
+            /// ```
+            /// 
+            /// # Example 28
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:@>#25X}", a_uint);
+            /// let txt = format!("{:@>#25X}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "@@@@@@@@@@@@@@@@@@@0X3039");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "@@@@@@@@@@@@@@@0X499602D2");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "@@@@@@@0XAB54A98CEB1F0AD2");
+            /// ```
+            /// 
+            /// # Example 29
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:%^25X}", a_uint);
+            /// let txt = format!("{:%^25X}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "%%%%%%%%%%3039%%%%%%%%%%%");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "%%%%%%%%499602D2%%%%%%%%%");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "%%%%AB54A98CEB1F0AD2%%%%%");
+            /// ```
+            /// 
+            /// # Example 30
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:^^#25X}", a_uint);
+            /// let txt = format!("{:^^#25X}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "^^^^^^^^^0X3039^^^^^^^^^^");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "^^^^^^^0X499602D2^^^^^^^^");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "^^^0XAB54A98CEB1F0AD2^^^^");
+            /// ```
             fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
             {
                 fmt_with_radix!(self, f, 16, "0X");
@@ -22364,6 +22689,330 @@ macro_rules! format_for_integer_unions_impl {
             /// this function only returns a Result because writing to the underlying
             /// stream might fail and it must provide a way to propagate the fact that
             /// an error has occurred back up the stack.
+            /// 
+            /// # Example 1
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:x}", a_uint);
+            /// let txt = format!("{:x}", a_uint);
+            /// assert_eq!(txt, "3039");
+            /// ```
+            /// 
+            /// # Example 2
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:15x}", a_uint);
+            /// let txt = format!("{:15x}", a_uint);
+            /// assert_eq!(txt, "499602D2       ");
+            /// ```
+            /// 
+            /// # Example 3
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:025x}", a_uint);
+            /// let txt = format!("{:025x}", a_uint);
+            /// assert_eq!(txt, "000000000AB54A98CEB1F0AD2");
+            /// ```
+            /// 
+            /// # Example 4
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:#x}", a_uint);
+            /// let txt = format!("{:#x}", a_uint);
+            /// assert_eq!(txt, "0x5CE0E9A56015FEC5AADFA328AE398115");
+            /// ```
+            /// 
+            /// # Example 5
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:#45x}", a_uint);
+            /// let txt = format!("{:#45x}", a_uint);
+            /// assert_eq!(txt, "0x5CE0E9A56015FEC5AADFA328AE398115           ");
+            /// ```
+            /// 
+            /// # Example 6
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:#045x}", a_uint);
+            /// let txt = format!("{:#045x}", a_uint);
+            /// assert_eq!(txt, "0x000000000005CE0E9A56015FEC5AADFA328AE398115");
+            /// ```
+            /// 
+            /// # Example 7
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:<x}", a_uint);
+            /// let txt = format!("{:<x}", a_uint);
+            /// assert_eq!(txt, "3039");
+            /// ```
+            /// 
+            /// # Example 8
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:<15x}", a_uint);
+            /// let txt = format!("{:<15x}", a_uint);
+            /// assert_eq!(txt, "499602D2       ");
+            /// ```
+            /// 
+            /// # Example 9
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:<025x}", a_uint);
+            /// let txt = format!("{:<025x}", a_uint);
+            /// assert_eq!(txt, "000000000AB54A98CEB1F0AD2");
+            /// ```
+            /// 
+            /// # Example 10
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:<#x}", a_uint);
+            /// let txt = format!("{:<#x}", a_uint);
+            /// assert_eq!(txt, "0x5CE0E9A56015FEC5AADFA328AE398115");
+            /// ```
+            /// 
+            /// # Example 11
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:<#45x}", a_uint);
+            /// let txt = format!("{:<#45x}", a_uint);
+            /// assert_eq!(txt, "0x5CE0E9A56015FEC5AADFA328AE398115      
+            /// ```
+            /// 
+            /// # Example 12
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:<#045x}", a_uint);
+            /// let txt = format!("{:<#045x}", a_uint);
+            /// assert_eq!(txt, "0x000000000005CE0E9A56015FEC5AADFA328AE398115");
+            /// ```
+            /// 
+            /// # Example 13
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:>x}", a_uint);
+            /// let txt = format!("{:>x}", a_uint);
+            /// assert_eq!(txt, "3039");
+            /// ```
+            /// 
+            /// # Example 14
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:>15x}", a_uint);
+            /// let txt = format!("{:>15x}", a_uint);
+            /// assert_eq!(txt, "       499602D2");
+            /// ```
+            /// 
+            /// # Example 15
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:>025x}", a_uint);
+            /// let txt = format!("{:>025x}", a_uint);
+            /// assert_eq!(txt, "000000000AB54A98CEB1F0AD2");
+            /// ```
+            /// 
+            /// # Example 16
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:>#x}", a_uint);
+            /// let txt = format!("{:>#x}", a_uint);
+            /// assert_eq!(txt, "0x5CE0E9A56015FEC5AADFA328AE398115");
+            /// ```
+            /// 
+            /// # Example 17
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:>#45x}", a_uint);
+            /// let txt = format!("{:>#45x}", a_uint);
+            /// assert_eq!(txt, "           0x5CE0E9A56015FEC5AADFA328AE398115");
+            /// ```
+            /// 
+            /// # Example 18
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:>#045x}", a_uint);
+            /// let txt = format!("{:>#045x}", a_uint);
+            /// assert_eq!(txt, "0x000000000005CE0E9A56015FEC5AADFA328AE398115");
+            /// ```
+            /// 
+            /// # Example 19
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:^x}", a_uint);
+            /// let txt = format!("{:^x}", a_uint);
+            /// assert_eq!(txt, "3039");
+            /// ```
+            /// 
+            /// # Example 20
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:^15x}", a_uint);
+            /// let txt = format!("{:^15x}", a_uint);
+            /// assert_eq!(txt, "   499602D2    ");
+            /// ```
+            /// 
+            /// # Example 21
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:^025x}", a_uint);
+            /// let txt = format!("{:^025x}", a_uint);
+            /// assert_eq!(txt, "000000000AB54A98CEB1F0AD2");
+            /// ```
+            /// 
+            /// # Example 22
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:^#x}", a_uint);
+            /// let txt = format!("{:^#x}", a_uint);
+            /// assert_eq!(txt, "0x5CE0E9A56015FEC5AADFA328AE398115");
+            /// ```
+            /// 
+            /// # Example 23
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:^#45x}", a_uint);
+            /// let txt = format!("{:^#45x}", a_uint);
+            /// assert_eq!(txt, "     0x5CE0E9A56015FEC5AADFA328AE398115      ");
+            /// ```
+            /// 
+            /// # Example 24
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:^#045x}", a_uint);
+            /// let txt = format!("{:^#045x}", a_uint);
+            /// assert_eq!(txt, "0x000000000005CE0E9A56015FEC5AADFA328AE398115");
+            /// ```
+            /// 
+            /// # Example 25
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:#<25x}", a_uint);
+            /// let txt = format!("{:#<25x}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "3039#####################");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "499602D2#################");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "AB54A98CEB1F0AD2#########");
+            /// ```
+            /// 
+            /// # Example 26
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:$<#25x}", a_uint);
+            /// let txt = format!("{:$<25x}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "3039$$$$$$$$$$$$$$$$$$$$$");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "499602D2$$$$$$$$$$$$$$$$$");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "AB54A98CEB1F0AD2$$$$$$$$$");
+            /// ```
+            /// 
+            /// # Example 27
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:!>25x}", a_uint);
+            /// let txt = format!("{:!>25x}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "!!!!!!!!!!!!!!!!!!!!!3039");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "!!!!!!!!!!!!!!!!!499602D2");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "!!!!!!!!!AB54A98CEB1F0AD2");
+            /// ```
+            /// 
+            /// # Example 28
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:@>#25x}", a_uint);
+            /// let txt = format!("{:@>#25x}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "@@@@@@@@@@@@@@@@@@@0x3039");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "@@@@@@@@@@@@@@@0x499602D2");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "@@@@@@@0xAB54A98CEB1F0AD2");
+            /// ```
+            /// 
+            /// # Example 29
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:%^25x}", a_uint);
+            /// let txt = format!("{:%^25x}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "%%%%%%%%%%3039%%%%%%%%%%%");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "%%%%%%%%499602D2%%%%%%%%%");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "%%%%AB54A98CEB1F0AD2%%%%%");
+            /// ```
+            /// 
+            /// # Example 30
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:^^#25x}", a_uint);
+            /// let txt = format!("{:^^#25x}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "^^^^^^^^^0x3039^^^^^^^^^^");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "^^^^^^^0x499602D2^^^^^^^^");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "^^^0xAB54A98CEB1F0AD2^^^^");
+            /// ```
             fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
             {
                 fmt_with_radix!(self, f, 16, "0x", true);
@@ -22392,6 +23041,330 @@ macro_rules! format_for_integer_unions_impl {
             /// this function only returns a Result because writing to the underlying
             /// stream might fail and it must provide a way to propagate the fact that
             /// an error has occurred back up the stack.
+            /// 
+            /// # Example 1
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:b}", a_uint);
+            /// let txt = format!("{:b}", a_uint);
+            /// assert_eq!(txt, "11000000111001");
+            /// ```
+            /// 
+            /// # Example 2
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:40b}", a_uint);
+            /// let txt = format!("{:40b}", a_uint);
+            /// assert_eq!(txt, "1001001100101100000001011010010         ");
+            /// ```
+            /// 
+            /// # Example 3
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:070b}", a_uint);
+            /// let txt = format!("{:070b}", a_uint);
+            /// assert_eq!(txt, "0000001010101101010100101010011000110011101011000111110000101011010010");
+            /// ```
+            /// 
+            /// # Example 4
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:#b}", a_uint);
+            /// let txt = format!("{:#b}", a_uint);
+            /// assert_eq!(txt, "0b1011100111000001110100110100101011000000001010111111110110001011010101011011111101000110010100010101110001110011000000100010101");
+            /// ```
+            /// 
+            /// # Example 5
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:#134b}", a_uint);
+            /// let txt = format!("{:#134b}", a_uint);
+            /// assert_eq!(txt, "0b1011100111000001110100110100101011000000001010111111110110001011010101011011111101000110010100010101110001110011000000100010101     ");
+            /// ```
+            /// 
+            /// # Example 6
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:#0134b}", a_uint);
+            /// let txt = format!("{:#0134b}", a_uint);
+            /// assert_eq!(txt, "0b000001011100111000001110100110100101011000000001010111111110110001011010101011011111101000110010100010101110001110011000000100010101");
+            /// ```
+            /// 
+            /// # Example 7
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:<b}", a_uint);
+            /// let txt = format!("{:<b}", a_uint);
+            /// assert_eq!(txt, "11000000111001");
+            /// ```
+            /// 
+            /// # Example 8
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:<40b}", a_uint);
+            /// let txt = format!("{:<40b}", a_uint);
+            /// assert_eq!(txt, "1001001100101100000001011010010         ");
+            /// ```
+            /// 
+            /// # Example 9
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:<070b}", a_uint);
+            /// let txt = format!("{:<070b}", a_uint);
+            /// assert_eq!(txt, "0000001010101101010100101010011000110011101011000111110000101011010010");
+            /// ```
+            /// 
+            /// # Example 10
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:<#b}", a_uint);
+            /// let txt = format!("{:<#b}", a_uint);
+            /// assert_eq!(txt, "0b1011100111000001110100110100101011000000001010111111110110001011010101011011111101000110010100010101110001110011000000100010101");
+            /// ```
+            /// 
+            /// # Example 11
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:<#134b}", a_uint);
+            /// let txt = format!("{:<#134b}", a_uint);
+            /// assert_eq!(txt, "0b1011100111000001110100110100101011000000001010111111110110001011010101011011111101000110010100010101110001110011000000100010101     ");
+            /// ```
+            /// 
+            /// # Example 12
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:<#0134b}", a_uint);
+            /// let txt = format!("{:<#0134b}", a_uint);
+            /// assert_eq!(txt, "0b000001011100111000001110100110100101011000000001010111111110110001011010101011011111101000110010100010101110001110011000000100010101");
+            /// ```
+            /// 
+            /// # Example 13
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:>b}", a_uint);
+            /// let txt = format!("{:>b}", a_uint);
+            /// assert_eq!(txt, "11000000111001");
+            /// ```
+            /// 
+            /// # Example 14
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:>40b}", a_uint);
+            /// let txt = format!("{:>40b}", a_uint);
+            /// assert_eq!(txt, "         1001001100101100000001011010010");
+            /// ```
+            /// 
+            /// # Example 15
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:>070b}", a_uint);
+            /// let txt = format!("{:>070b}", a_uint);
+            /// assert_eq!(txt, "0000001010101101010100101010011000110011101011000111110000101011010010");
+            /// ```
+            /// 
+            /// # Example 16
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:>#b}", a_uint);
+            /// let txt = format!("{:>#b}", a_uint);
+            /// assert_eq!(txt, "0b1011100111000001110100110100101011000000001010111111110110001011010101011011111101000110010100010101110001110011000000100010101");
+            /// ```
+            /// 
+            /// # Example 17
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:>#134b}", a_uint);
+            /// let txt = format!("{:>#134b}", a_uint);
+            /// assert_eq!(txt, "     0b1011100111000001110100110100101011000000001010111111110110001011010101011011111101000110010100010101110001110011000000100010101");
+            /// ```
+            /// 
+            /// # Example 18
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:>#0134b}", a_uint);
+            /// let txt = format!("{:>#0134b}", a_uint);
+            /// assert_eq!(txt, "0b000001011100111000001110100110100101011000000001010111111110110001011010101011011111101000110010100010101110001110011000000100010101");
+            /// ```
+            /// 
+            /// # Example 19
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:^b}", a_uint);
+            /// let txt = format!("{:^b}", a_uint);
+            /// assert_eq!(txt, "11000000111001");
+            /// ```
+            /// 
+            /// # Example 20
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:^40b}", a_uint);
+            /// let txt = format!("{:^40b}", a_uint);
+            /// assert_eq!(txt, "    1001001100101100000001011010010     ");
+            /// ```
+            /// 
+            /// # Example 21
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:^070b}", a_uint);
+            /// let txt = format!("{:^070b}", a_uint);
+            /// assert_eq!(txt, "0000001010101101010100101010011000110011101011000111110000101011010010");
+            /// ```
+            /// 
+            /// # Example 22
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:^#b}", a_uint);
+            /// let txt = format!("{:^#b}", a_uint);
+            /// assert_eq!(txt, "0b1011100111000001110100110100101011000000001010111111110110001011010101011011111101000110010100010101110001110011000000100010101");
+            /// ```
+            /// 
+            /// # Example 23
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:^#134b}", a_uint);
+            /// let txt = format!("{:^#134b}", a_uint);
+            /// assert_eq!(txt, "  0b1011100111000001110100110100101011000000001010111111110110001011010101011011111101000110010100010101110001110011000000100010101   ");
+            /// ```
+            /// 
+            /// # Example 24
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:^#0134b}", a_uint);
+            /// let txt = format!("{:^#0134b}", a_uint);
+            /// assert_eq!(txt, "0b000001011100111000001110100110100101011000000001010111111110110001011010101011011111101000110010100010101110001110011000000100010101");
+            /// ```
+            /// 
+            /// # Example 25
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:#<70b}", a_uint);
+            /// let txt = format!("{:#<70b}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "11000000111001########################################################");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "1001001100101100000001011010010#######################################");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "1010101101010100101010011000110011101011000111110000101011010010######");
+            /// ```
+            /// 
+            /// # Example 26
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:$<#70b}", a_uint);
+            /// let txt = format!("{:$<#70b}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "0b11000000111001$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "0b1001001100101100000001011010010$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "0b1010101101010100101010011000110011101011000111110000101011010010$$$$");
+            /// ```
+            /// 
+            /// # Example 27
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:!>70b}", a_uint);
+            /// let txt = format!("{:!>70b}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11000000111001");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1001001100101100000001011010010");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "!!!!!!1010101101010100101010011000110011101011000111110000101011010010");
+            /// ```
+            /// 
+            /// # Example 28
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:@>#70b}", a_uint);
+            /// let txt = format!("{:@>#70b}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@0b11000000111001");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@0b1001001100101100000001011010010");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "@@@@0b1010101101010100101010011000110011101011000111110000101011010010");
+            /// ```
+            /// 
+            /// # Example 29
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:%^70b}", a_uint);
+            /// let txt = format!("{:%^70b}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "%%%%%%%%%%%%%%%%%%%%%%%%%%%%11000000111001%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "%%%%%%%%%%%%%%%%%%%1001001100101100000001011010010%%%%%%%%%%%%%%%%%%%%");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "%%%1010101101010100101010011000110011101011000111110000101011010010%%%");
+            /// ```
+            /// 
+            /// # Example 30
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:^^#70b}", a_uint);
+            /// let txt = format!("{:^^#70b}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "^^^^^^^^^^^^^^^^^^^^^^^^^^^^11000000111001^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "^^^^^^^^^^^^^^^^^^^1001001100101100000001011010010^^^^^^^^^^^^^^^^^^^^");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "^^0b1010101101010100101010011000110011101011000111110000101011010010^^");
+            /// ```
             fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
             {
                 fmt_with_radix!(self, f, 2, "0b");
@@ -22420,6 +23393,330 @@ macro_rules! format_for_integer_unions_impl {
             /// this function only returns a Result because writing to the underlying
             /// stream might fail and it must provide a way to propagate the fact that
             /// an error has occurred back up the stack.
+            /// 
+            /// # Example 1
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:o}", a_uint);
+            /// let txt = format!("{:o}", a_uint);
+            /// assert_eq!(txt, "30071");
+            /// ```
+            /// 
+            /// # Example 2
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:15o}", a_uint);
+            /// let txt = format!("{:15o}", a_uint);
+            /// assert_eq!(txt, "11145401322    ");
+            /// ```
+            /// 
+            /// # Example 3
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:025o}", a_uint);
+            /// let txt = format!("{:025o}", a_uint);
+            /// assert_eq!(txt, "0001255245230635307605322");
+            /// ```
+            /// 
+            /// # Example 4
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:#o}", a_uint);
+            /// let txt = format!("{:#o}", a_uint);
+            /// assert_eq!(txt, "0o1347016464530012776613253375062425616300425");
+            /// ```
+            /// 
+            /// # Example 5
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:#50o}", a_uint);
+            /// let txt = format!("{:#50o}", a_uint);
+            /// assert_eq!(txt, "0o1347016464530012776613253375062425616300425     ");
+            /// ```
+            /// 
+            /// # Example 6
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:#050o}", a_uint);
+            /// let txt = format!("{:#050o}", a_uint);
+            /// assert_eq!(txt, "0o000001347016464530012776613253375062425616300425");
+            /// ```
+            /// 
+            /// # Example 7
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:<o}", a_uint);
+            /// let txt = format!("{:<o}", a_uint);
+            /// assert_eq!(txt, "30071");
+            /// ```
+            /// 
+            /// # Example 8
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:<15o}", a_uint);
+            /// let txt = format!("{:<15o}", a_uint);
+            /// assert_eq!(txt, "11145401322    ");
+            /// ```
+            /// 
+            /// # Example 9
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:<025o}", a_uint);
+            /// let txt = format!("{:<025o}", a_uint);
+            /// assert_eq!(txt, "0001255245230635307605322");
+            /// ```
+            /// 
+            /// # Example 10
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:<#o}", a_uint);
+            /// let txt = format!("{:<#o}", a_uint);
+            /// assert_eq!(txt, "0o1347016464530012776613253375062425616300425");
+            /// ```
+            /// 
+            /// # Example 11
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:<#50o}", a_uint);
+            /// let txt = format!("{:<#50o}", a_uint);
+            /// assert_eq!(txt, "0o1347016464530012776613253375062425616300425     ");
+            /// ```
+            /// 
+            /// # Example 12
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:<#050o}", a_uint);
+            /// let txt = format!("{:<#050o}", a_uint);
+            /// assert_eq!(txt, "0o000001347016464530012776613253375062425616300425");
+            /// ```
+            /// 
+            /// # Example 13
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:>o}", a_uint);
+            /// let txt = format!("{:>o}", a_uint);
+            /// assert_eq!(txt, "30071");
+            /// ```
+            /// 
+            /// # Example 14
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:>15o}", a_uint);
+            /// let txt = format!("{:>15o}", a_uint);
+            /// assert_eq!(txt, "    11145401322");
+            /// ```
+            /// 
+            /// # Example 15
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:>025o}", a_uint);
+            /// let txt = format!("{:>025o}", a_uint);
+            /// assert_eq!(txt, "0001255245230635307605322");
+            /// ```
+            /// 
+            /// # Example 16
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:>#o}", a_uint);
+            /// let txt = format!("{:>#o}", a_uint);
+            /// assert_eq!(txt, "0o1347016464530012776613253375062425616300425");
+            /// ```
+            /// 
+            /// # Example 17
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:>#50o}", a_uint);
+            /// let txt = format!("{:>#50o}", a_uint);
+            /// assert_eq!(txt, "     0o1347016464530012776613253375062425616300425");
+            /// ```
+            /// 
+            /// # Example 18
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:>#050o}", a_uint);
+            /// let txt = format!("{:>#050o}", a_uint);
+            /// assert_eq!(txt, "0o000001347016464530012776613253375062425616300425");
+            /// ```
+            /// 
+            /// # Example 19
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:^o}", a_uint);
+            /// let txt = format!("{:^o}", a_uint);
+            /// assert_eq!(txt, "30071");
+            /// ```
+            /// 
+            /// # Example 20
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:^15o}", a_uint);
+            /// let txt = format!("{:^15o}", a_uint);
+            /// assert_eq!(txt, "  11145401322  ");
+            /// ```
+            /// 
+            /// # Example 21
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:^025o}", a_uint);
+            /// let txt = format!("{:^025o}", a_uint);
+            /// assert_eq!(txt, "0001255245230635307605322");
+            /// ```
+            /// 
+            /// # Example 22
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:^#o}", a_uint);
+            /// let txt = format!("{:^#o}", a_uint);
+            /// assert_eq!(txt, "0o1347016464530012776613253375062425616300425");
+            /// ```
+            /// 
+            /// # Example 23
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:^#50o}", a_uint);
+            /// let txt = format!("{:^#50o}", a_uint);
+            /// assert_eq!(txt, "  0o1347016464530012776613253375062425616300425   ");
+            /// ```
+            /// 
+            /// # Example 24
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:^#050o}", a_uint);
+            /// let txt = format!("{:^#050o}", a_uint);
+            /// assert_eq!(txt, "0o000001347016464530012776613253375062425616300425");
+            /// ```
+            /// 
+            /// # Example 25
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:#<25o}", a_uint);
+            /// let txt = format!("{:#<25o}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "30071####################");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "11145401322##############");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "1255245230635307605322###");
+            /// ```
+            /// 
+            /// # Example 26
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:$<#25o}", a_uint);
+            /// let txt = format!("{:$<25o}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "30071$$$$$$$$$$$$$$$$$$$$");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "11145401322$$$$$$$$$$$$$$");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "1255245230635307605322$$$");
+            /// ```
+            /// 
+            /// # Example 27
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:!>25o}", a_uint);
+            /// let txt = format!("{:!>25o}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "!!!!!!!!!!!!!!!!!!!!30071");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "!!!!!!!!!!!!!!11145401322");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "!!!1255245230635307605322");
+            /// ```
+            /// 
+            /// # Example 28
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:@>#25o}", a_uint);
+            /// let txt = format!("{:@>#25o}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "@@@@@@@@@@@@@@@@@@0o30071");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "@@@@@@@@@@@@0o11145401322");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "@0o1255245230635307605322");
+            /// ```
+            /// 
+            /// # Example 29
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:%^25o}", a_uint);
+            /// let txt = format!("{:%^25o}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "%%%%%%%%%%30071%%%%%%%%%%");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "%%%%%%%11145401322%%%%%%%");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "%1255245230635307605322%%");
+            /// ```
+            /// 
+            /// # Example 30
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:^^#25o}", a_uint);
+            /// let txt = format!("{:^^#25o}", a_uint);
+            /// #[cfg(target_pointer_width = "16")]  assert_eq!(txt, "^^^^^^^^^0o30071^^^^^^^^^");
+            /// #[cfg(target_pointer_width = "32")]  assert_eq!(txt, "^^^^^^0o11145401322^^^^^^");
+            /// #[cfg(target_pointer_width = "64")]  assert_eq!(txt, "0o1255245230635307605322^");
+            /// ```
             fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
             {
                 fmt_with_radix!(self, f, 8, "0o");
@@ -22448,6 +23745,376 @@ macro_rules! format_for_integer_unions_impl {
             /// this function only returns a Result because writing to the underlying
             /// stream might fail and it must provide a way to propagate the fact that
             /// an error has occurred back up the stack.
+            /// 
+            /// # Example 1
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:E}", a_uint);
+            /// let txt = format!("{:E}", a_uint);
+            /// assert_eq!(txt, "1.2345E4");
+            /// ```
+            /// 
+            /// # Example 2
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:15E}", a_uint);
+            /// let txt = format!("{:15E}", a_uint);
+            /// assert_eq!(txt, "1.234567890E9  ");
+            /// ```
+            /// 
+            /// # Example 3
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:025E}", a_uint);
+            /// let txt = format!("{:025E}", a_uint);
+            /// assert_eq!(txt, "01.2345678901234567890E19");
+            /// ```
+            /// 
+            /// # Example 4
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:20.10E}", a_uint);
+            /// let txt = format!("{:20.10E}", a_uint);
+            /// assert_eq!(txt, "1.2345678901E38     ");
+            /// ```
+            /// 
+            /// # Example 5
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:020.10E}", a_uint);
+            /// let txt = format!("{:020.10E}", a_uint);
+            /// assert_eq!(txt, "000001.2345678901E38");
+            /// ```
+            /// 
+            /// # Example 6
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:15.5E}", a_uint);
+            /// let txt = format!("{:15.5E}", a_uint);
+            /// assert_eq!(txt, "1.23457E19     ");
+            /// ```
+            /// 
+            /// # Example 7
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:015.5E}", a_uint);
+            /// let txt = format!("{:015.5E}", a_uint);
+            /// assert_eq!(txt, "000001.23457E19");
+            /// ```
+            /// 
+            /// # Example 8
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:<E}", a_uint);
+            /// let txt = format!("{:<E}", a_uint);
+            /// assert_eq!(txt, "1.2345E4");
+            /// ```
+            /// 
+            /// # Example 9
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:<15E}", a_uint);
+            /// let txt = format!("{:<15E}", a_uint);
+            /// assert_eq!(txt, "1.234567890E9  ");
+            /// ```
+            /// 
+            /// # Example 10
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:<025E}", a_uint);
+            /// let txt = format!("{:<025E}", a_uint);
+            /// assert_eq!(txt, "01.2345678901234567890E19");
+            /// ```
+            /// 
+            /// # Example 11
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:<20.10E}", a_uint);
+            /// let txt = format!("{:<20.10E}", a_uint);
+            /// assert_eq!(txt, "1.2345678901E38     ");
+            /// ```
+            /// 
+            /// # Example 12
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:<020.10E}", a_uint);
+            /// let txt = format!("{:<020.10E}", a_uint);
+            /// assert_eq!(txt, "000001.2345678901E38");
+            /// ```
+            /// 
+            /// # Example 13
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:<15.5E}", a_uint);
+            /// let txt = format!("{:<15.5E}", a_uint);
+            /// assert_eq!(txt, "1.23457E19     ");
+            /// ```
+            /// 
+            /// # Example 14
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:<015.5E}", a_uint);
+            /// let txt = format!("{:<015.5E}", a_uint);
+            /// assert_eq!(txt, "000001.23457E19");
+            /// ```
+            /// 
+            /// # Example 15
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:>E}", a_uint);
+            /// let txt = format!("{:>E}", a_uint);
+            /// assert_eq!(txt, "1.2345E4");
+            /// ```
+            /// 
+            /// # Example 16
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:>15E}", a_uint);
+            /// let txt = format!("{:>15E}", a_uint);
+            /// assert_eq!(txt, "  1.234567890E9");
+            /// ```
+            /// 
+            /// # Example 17
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:>025E}", a_uint);
+            /// let txt = format!("{:>025E}", a_uint);
+            /// assert_eq!(txt, "01.2345678901234567890E19");
+            /// ```
+            /// 
+            /// # Example 18
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:>20.10E}", a_uint);
+            /// let txt = format!("{:>20.10E}", a_uint);
+            /// assert_eq!(txt, "     1.2345678901E38");
+            /// ```
+            /// 
+            /// # Example 19
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:>020.10E}", a_uint);
+            /// let txt = format!("{:>020.10E}", a_uint);
+            /// assert_eq!(txt, "000001.2345678901E38");
+            /// ```
+            /// 
+            /// # Example 20
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:>15.5E}", a_uint);
+            /// let txt = format!("{:>15.5E}", a_uint);
+            /// assert_eq!(txt, "     1.23457E19");
+            /// ```
+            /// 
+            /// # Example 21
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:>015.5E}", a_uint);
+            /// let txt = format!("{:>015.5E}", a_uint);
+            /// assert_eq!(txt, "000001.23457E19");
+            /// ```
+            /// 
+            /// # Example 22
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:^E}", a_uint);
+            /// let txt = format!("{:^E}", a_uint);
+            /// assert_eq!(txt, "1.2345E4");
+            /// ```
+            /// 
+            /// # Example 23
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:^15E}", a_uint);
+            /// let txt = format!("{:^15E}", a_uint);
+            /// assert_eq!(txt, " 1.234567890E9 ");
+            /// ```
+            /// 
+            /// # Example 24
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:^025E}", a_uint);
+            /// let txt = format!("{:^025E}", a_uint);
+            /// assert_eq!(txt, "01.2345678901234567890E19");
+            /// ```
+            /// 
+            /// # Example 25
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:^20.10E}", a_uint);
+            /// let txt = format!("{:^20.10E}", a_uint);
+            /// assert_eq!(txt, "  1.2345678901E38   ");
+            /// ```
+            /// 
+            /// # Example 26
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:^020.10E}", a_uint);
+            /// let txt = format!("{:^020.10E}", a_uint);
+            /// assert_eq!(txt, "000001.2345678901E38");
+            /// ```
+            /// 
+            /// # Example 27
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:^15.5E}", a_uint);
+            /// let txt = format!("{:^15.5E}", a_uint);
+            /// assert_eq!(txt, "  1.23457E19   ");
+            /// ```
+            /// 
+            /// # Example 28
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:^015.5E}", a_uint);
+            /// let txt = format!("{:^015.5E}", a_uint);
+            /// assert_eq!(txt, "000001.23457E19");
+            /// ```
+            /// 
+            /// # Example 29
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:~<15E}", a_uint);
+            /// let txt = format!("{:~<15E}", a_uint);
+            /// assert_eq!(txt, "1.234567890E9~~");
+            /// ```
+            /// 
+            /// # Example 30
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:_<20.10E}", a_uint);
+            /// let txt = format!("{:_<20.10E}", a_uint);
+            /// assert_eq!(txt, "1.2345678901E38_____");
+            /// ```
+            /// 
+            /// # Example 31
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:`<15.5E}", a_uint);
+            /// let txt = format!("{:`<15.5E}", a_uint);
+            /// assert_eq!(txt, "1.23457E19`````");
+            /// ```
+            /// 
+            /// # Example 32
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:@>15E}", a_uint);
+            /// let txt = format!("{:@>15E}", a_uint);
+            /// assert_eq!(txt, "@@1.234567890E9");
+            /// ```
+            /// 
+            /// # Example 33
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:#>20.10E}", a_uint);
+            /// let txt = format!("{:#>20.10E}", a_uint);
+            /// assert_eq!(txt, "#####1.2345678901E38");
+            /// ```
+            /// 
+            /// # Example 34
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:/>15.5E}", a_uint);
+            /// let txt = format!("{:/>15.5E}", a_uint);
+            /// assert_eq!(txt, "/////1.23457E19");
+            /// ```
+            /// 
+            /// # Example 35
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:^^15E}", a_uint);
+            /// let txt = format!("{:^^15E}", a_uint);
+            /// assert_eq!(txt, "^1.234567890E9^");
+            /// ```
+            /// 
+            /// # Example 36
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:=^20.10E}", a_uint);
+            /// let txt = format!("{:=^20.10E}", a_uint);
+            /// assert_eq!(txt, "==1.2345678901E38===");
+            /// ```
+            /// 
+            /// # Example 37
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:*^15.5E}", a_uint);
+            /// let txt = format!("{:*^15.5E}", a_uint);
+            /// assert_eq!(txt, "**1.23457E19***");
+            /// ```
             fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
             {
                 fmt_with_exponent!(self, f, 'E');
@@ -22476,6 +24143,376 @@ macro_rules! format_for_integer_unions_impl {
             /// this function only returns a Result because writing to the underlying
             /// stream might fail and it must provide a way to propagate the fact that
             /// an error has occurred back up the stack.
+            /// 
+            /// # Example 1
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:e}", a_uint);
+            /// let txt = format!("{:e}", a_uint);
+            /// assert_eq!(txt, "1.2345e4");
+            /// ```
+            /// 
+            /// # Example 2
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:15e}", a_uint);
+            /// let txt = format!("{:15e}", a_uint);
+            /// assert_eq!(txt, "1.234567890e9  ");
+            /// ```
+            /// 
+            /// # Example 3
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:025e}", a_uint);
+            /// let txt = format!("{:025e}", a_uint);
+            /// assert_eq!(txt, "01.2345678901234567890e19");
+            /// ```
+            /// 
+            /// # Example 4
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:20.10e}", a_uint);
+            /// let txt = format!("{:20.10e}", a_uint);
+            /// assert_eq!(txt, "1.2345678901e38     ");
+            /// ```
+            /// 
+            /// # Example 5
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:020.10e}", a_uint);
+            /// let txt = format!("{:020.10e}", a_uint);
+            /// assert_eq!(txt, "000001.2345678901e38");
+            /// ```
+            /// 
+            /// # Example 6
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:15.5e}", a_uint);
+            /// let txt = format!("{:15.5e}", a_uint);
+            /// assert_eq!(txt, "1.23457e19     ");
+            /// ```
+            /// 
+            /// # Example 7
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:015.5e}", a_uint);
+            /// let txt = format!("{:015.5e}", a_uint);
+            /// assert_eq!(txt, "000001.23457e19");
+            /// ```
+            /// 
+            /// # Example 8
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:<e}", a_uint);
+            /// let txt = format!("{:<e}", a_uint);
+            /// assert_eq!(txt, "1.2345e4");
+            /// ```
+            /// 
+            /// # Example 9
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:<15e}", a_uint);
+            /// let txt = format!("{:<15e}", a_uint);
+            /// assert_eq!(txt, "1.234567890e9  ");
+            /// ```
+            /// 
+            /// # Example 10
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:<025e}", a_uint);
+            /// let txt = format!("{:<025e}", a_uint);
+            /// assert_eq!(txt, "01.2345678901234567890e19");
+            /// ```
+            /// 
+            /// # Example 11
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:<20.10e}", a_uint);
+            /// let txt = format!("{:<20.10e}", a_uint);
+            /// assert_eq!(txt, "1.2345678901e38     ");
+            /// ```
+            /// 
+            /// # Example 12
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:<020.10e}", a_uint);
+            /// let txt = format!("{:<020.10e}", a_uint);
+            /// assert_eq!(txt, "000001.2345678901e38");
+            /// ```
+            /// 
+            /// # Example 13
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:<15.5e}", a_uint);
+            /// let txt = format!("{:<15.5e}", a_uint);
+            /// assert_eq!(txt, "1.23457e19     ");
+            /// ```
+            /// 
+            /// # Example 14
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:<015.5e}", a_uint);
+            /// let txt = format!("{:<015.5e}", a_uint);
+            /// assert_eq!(txt, "000001.23457e19");
+            /// ```
+            /// 
+            /// # Example 15
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:>e}", a_uint);
+            /// let txt = format!("{:>e}", a_uint);
+            /// assert_eq!(txt, "1.2345e4");
+            /// ```
+            /// 
+            /// # Example 16
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:>15e}", a_uint);
+            /// let txt = format!("{:>15e}", a_uint);
+            /// assert_eq!(txt, "  1.234567890e9");
+            /// ```
+            /// 
+            /// # Example 17
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:>025e}", a_uint);
+            /// let txt = format!("{:>025e}", a_uint);
+            /// assert_eq!(txt, "01.2345678901234567890e19");
+            /// ```
+            /// 
+            /// # Example 18
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:>20.10e}", a_uint);
+            /// let txt = format!("{:>20.10e}", a_uint);
+            /// assert_eq!(txt, "     1.2345678901e38");
+            /// ```
+            /// 
+            /// # Example 19
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:>020.10e}", a_uint);
+            /// let txt = format!("{:>020.10e}", a_uint);
+            /// assert_eq!(txt, "000001.2345678901e38");
+            /// ```
+            /// 
+            /// # Example 20
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:>15.5e}", a_uint);
+            /// let txt = format!("{:>15.5e}", a_uint);
+            /// assert_eq!(txt, "     1.23457e19");
+            /// ```
+            /// 
+            /// # Example 21
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:>015.5e}", a_uint);
+            /// let txt = format!("{:>015.5e}", a_uint);
+            /// assert_eq!(txt, "000001.23457e19");
+            /// ```
+            /// 
+            /// # Example 22
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:^e}", a_uint);
+            /// let txt = format!("{:^e}", a_uint);
+            /// assert_eq!(txt, "1.2345e4");
+            /// ```
+            /// 
+            /// # Example 23
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:^15e}", a_uint);
+            /// let txt = format!("{:^15e}", a_uint);
+            /// assert_eq!(txt, " 1.234567890e9 ");
+            /// ```
+            /// 
+            /// # Example 24
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:^025e}", a_uint);
+            /// let txt = format!("{:^025e}", a_uint);
+            /// assert_eq!(txt, "01.2345678901234567890e19");
+            /// ```
+            /// 
+            /// # Example 25
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:^20.10e}", a_uint);
+            /// let txt = format!("{:^20.10e}", a_uint);
+            /// assert_eq!(txt, "  1.2345678901e38   ");
+            /// ```
+            /// 
+            /// # Example 26
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:^020.10e}", a_uint);
+            /// let txt = format!("{:^020.10e}", a_uint);
+            /// assert_eq!(txt, "000001.2345678901e38");
+            /// ```
+            /// 
+            /// # Example 27
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:^15.5e}", a_uint);
+            /// let txt = format!("{:^15.5e}", a_uint);
+            /// assert_eq!(txt, "  1.23457e19   ");
+            /// ```
+            /// 
+            /// # Example 28
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:^015.5e}", a_uint);
+            /// let txt = format!("{:^015.5e}", a_uint);
+            /// assert_eq!(txt, "000001.23457e19");
+            /// ```
+            /// 
+            /// # Example 29
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:~<15e}", a_uint);
+            /// let txt = format!("{:~<15e}", a_uint);
+            /// assert_eq!(txt, "1.234567890e9~~");
+            /// ```
+            /// 
+            /// # Example 30
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:_<20.10e}", a_uint);
+            /// let txt = format!("{:_<20.10e}", a_uint);
+            /// assert_eq!(txt, "1.2345678901e38_____");
+            /// ```
+            /// 
+            /// # Example 31
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:`<15.5e}", a_uint);
+            /// let txt = format!("{:`<15.5e}", a_uint);
+            /// assert_eq!(txt, "1.23457e19`````");
+            /// ```
+            /// 
+            /// # Example 32
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:@>15e}", a_uint);
+            /// let txt = format!("{:@>15e}", a_uint);
+            /// assert_eq!(txt, "@@1.234567890e9");
+            /// ```
+            /// 
+            /// # Example 33
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:#>20.10e}", a_uint);
+            /// let txt = format!("{:#>20.10e}", a_uint);
+            /// assert_eq!(txt, "#####1.2345678901e38");
+            /// ```
+            /// 
+            /// # Example 34
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:/>15.5e}", a_uint);
+            /// let txt = format!("{:/>15.5e}", a_uint);
+            /// assert_eq!(txt, "/////1.23457e19");
+            /// ```
+            /// 
+            /// # Example 35
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:^^15e}", a_uint);
+            /// let txt = format!("{:^^15e}", a_uint);
+            /// assert_eq!(txt, "^1.234567890e9^");
+            /// ```
+            /// 
+            /// # Example 36
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:=^20.10e}", a_uint);
+            /// let txt = format!("{:=^20.10e}", a_uint);
+            /// assert_eq!(txt, "==1.2345678901e38===");
+            /// ```
+            /// 
+            /// # Example 37
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:*^15.5e}", a_uint);
+            /// let txt = format!("{:*^15.5e}", a_uint);
+            /// assert_eq!(txt, "**1.23457e19***");
+            /// ```
             fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
             {
                 fmt_with_exponent!(self, f, 'e');
@@ -22514,6 +24551,177 @@ macro_rules! format_for_integer_unions_impl {
             /// this function only returns a Result because writing to the underlying
             /// stream might fail and it must provide a way to propagate the fact that
             /// an error has occurred back up the stack.
+            /// 
+            /// # Example 1
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:p}", a_uint);
+            /// let txt = format!("{:p}", a_uint);
+            /// println!("{}", txt);
+            /// // assert_eq!(txt, "0x7fff5f1c4f3a"); // can be different everytime
+            /// ```
+            /// 
+            /// # Example 2
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:20p}", a_uint);
+            /// let txt = format!("{:20p}", a_uint);
+            /// println!("{}", txt);
+            /// // assert_eq!(txt, "0x7fff5f1c50ec      "); // can be different everytime
+            /// ```
+            /// 
+            /// # Example 3
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:020p}", a_uint);
+            /// let txt = format!("{:020p}", a_uint);
+            /// println!("{}", txt);
+            /// // assert_eq!(txt, "0x0000007fff5f1c4f40"); // can be different everytime
+            /// ```
+            /// 
+            /// # Example 4
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:<p}", a_uint);
+            /// let txt = format!("{:<p}", a_uint);
+            /// println!("{}", txt);
+            /// // assert_eq!(txt, "0x7fff5f1c4f3c"); // can be different everytime
+            /// ```
+            /// 
+            /// # Example 5
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:<20p}", a_uint);
+            /// let txt = format!("{:<20p}", a_uint);
+            /// println!("{}", txt);
+            /// // assert_eq!(txt, "0x7fff5f1c50f0      "); // can be different everytime
+            /// ```
+            /// 
+            /// # Example 6
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:<020p}", a_uint);
+            /// let txt = format!("{:<020p}", a_uint);
+            /// println!("{}", txt);
+            /// // assert_eq!(txt, "0x0000007fff5f1c50e0");
+            /// ```
+            /// 
+            /// # Example 7
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:>p}", a_uint);
+            /// let txt = format!("{:>p}", a_uint);
+            /// println!("{}", txt);
+            /// // assert_eq!(txt, "0x7ffed1ab1e90"); // can be different everytime
+            /// ```
+            /// 
+            /// # Example 8
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:>20p}", a_uint);
+            /// let txt = format!("{:>20p}", a_uint);
+            /// println!("{}", txt);
+            /// // assert_eq!(txt, "      0x7ffed1ab1bc8"); // can be different everytime
+            /// ```
+            /// 
+            /// # Example 9
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:>020p}", a_uint);
+            /// let txt = format!("{:>020p}", a_uint);
+            /// println!("{}", txt);
+            /// // assert_eq!(txt, "0x0000007ffed1ab1a48"); // can be different everytime
+            /// ```
+            /// 
+            /// # Example 10
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:^p}", a_uint);
+            /// let txt = format!("{:^p}", a_uint);
+            /// println!("{}", txt);
+            /// // assert_eq!(txt, "0x7ffed1ab1a3e"); // can be different everytime
+            /// ```
+            /// 
+            /// # Example 11
+            /// ```
+            /// use cryptocol::number::ShortUnion;
+            /// 
+            /// let a_uint = ShortUnion::new_with(12345_u16);
+            /// println!("{:^20p}", a_uint);
+            /// let txt = format!("{:^20p}", a_uint);
+            /// println!("{}", txt);
+            /// // assert_eq!(txt, "   0x7ffed1ab1bcc   "); // can be different everytime
+            /// ```
+            /// 
+            /// # Example 12
+            /// ```
+            /// use cryptocol::number::IntUnion;
+            /// 
+            /// let a_uint = IntUnion::new_with(1234567890_u32);
+            /// println!("{:^020p}", a_uint);
+            /// let txt = format!("{:^020p}", a_uint);
+            /// println!("{}", txt);
+            /// // assert_eq!(txt, "0x0000007ffed1ab1a50"); // can be different everytime
+            /// ```
+            /// 
+            /// # Example 13
+            /// ```
+            /// use cryptocol::number::LongUnion;
+            /// 
+            /// let a_uint = LongUnion::new_with(12345678901234567890_u64);
+            /// println!("{:~<20p}", a_uint);
+            /// let txt = format!("{:~<20p}", a_uint);
+            /// println!("{}", txt);
+            /// // assert_eq!(txt, "0x7ffed1ab1a34~~~~~~"); // can be different everytime
+            /// ```
+            /// 
+            /// # Example 14
+            /// ```
+            /// use cryptocol::number::LongerUnion;
+            /// 
+            /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
+            /// println!("{:@>20p}", a_uint);
+            /// let txt = format!("{:@>20p}", a_uint);
+            /// println!("{}", txt);
+            /// // assert_eq!(txt, "@@@@@@0x7ffed1ab1a2c"); // can be different everytime
+            /// ```
+            /// 
+            /// # Example 15
+            /// ```
+            /// use cryptocol::number::SizeUnion;
+            /// 
+            /// #[cfg(target_pointer_width = "16")]  let a_uint = SizeUnion::new_with(12345_usize);
+            /// #[cfg(target_pointer_width = "32")]  let a_uint = SizeUnion::new_with(1234567890_usize);
+            /// #[cfg(target_pointer_width = "64")]  let a_uint = SizeUnion::new_with(12345678901234567890_usize);
+            /// println!("{:^^20p}", a_uint);
+            /// let txt = format!("{:^^20p}", a_uint);
+            /// println!("{}", txt);
+            /// // assert_eq!(txt, "^^^0x7ffed1ab1a30^^^"); // can be different everytime
+            /// ```
             fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
             {
                 use crate::number::SizeUnion;

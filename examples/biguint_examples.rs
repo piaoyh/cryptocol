@@ -36049,127 +36049,127 @@ fn biguint_pointer_fmt_for_biguint()
     println!("{:p}", a_biguint);
     let txt = format!("{:p}", a_biguint);
     println!("{}", txt);
-    // assert_eq!(txt, "0x7fff2b8f3390"); // can be different everytime
+    // assert_eq!(txt, "0x7ffcd958aab0"); // can be different everytime
 
     let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
     println!("{:20p}", a_biguint);
     let txt = format!("{:20p}", a_biguint);
     println!("{}", txt);
-    // assert_eq!(txt, "0x7fff2b8f3990      "); // can be different everytime
+    // assert_eq!(txt, "0x7ffcd958b0b0      "); // can be different everytime
 
     let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
     println!("{:020p}", a_biguint);
     let txt = format!("{:020p}", a_biguint);
     println!("{}", txt);
-    // assert_eq!(txt, "0x0000007fff2b8f33c0"); // can be different everytime
+    // assert_eq!(txt, "0x0000007ffcd958aae0"); // can be different everytime
 
     let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
     println!("{:<p}", a_biguint);
     let txt = format!("{:<p}", a_biguint);
     println!("{}", txt);
-    // assert_eq!(txt, "0x7fff2b8f39c0"); // can be different everytime
+    // assert_eq!(txt, "0x7ffcd958b0e0"); // can be different everytime
 
     let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
     println!("{:<20p}", a_biguint);
     let txt = format!("{:<20p}", a_biguint);
     println!("{}", txt);
-    // assert_eq!(txt, "0x7fff2b8f33f0      "); // can be different everytime
+    // assert_eq!(txt, "0x7ffcd958ab10      "); // can be different everytime
 
     let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
     println!("{:<020p}", a_biguint);
     let txt = format!("{:<020p}", a_biguint);
     println!("{}", txt);
-    // assert_eq!(txt, "0x0000007fff2b8f3a80"); // can be different everytime
+    // assert_eq!(txt, "0x0000007ffcd958b1a0"); // can be different everytime
 
     let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
     println!("{:!<p}", a_biguint);
     let txt = format!("{:!<p}", a_biguint);
     println!("{}", txt);
-    // assert_eq!(txt, "0x7fff2b8f3420"); // can be different everytime
+    // assert_eq!(txt, "0x7ffcd958ab40"); // can be different everytime
 
     let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
     println!("{:@<20p}", a_biguint);
     let txt = format!("{:@<20p}", a_biguint);
     println!("{}", txt);
-    // assert_eq!(txt, "0x7fff2b8f3ab0@@@@@@"); // can be different everytime
+    // assert_eq!(txt, "0x7ffcd958b1d0@@@@@@"); // can be different everytime
 
     let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
     println!("{:#<020p}", a_biguint);
     let txt = format!("{:#<020p}", a_biguint);
     println!("{}", txt);
-    // assert_eq!(txt, "0x0000007fff2b8f3450"); // can be different everytime
+    // assert_eq!(txt, "0x0000007ffcd958ab70"); // can be different everytime
 
     let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
     println!("{:>p}", a_biguint);
     let txt = format!("{:>p}", a_biguint);
     println!("{}", txt);
-    // assert_eq!(txt, "0x7fff2b8f3ae0"); // can be different everytime
+    // assert_eq!(txt, "0x7ffcd958b200"); // can be different everytime
 
     let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
     println!("{:>20p}", a_biguint);
     let txt = format!("{:>20p}", a_biguint);
     println!("{}", txt);
-    // assert_eq!(txt, "      0x7fff2b8f3480"); // can be different everytime
+    // assert_eq!(txt, "      0x7ffcd958aba0"); // can be different everytime
 
     let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
     println!("{:>020p}", a_biguint);
     let txt = format!("{:>020p}", a_biguint);
     println!("{}", txt);
-    // assert_eq!(txt, "0x0000007fff2b8f3b10"); // can be different everytime
+    // assert_eq!(txt, "0x0000007ffcd958b230"); // can be different everytime
 
     let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
     println!("{:$>p}", a_biguint);
     let txt = format!("{:$>p}", a_biguint);
     println!("{}", txt);
-    // assert_eq!(txt, "0x7fff2b8f34b0"); // can be different everytime
+    // assert_eq!(txt, "0x7ffcd958abd0"); // can be different everytime
 
     let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
     println!("{:%>20p}", a_biguint);
     let txt = format!("{:%>20p}", a_biguint);
     println!("{}", txt);
-    // assert_eq!(txt, "%%%%%%0x7fff2b8f39f0"); // can be different everytime
+    // assert_eq!(txt, "%%%%%%0x7ffcd958b110"); // can be different everytime
 
     let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
     println!("{:^>020p}", a_biguint);
     let txt = format!("{:^>020p}", a_biguint);
     println!("{}", txt);
-    // assert_eq!(txt, "0x0000007fff2b8f3030"); // can be different everytime
+    // assert_eq!(txt, "00x0000007ffcd958a750"); // can be different everytime
 
     let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
     println!("{:^p}", a_biguint);
     let txt = format!("{:^p}", a_biguint);
     println!("{}", txt);
-    // assert_eq!(txt, "0x7fff2b8f3130"); // can be different everytime
+    // assert_eq!(txt, "0x7ffcd958a850"); // can be different everytime
 
     let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
     println!("{:^20p}", a_biguint);
     let txt = format!("{:^20p}", a_biguint);
     println!("{}", txt);
-    // assert_eq!(txt, "   0x7fff2b8f3a20   "); // can be different everytime
+    // assert_eq!(txt, "   0x7ffcd958b140   "); // can be different everytime
 
     let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
     println!("{:^020p}", a_biguint);
     let txt = format!("{:^020p}", a_biguint);
     println!("{}", txt);
-    // assert_eq!(txt, "0x0000007fff2b8f3a50"); // can be different everytime
+    // assert_eq!(txt, "0x0000007ffcd958b170"); // can be different everytime
 
     let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
     println!("{:&^p}", a_biguint);
     let txt = format!("{:&^p}", a_biguint);
     println!("{}", txt);
-    // assert_eq!(txt, "0x7fff2b8f3820"); // can be different everytime
+    // assert_eq!(txt, "0x7ffcd958af40"); // can be different everytime
 
     let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
     println!("{:*^20p}", a_biguint);
     let txt = format!("{:*^20p}", a_biguint);
     println!("{}", txt);
-    // assert_eq!(txt, "***0x7fff2b8f3850***"); // can be different everytime
+    // assert_eq!(txt, "***0x7ffcd958af70***"); // can be different everytime
 
     let a_biguint = U256::from_str("12345678901234567890123456789012345678901234567890123456789012345678901234567").unwrap();
     println!("{:_^020p}", a_biguint);
     let txt = format!("{:_^020p}", a_biguint);
     println!("{}", txt);
-    // assert_eq!(txt, "0x0000007fff2b8f3880"); // can be different everytime
+    // assert_eq!(txt, "0x0000007ffcd958afa0"); // can be different everytime
     println!("---------------------------");
 }
 

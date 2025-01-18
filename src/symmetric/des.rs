@@ -8,7 +8,7 @@
 
 
 #![warn(missing_docs)]
-#![warn(rustdoc::missing_doc_code_examples)]
+// #![warn(rustdoc::missing_doc_code_examples)]
 
 
 // use std::ptr::copy_nonoverlapping;

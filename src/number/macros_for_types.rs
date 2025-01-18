@@ -10,7 +10,8 @@
 // #![warn(rustdoc::missing_doc_code_examples)]
 #![allow(non_camel_case_types)]
 #![allow(missing_docs)]
-#![allow(rustdoc::missing_doc_code_examples)]
+// #![allow(rustdoc::missing_doc_code_examples)]
+
 //! The module that contains macros for defining big unsigned integer data types. 
 
 /// The macro that defines the types `U256`, `U512`, `U1024`, `U2048`, `U3072`,

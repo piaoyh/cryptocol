@@ -7,7 +7,7 @@
 // except according to those terms.
 
 #![allow(missing_docs)]
-#![allow(rustdoc::missing_doc_code_examples)]
+// #![allow(rustdoc::missing_doc_code_examples)]
 
 /********** FOR BIG-ENDIANNESS ONLY **********/
 use std::fmt::{ self, Display, Formatter, Debug };

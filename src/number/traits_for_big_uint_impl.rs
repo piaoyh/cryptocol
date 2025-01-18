@@ -11,7 +11,7 @@
 //#![warn(missing_docs)]
 //#![warn(rustdoc::missing_doc_code_examples)]
 #![allow(missing_docs)]
-#![allow(rustdoc::missing_doc_code_examples)]
+// #![allow(rustdoc::missing_doc_code_examples)]
 
 use std::str::FromStr;
 use std::convert::From;
@@ -13008,7 +13008,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{:p}", a_biguint);
     /// let txt = format!("{:p}", a_biguint);
     /// println!("{}", txt);
-    /// // assert_eq!(txt, "0x7fff2b8f3390"); // can be different everytime
+    /// // assert_eq!(txt, "0x7ffcd958aab0"); // can be different everytime
     /// ```
     /// 
     /// # Example 2
@@ -13021,7 +13021,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{:20p}", a_biguint);
     /// let txt = format!("{:20p}", a_biguint);
     /// println!("{}", txt);
-    /// // assert_eq!(txt, "0x7fff2b8f3990      "); // can be different everytime
+    /// // assert_eq!(txt, "0x7ffcd958b0b0      "); // can be different everytime
     /// ```
     /// 
     /// # Example 3
@@ -13034,7 +13034,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{:020p}", a_biguint);
     /// let txt = format!("{:020p}", a_biguint);
     /// println!("{}", txt);
-    /// // assert_eq!(txt, "0x0000007fff2b8f33c0"); // can be different everytime
+    /// // assert_eq!(txt, "0x0000007ffcd958aae0"); // can be different everytime
     /// ```
     /// 
     /// # Example 4
@@ -13047,7 +13047,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{:<p}", a_biguint);
     /// let txt = format!("{:<p}", a_biguint);
     /// println!("{}", txt);
-    /// // assert_eq!(txt, "0x7fff2b8f39c0"); // can be different everytime
+    /// // assert_eq!(txt, "0x7ffcd958b0e0"); // can be different everytime
     /// ```
     /// 
     /// # Example 5
@@ -13060,7 +13060,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{:<20p}", a_biguint);
     /// let txt = format!("{:<20p}", a_biguint);
     /// println!("{}", txt);
-    /// // assert_eq!(txt, "0x7fff2b8f33f0      "); // can be different everytime
+    /// // assert_eq!(txt, "0x7ffcd958ab10      "); // can be different everytime
     /// ```
     /// 
     /// # Example 6
@@ -13073,7 +13073,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{:<020p}", a_biguint);
     /// let txt = format!("{:<020p}", a_biguint);
     /// println!("{}", txt);
-    /// // assert_eq!(txt, "0x0000007fff2b8f3a80"); // can be different everytime
+    /// // assert_eq!(txt, "0x0000007ffcd958b1a0"); // can be different everytime
     /// ```
     /// 
     /// # Example 7
@@ -13086,7 +13086,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{:!<p}", a_biguint);
     /// let txt = format!("{:!<p}", a_biguint);
     /// println!("{}", txt);
-    /// // assert_eq!(txt, "0x7fff2b8f3420"); // can be different everytime
+    /// // assert_eq!(txt, "0x7ffcd958ab40"); // can be different everytime
     /// ```
     /// 
     /// # Example 8
@@ -13099,7 +13099,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{:@<20p}", a_biguint);
     /// let txt = format!("{:@<20p}", a_biguint);
     /// println!("{}", txt);
-    /// // assert_eq!(txt, "0x7fff2b8f3ab0@@@@@@"); // can be different everytime
+    /// // assert_eq!(txt, "0x7ffcd958b1d0@@@@@@"); // can be different everytime
     /// ```
     /// 
     /// # Example 9
@@ -13112,7 +13112,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{:#<020p}", a_biguint);
     /// let txt = format!("{:#<020p}", a_biguint);
     /// println!("{}", txt);
-    /// // assert_eq!(txt, "0x0000007fff2b8f3450"); // can be different everytime
+    /// // assert_eq!(txt, "0x0000007ffcd958ab70"); // can be different everytime
     /// ```
     /// 
     /// # Example 10
@@ -13125,7 +13125,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{:>p}", a_biguint);
     /// let txt = format!("{:>p}", a_biguint);
     /// println!("{}", txt);
-    /// // assert_eq!(txt, "0x7fff2b8f3ae0"); // can be different everytime
+    /// // assert_eq!(txt, "0x7ffcd958b200"); // can be different everytime
     /// ```
     /// 
     /// # Example 11
@@ -13138,7 +13138,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{:>20p}", a_biguint);
     /// let txt = format!("{:>20p}", a_biguint);
     /// println!("{}", txt);
-    /// // assert_eq!(txt, "      0x7fff2b8f3480"); // can be different everytime
+    /// // assert_eq!(txt, "      0x7ffcd958aba0"); // can be different everytime
     /// ```
     /// 
     /// # Example 12
@@ -13151,7 +13151,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{:>020p}", a_biguint);
     /// let txt = format!("{:>020p}", a_biguint);
     /// println!("{}", txt);
-    /// // assert_eq!(txt, "0x0000007fff2b8f3b10"); // can be different everytime
+    /// // assert_eq!(txt, "0x0000007ffcd958b230"); // can be different everytime
     /// ```
     /// 
     /// # Example 13
@@ -13164,7 +13164,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{:$>p}", a_biguint);
     /// let txt = format!("{:$>p}", a_biguint);
     /// println!("{}", txt);
-    /// // assert_eq!(txt, "0x7fff2b8f34b0"); // can be different everytime
+    /// // assert_eq!(txt, "0x7ffcd958abd0"); // can be different everytime
     /// ```
     /// 
     /// # Example 14
@@ -13177,7 +13177,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{:%>20p}", a_biguint);
     /// let txt = format!("{:%>20p}", a_biguint);
     /// println!("{}", txt);
-    /// // assert_eq!(txt, "%%%%%%0x7fff2b8f39f0"); // can be different everytime
+    /// // assert_eq!(txt, "%%%%%%0x7ffcd958b110"); // can be different everytime
     /// ```
     /// 
     /// # Example 15
@@ -13190,7 +13190,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{:^>020p}", a_biguint);
     /// let txt = format!("{:^>020p}", a_biguint);
     /// println!("{}", txt);
-    /// // assert_eq!(txt, "0x0000007fff2b8f3030"); // can be different everytime
+    /// // assert_eq!(txt, "0x0000007ffcd958a750"); // can be different everytime
     /// ```
     /// 
     /// # Example 16
@@ -13203,7 +13203,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{:^p}", a_biguint);
     /// let txt = format!("{:^p}", a_biguint);
     /// println!("{}", txt);
-    /// // assert_eq!(txt, "0x7fff2b8f3130"); // can be different everytime
+    /// // assert_eq!(txt, "0x7ffcd958a850"); // can be different everytime
     /// ```
     /// 
     /// # Example 17
@@ -13216,7 +13216,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{:^20p}", a_biguint);
     /// let txt = format!("{:^20p}", a_biguint);
     /// println!("{}", txt);
-    /// // assert_eq!(txt, "   0x7fff2b8f3a20   "); // can be different everytime
+    /// // assert_eq!(txt, "   0x7ffcd958b140   "); // can be different everytime
     /// ```
     /// 
     /// # Example 18
@@ -13229,7 +13229,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{:^020p}", a_biguint);
     /// let txt = format!("{:^020p}", a_biguint);
     /// println!("{}", txt);
-    /// // assert_eq!(txt, "0x0000007fff2b8f3a50"); // can be different everytime
+    /// // assert_eq!(txt, "0x0000007ffcd958b170"); // can be different everytime
     /// ```
     /// 
     /// # Example 19
@@ -13242,7 +13242,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{:&^p}", a_biguint);
     /// let txt = format!("{:&^p}", a_biguint);
     /// println!("{}", txt);
-    /// // assert_eq!(txt, "0x7fff2b8f3820"); // can be different everytime
+    /// // assert_eq!(txt, "0x7ffcd958af40"); // can be different everytime
     /// ```
     /// 
     /// # Example 20
@@ -13255,7 +13255,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{:*^20p}", a_biguint);
     /// let txt = format!("{:*^20p}", a_biguint);
     /// println!("{}", txt);
-    /// // assert_eq!(txt, "***0x7fff2b8f3850***"); // can be different everytime
+    /// // assert_eq!(txt, "***0x7ffcd958af70***"); // can be different everytime
     /// ```
     /// 
     /// # Example 21
@@ -13268,7 +13268,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("{:_^020p}", a_biguint);
     /// let txt = format!("{:_^020p}", a_biguint);
     /// println!("{}", txt);
-    /// // assert_eq!(txt, "0x0000007fff2b8f3880"); // can be different everytime
+    /// // assert_eq!(txt, "0x0000007ffcd958afa0"); // can be different everytime
     /// ```
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>
     {

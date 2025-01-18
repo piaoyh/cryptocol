@@ -7,7 +7,7 @@
 // except according to those terms.
 
 #![warn(missing_docs)]
-#![warn(rustdoc::missing_doc_code_examples)]
+// #![warn(rustdoc::missing_doc_code_examples)]
 
 //! cryptocol crate provides libraries for cryptography.
 //! 

@@ -10,7 +10,7 @@
 //! operation.
 
 #![allow(missing_docs)]
-#![allow(rustdoc::missing_doc_code_examples)]
+// #![allow(rustdoc::missing_doc_code_examples)]
 
 use std::fmt::{ self, Display, Formatter, Debug };
 use NumberErr::{OutOfValidRadixRange, NotAlphaNumeric, NotFitToRadix, TooBigNumber};
