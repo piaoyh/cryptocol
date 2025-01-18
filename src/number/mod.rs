@@ -103,7 +103,7 @@
 //! This module provides three kinds of long bit integers: BigUInt, BigInt,
 //! and LargeInt.
 //! - `BigUInt` --- a big-sized _unsigned_ integer with user-defined _fixed_ size.
-//! [Read more](struct@BigUInt)
+//! [Read more](struct@BigUInt) However, docs.rs has been failing in generating `BigUInt` page from ver. 0.8.5 on for some technical reason that has not been solved yet. So, you can download the manual [here](https://drive.google.com/file/d/107hckPdW68sCloCkGS1LaP_7StIJ-quw/view?usp=sharing). I hope that it will be fixed soon.
 //! - `BigSInt` --- a big-sized _signed_ integer with user-defined _fixed_ size.
 //! - `LargeInt` --- a big-sized _signed_ integer with _variable_ size.
 //! 

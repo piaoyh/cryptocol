@@ -884,7 +884,7 @@ macro_rules! calc_rotate_assign
 
 
 //////////////////////////////////////////
-/// # Introduction
+/// # Introduction - However, docs.rs has been failing in generating `BigUInt` page from ver. 0.8.5 on for some technical reason that has not been solved yet. So, you can download the manual [here](https://drive.google.com/file/d/107hckPdW68sCloCkGS1LaP_7StIJ-quw/view?usp=sharing). I hope that it will be fixed soon.
 /// A struct that represents a big unsigned integer with user-defined fixed size.
 /// 
 /// The struct `BigUInt<T, const N: usize>` is a generic struct for which you
@@ -907,8 +907,8 @@ macro_rules! calc_rotate_assign
 ///   `BigUInt<u16, 64>`, or `BigUInt<u8, 128>`. They are all 1024-bit
 ///   unsigned integers, but their performance will be different from 
 ///   one another depending on CPU.
-/// - flags are OVERFLOW (0b0000_0001), UNDERFLOW (0b0000_0010),
-///   INFINITY (0b0000_0100), and DIVIDED_BY_ZERO (== INFINITY)
+/// - flags are OVERFLOW, UNDERFLOW, INFINITY, DIVIDED_BY_ZERO, UNDEFINED,
+///   LEFT_CARRY, and RIGHT_CARRY.
 /// 
 /// # Panics
 /// If `size_of::<T>() * N` <= `128`, some methods may panic

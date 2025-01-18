@@ -22444,7 +22444,7 @@ macro_rules! format_for_integer_unions_impl {
             /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
             /// println!("{:<#45X}", a_uint);
             /// let txt = format!("{:<#45X}", a_uint);
-            /// assert_eq!(txt, "0X5CE0E9A56015FEC5AADFA328AE398115      
+            /// assert_eq!(txt, "0X5CE0E9A56015FEC5AADFA328AE398115           ");
             /// ```
             /// 
             /// # Example 12
@@ -22797,7 +22797,7 @@ macro_rules! format_for_integer_unions_impl {
             /// let a_uint = LongerUnion::new_with(123456789012345678901234567890123456789_u128);
             /// println!("{:<#45x}", a_uint);
             /// let txt = format!("{:<#45x}", a_uint);
-            /// assert_eq!(txt, "0x5CE0E9A56015FEC5AADFA328AE398115      
+            /// assert_eq!(txt, "0x5ce0e9a56015fec5aadfa328ae398115           ");
             /// ```
             /// 
             /// # Example 12

@@ -47,7 +47,7 @@
 //! 
 //! ## Big Numbers: meaningful as itself and also the foundation for Asymmetric-Key Algorithms
 //! - [ ] Fixed Sized Big Unsigned Integer Operation ---
-//!     [`BigUInt`](number/big_uint/struct.BigUInt.html#struct.BigUInt)
+//!     [`BigUInt`](number/big_uint/struct.BigUInt.html#struct.BigUInt) However, docs.rs has been failing in generating `BigUInt` page from ver. 0.8.5 on for some technical reason that has not been solved yet. So, you can download the manual [here](https://drive.google.com/file/d/107hckPdW68sCloCkGS1LaP_7StIJ-quw/view?usp=sharing). I hope that it will be fixed soon.
 // ! - [ ] Fixed Sized Big Signed Integer Operation --- BigSInt
 // !    _--> Thinking about postponing to Roadmap for ver. 2.0_
 // ! - [ ] Variable Sized Big Signed Integer Operation --- LargeInt
