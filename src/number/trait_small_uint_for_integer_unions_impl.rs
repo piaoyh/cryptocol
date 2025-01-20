@@ -10,7 +10,7 @@
 //! data types used in a lot of modules of the crate Cryptocol.
 //! __These unions are for segmenting data chunk into smaller pieces.__
 
-#![warn(missing_docs)]
+// #![warn(missing_docs)]
 // #![warn(rustdoc::missing_doc_code_examples)]
 // #![allow(missing_docs)]
 // #![allow(rustdoc::missing_doc_code_examples)]

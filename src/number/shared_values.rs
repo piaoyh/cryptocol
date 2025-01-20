@@ -12,7 +12,7 @@
 
 // #![warn(missing_docs)]
 // #![warn(rustdoc::missing_doc_code_examples)]
-#![allow(missing_docs)]
+// #![allow(missing_docs)]
 // #![allow(rustdoc::missing_doc_code_examples)]
 
 use std::fmt::{ Debug, Display };
@@ -101,7 +101,10 @@ where D: SmallUInt + Copy + Clone + Display + Debug + ToString
         + BitXor<Output=S> + BitXorAssign + Not<Output=S>
         + PartialEq + PartialOrd
 {
+    /// Destination data type
     pub des: D,
+
+    /// Source data type
     pub src: S,
 }
 

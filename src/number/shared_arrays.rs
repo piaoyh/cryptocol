@@ -12,7 +12,7 @@
 
 // #![warn(missing_docs)]
 // #![warn(rustdoc::missing_doc_code_examples)]
-#![allow(missing_docs)]
+// #![allow(missing_docs)]
 // #![allow(rustdoc::missing_doc_code_examples)]
 
 use std::fmt::Display;
@@ -149,7 +149,10 @@ where D: SmallUInt + Add<Output=D> + AddAssign + Sub<Output=D> + SubAssign
         + PartialEq + PartialOrd
         + Display + ToString
 {
+    /// Destination array
     pub des: [D; N],
+
+    /// Source array
     pub src: [S; M],
 }
 

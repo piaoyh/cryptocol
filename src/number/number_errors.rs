@@ -9,7 +9,7 @@
 //! The module that contains the enumerator NumberErr for indicating number
 //! operation.
 
-#![allow(missing_docs)]
+// #![allow(missing_docs)]
 // #![allow(rustdoc::missing_doc_code_examples)]
 
 use std::fmt::{ self, Display, Formatter, Debug };

@@ -12,7 +12,7 @@
 
 // #![warn(missing_docs)]
 // #![warn(rustdoc::missing_doc_code_examples)]
-#![allow(missing_docs)]
+// #![allow(missing_docs)]
 // #![allow(rustdoc::missing_doc_code_examples)]
 
 use std::cmp::{ PartialEq, PartialOrd, Ordering };

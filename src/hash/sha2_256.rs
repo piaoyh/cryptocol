@@ -8,7 +8,7 @@
 
 //! The module that contains SHA1 hash algorithm
 
-#![warn(missing_docs)]
+// #![warn(missing_docs)]
 // #![warn(rustdoc::missing_doc_code_examples)]
 
 

@@ -519,6 +519,38 @@ macro_rules! panic_free_calc_div_rem_assign
     // self.set_flag_bit(res.get_all_flags());
 }
 
+
+macro_rules! safe_calc {
+    ($me:expr, $func_release:expr, $func_debug:expr, $rhs:expr) => {
+        #[cfg(debug_assertions)]        return $func_debug($me, $rhs);
+        #[cfg(not(debug_assertions))]   return $func_release($me, $rhs);
+    };
+    // safe_calc!(self, Self::wrapping_add, Self::unchecked_add, rhs);
+    // 
+    // #[cfg(debug_assertions)]        return self.unchecked_add(rhs);
+    // #[cfg(not(debug_assertions))]   return self.wrapping_add(rhs);
+}
+
+
+macro_rules! safe_calc_assign {
+    ($me:expr, $func_release:expr, $func_debug:expr, $rhs:expr) => {
+        #[cfg(debug_assertions)]
+        {
+            if $func_debug($me, $rhs)
+                { panic!(); }
+        }
+        #[cfg(not(debug_assertions))]   $func_release($me, $rhs);
+    };
+    // safe_calc_assign!(self, Self::wrapping_add_assign_uint, Self::overflowing_add_assign_uint, rhs);
+    // 
+    // #[cfg(debug_assertions)]
+    // {
+    //     if self.overflowing_add_assign_uint(rhs)
+    //         { panic!(); }
+    // }
+    // #[cfg(not(debug_assertions))]   self.wrapping_add_assign_uint(rhs);
+}
+
 macro_rules! if_rhs_is_zero
 {
     ($me:expr, $rhs:expr) => {
@@ -1445,6 +1477,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let obj = U256::new();
     /// println!("obj = {}", obj);
     /// assert_eq!(obj.to_string(), "0");
+    /// assert_eq!(obj.is_overflow(), false);
+    /// assert_eq!(obj.is_underflow(), false);
+    /// assert_eq!(obj.is_infinity(), false);
+    /// assert_eq!(obj.is_divided_by_zero(), false);
+    /// assert_eq!(obj.is_undefined(), false);
+    /// assert_eq!(obj.is_left_carry(), false);
+    /// assert_eq!(obj.is_right_carry(), false);
     /// ```
     pub fn new() -> Self
     {
@@ -1480,6 +1519,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let zero = U256::zero();
     /// println!("zero = {}", zero);
     /// assert_eq!(zero.to_string(), "0");
+    /// assert_eq!(zero.is_overflow(), false);
+    /// assert_eq!(zero.is_underflow(), false);
+    /// assert_eq!(zero.is_infinity(), false);
+    /// assert_eq!(zero.is_divided_by_zero(), false);
+    /// assert_eq!(zero.is_undefined(), false);
+    /// assert_eq!(zero.is_left_carry(), false);
+    /// assert_eq!(zero.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn zero() -> Self
@@ -1507,6 +1553,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let one = U256::one();
     /// println!("one = {}", one);
     /// assert_eq!(one.to_string(), "1");
+    /// assert_eq!(one.is_overflow(), false);
+    /// assert_eq!(one.is_underflow(), false);
+    /// assert_eq!(one.is_infinity(), false);
+    /// assert_eq!(one.is_divided_by_zero(), false);
+    /// assert_eq!(one.is_undefined(), false);
+    /// assert_eq!(one.is_left_carry(), false);
+    /// assert_eq!(one.is_right_carry(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -1537,6 +1590,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let maximum = U256::max();
     /// assert_eq!(maximum.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
+    /// assert_eq!(maximum.is_overflow(), false);
+    /// assert_eq!(maximum.is_underflow(), false);
+    /// assert_eq!(maximum.is_infinity(), false);
+    /// assert_eq!(maximum.is_divided_by_zero(), false);
+    /// assert_eq!(maximum.is_undefined(), false);
+    /// assert_eq!(maximum.is_left_carry(), false);
+    /// assert_eq!(maximum.is_right_carry(), false);
     /// assert_eq!(maximum.wrapping_add_uint(1_u16), U256::zero());
     /// ```
     pub fn max() -> Self
@@ -1570,6 +1630,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("half maximum = \t{}", half.to_string_with_radix_and_stride(16, 4).unwrap());
     /// assert_eq!(half.to_string(), "340282366920938463463374607431768211455");
     /// assert_eq!(half.to_string_with_radix_and_stride(16, 4).unwrap(), "FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF");
+    /// assert_eq!(half.is_overflow(), false);
+    /// assert_eq!(half.is_underflow(), false);
+    /// assert_eq!(half.is_infinity(), false);
+    /// assert_eq!(half.is_divided_by_zero(), false);
+    /// assert_eq!(half.is_undefined(), false);
+    /// assert_eq!(half.is_left_carry(), false);
+    /// assert_eq!(half.is_right_carry(), false);
     /// ```
     pub fn submax(size_in_bits: usize) -> Self
     {
@@ -1597,10 +1664,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u8);
     /// 
     /// let half = U256::halfmax();
-    /// println!("half maximum = \t{}", half);
-    /// println!("half maximum = \t{}", half.to_string_with_radix_and_stride(16, 4).unwrap());
+    /// println!("half maximum = {0} = {0:#x}", half);
     /// assert_eq!(half.to_string(), "340282366920938463463374607431768211455");
     /// assert_eq!(half.to_string_with_radix_and_stride(16, 4).unwrap(), "FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF");
+    /// assert_eq!(half.is_overflow(), false);
+    /// assert_eq!(half.is_underflow(), false);
+    /// assert_eq!(half.is_infinity(), false);
+    /// assert_eq!(half.is_divided_by_zero(), false);
+    /// assert_eq!(half.is_undefined(), false);
+    /// assert_eq!(half.is_left_carry(), false);
+    /// assert_eq!(half.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn halfmax() -> Self
@@ -1640,11 +1713,57 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// println!("f_from_usize = {}", f_from_usize);
     /// 
     /// assert_eq!(a_from_u8.into_u8(), 123_u8);
+    /// assert_eq!(a_from_u8.is_overflow(), false);
+    /// assert_eq!(a_from_u8.is_underflow(), false);
+    /// assert_eq!(a_from_u8.is_infinity(), false);
+    /// assert_eq!(a_from_u8.is_divided_by_zero(), false);
+    /// assert_eq!(a_from_u8.is_undefined(), false);
+    /// assert_eq!(a_from_u8.is_left_carry(), false);
+    /// assert_eq!(a_from_u8.is_right_carry(), false);
+    /// 
     /// assert_eq!(b_from_u16.into_u16(), 12345_u16);
+    /// assert_eq!(b_from_u16.is_overflow(), false);
+    /// assert_eq!(b_from_u16.is_underflow(), false);
+    /// assert_eq!(b_from_u16.is_infinity(), false);
+    /// assert_eq!(b_from_u16.is_divided_by_zero(), false);
+    /// assert_eq!(b_from_u16.is_undefined(), false);
+    /// assert_eq!(b_from_u16.is_left_carry(), false);
+    /// assert_eq!(b_from_u16.is_right_carry(), false);
+    /// 
     /// assert_eq!(c_from_u32.into_u32(), 1234567890_u32);
+    /// assert_eq!(c_from_u32.is_underflow(), false);
+    /// assert_eq!(c_from_u32.is_infinity(), false);
+    /// assert_eq!(c_from_u32.is_divided_by_zero(), false);
+    /// assert_eq!(c_from_u32.is_undefined(), false);
+    /// assert_eq!(c_from_u32.is_left_carry(), false);
+    /// assert_eq!(c_from_u32.is_right_carry(), false);
+    /// 
     /// assert_eq!(d_from_u64.into_u64(), 12345678901234567890_u64);
+    /// assert_eq!(d_from_u64.is_overflow(), false);
+    /// assert_eq!(d_from_u64.is_underflow(), false);
+    /// assert_eq!(d_from_u64.is_infinity(), false);
+    /// assert_eq!(d_from_u64.is_divided_by_zero(), false);
+    /// assert_eq!(d_from_u64.is_undefined(), false);
+    /// assert_eq!(d_from_u64.is_left_carry(), false);
+    /// assert_eq!(d_from_u64.is_right_carry(), false);
+    /// 
     /// assert_eq!(e_from_u128.into_u128(), 123456789012345678901234567890123456789_u128);
+    /// assert_eq!(e_from_u128.is_overflow(), false);
+    /// assert_eq!(e_from_u128.is_underflow(), false);
+    /// assert_eq!(e_from_u128.is_infinity(), false);
+    /// assert_eq!(e_from_u128.is_divided_by_zero(), false);
+    /// assert_eq!(e_from_u128.is_undefined(), false);
+    /// assert_eq!(e_from_u128.is_left_carry(), false);
+    /// assert_eq!(e_from_u128.is_right_carry(), false);
+    /// 
     /// assert_eq!(f_from_usize.into_usize(), 123_usize);
+    /// assert_eq!(f_from_usize.is_overflow(), false);
+    /// assert_eq!(f_from_usize.is_underflow(), false);
+    /// assert_eq!(f_from_usize.is_infinity(), false);
+    /// assert_eq!(f_from_usize.is_divided_by_zero(), false);
+    /// assert_eq!(f_from_usize.is_undefined(), false);
+    /// assert_eq!(f_from_usize.is_left_carry(), false);
+    /// assert_eq!(f_from_usize.is_right_carry(), false);
     /// ```
     pub fn from_uint<U>(val: U) -> Self
     where U: SmallUInt + Copy + Clone + Display + Debug + ToString
@@ -1693,9 +1812,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u8);
     /// 
-    /// let big_num = U256::from_array([10_u8;32]);
-    /// println!("big_num = {}", big_num.to_string_with_radix(16).unwrap());
+    /// let big_num = U256::from_array([10_u8; 32]);
+    /// println!("big_num = {:X}", big_num);
     /// assert_eq!(big_num.to_string_with_radix(16).unwrap(), "A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A0A");
+    /// assert_eq!(big_num.is_overflow(), false);
+    /// assert_eq!(big_num.is_underflow(), false);
+    /// assert_eq!(big_num.is_infinity(), false);
+    /// assert_eq!(big_num.is_divided_by_zero(), false);
+    /// assert_eq!(big_num.is_undefined(), false);
+    /// assert_eq!(big_num.is_left_carry(), false);
+    /// assert_eq!(big_num.is_right_carry(), false);
     /// ```
     pub fn from_array(val: [T; N]) -> Self
     {
@@ -1718,12 +1844,34 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use std::str::FromStr;
     /// use cryptocol::number::*;
     /// 
-    /// let a_u512_with_u8 = U512_with_u8::from_str("123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789").unwrap();
+    /// let mut a_u512_with_u8 = U512_with_u8::from_str("123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789").unwrap();
+    /// a_u512_with_u8.set_overflow();
+    /// a_u512_with_u8.set_underflow();
+    /// a_u512_with_u8.set_infinity();
+    /// a_u512_with_u8.set_divided_by_zero();
+    /// a_u512_with_u8.set_undefined();
+    /// a_u512_with_u8.set_left_carry();
+    /// a_u512_with_u8.set_right_carry();
+    /// assert_eq!(a_u512_with_u8.is_overflow(), true);
+    /// assert_eq!(a_u512_with_u8.is_underflow(), true);
+    /// assert_eq!(a_u512_with_u8.is_infinity(), true);
+    /// assert_eq!(a_u512_with_u8.is_divided_by_zero(), true);
+    /// assert_eq!(a_u512_with_u8.is_undefined(), true);
+    /// assert_eq!(a_u512_with_u8.is_left_carry(), true);
+    /// assert_eq!(a_u512_with_u8.is_right_carry(), true);
+    /// 
     /// let b_u512_with_u8 = U512_with_u8::from_biguint(&a_u512_with_u8);
     /// println!("a_u512_with_u8 = {}", a_u512_with_u8);
     /// println!("b_u512_with_u8 = {}", b_u512_with_u8);
     /// assert_eq!(a_u512_with_u8.to_string(), "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789");
     /// assert_eq!(b_u512_with_u8.to_string(), "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789");
+    /// assert_eq!(b_u512_with_u8.is_overflow(), false);
+    /// assert_eq!(b_u512_with_u8.is_underflow(), false);
+    /// assert_eq!(b_u512_with_u8.is_infinity(), false);
+    /// assert_eq!(b_u512_with_u8.is_divided_by_zero(), false);
+    /// assert_eq!(b_u512_with_u8.is_undefined(), false);
+    /// assert_eq!(b_u512_with_u8.is_left_carry(), false);
+    /// assert_eq!(b_u512_with_u8.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 2 for the shorter length
@@ -1731,12 +1879,34 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use std::str::FromStr;
     /// use cryptocol::number::*;
     /// 
-    /// let a_u512_with_u8 = U512_with_u8::from_str("123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789").unwrap();
+    /// let mut a_u512_with_u8 = U512_with_u8::from_str("123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789").unwrap();
+    /// a_u512_with_u8.set_overflow();
+    /// a_u512_with_u8.set_underflow();
+    /// a_u512_with_u8.set_infinity();
+    /// a_u512_with_u8.set_divided_by_zero();
+    /// a_u512_with_u8.set_undefined();
+    /// a_u512_with_u8.set_left_carry();
+    /// a_u512_with_u8.set_right_carry();
+    /// assert_eq!(a_u512_with_u8.is_overflow(), true);
+    /// assert_eq!(a_u512_with_u8.is_underflow(), true);
+    /// assert_eq!(a_u512_with_u8.is_infinity(), true);
+    /// assert_eq!(a_u512_with_u8.is_divided_by_zero(), true);
+    /// assert_eq!(a_u512_with_u8.is_undefined(), true);
+    /// assert_eq!(a_u512_with_u8.is_left_carry(), true);
+    /// assert_eq!(a_u512_with_u8.is_right_carry(), true);
+    /// 
     /// let b_u256_with_u8 = U256_with_u16::from_biguint(&a_u512_with_u8);
     /// println!("a_u512_with_u8 = {}", a_u512_with_u8);
     /// println!("b_u256_with_u8 = {}", b_u256_with_u8);
     /// assert_eq!(a_u512_with_u8.to_string(), "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789");
     /// assert_eq!(b_u256_with_u8.to_string(), "98633800081229720571026865697976779988382011787853764870844783447569204535061");
+    /// assert_eq!(b_u256_with_u8.is_overflow(), false);
+    /// assert_eq!(b_u256_with_u8.is_underflow(), false);
+    /// assert_eq!(b_u256_with_u8.is_infinity(), false);
+    /// assert_eq!(b_u256_with_u8.is_divided_by_zero(), false);
+    /// assert_eq!(b_u256_with_u8.is_undefined(), false);
+    /// assert_eq!(b_u256_with_u8.is_left_carry(), false);
+    /// assert_eq!(b_u256_with_u8.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 3 for the longer length
@@ -1744,12 +1914,34 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use std::str::FromStr;
     /// use cryptocol::number::*;
     /// 
-    /// let a_u512_with_u8 = U512_with_u8::from_str("123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789").unwrap();
+    /// let mut a_u512_with_u8 = U512_with_u8::from_str("123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789").unwrap();
+    /// a_u512_with_u8.set_overflow();
+    /// a_u512_with_u8.set_underflow();
+    /// a_u512_with_u8.set_infinity();
+    /// a_u512_with_u8.set_divided_by_zero();
+    /// a_u512_with_u8.set_undefined();
+    /// a_u512_with_u8.set_left_carry();
+    /// a_u512_with_u8.set_right_carry();
+    /// assert_eq!(a_u512_with_u8.is_overflow(), true);
+    /// assert_eq!(a_u512_with_u8.is_underflow(), true);
+    /// assert_eq!(a_u512_with_u8.is_infinity(), true);
+    /// assert_eq!(a_u512_with_u8.is_divided_by_zero(), true);
+    /// assert_eq!(a_u512_with_u8.is_undefined(), true);
+    /// assert_eq!(a_u512_with_u8.is_left_carry(), true);
+    /// assert_eq!(a_u512_with_u8.is_right_carry(), true);
+    /// 
     /// let b_u1024_with_u8 = U1024_with_u16::from_biguint(&a_u512_with_u8);
     /// println!("a_u512_with_u8 = {}", a_u512_with_u8);
     /// println!("b_u1024_with_u8 = {}", b_u1024_with_u8);
     /// assert_eq!(a_u512_with_u8.to_string(), "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789");
     /// assert_eq!(b_u1024_with_u8.to_string(), "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789");
+    /// assert_eq!(b_u1024_with_u8.is_overflow(), false);
+    /// assert_eq!(b_u1024_with_u8.is_underflow(), false);
+    /// assert_eq!(b_u1024_with_u8.is_infinity(), false);
+    /// assert_eq!(b_u1024_with_u8.is_divided_by_zero(), false);
+    /// assert_eq!(b_u1024_with_u8.is_undefined(), false);
+    /// assert_eq!(b_u1024_with_u8.is_left_carry(), false);
+    /// assert_eq!(b_u1024_with_u8.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn from_biguint<U, const M: usize>(biguint: &BigUInt<U, M>) -> Self
@@ -1783,8 +1975,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///                             0x9900, 0xaabb, 0xccdd, 0xeeff,
     ///                             0x1f2e, 0x3d4c, 0x5b6a, 0x7089]);
     /// let le = U256::from_be(be.clone());
-    /// println!("be = 0x{}", be.to_string_with_radix(16).unwrap());
-    /// println!("le = 0x{}", le.to_string_with_radix(16).unwrap());
+    /// println!("be = {:#x}", be);
+    /// println!("le = {:#x}", le);
     /// #[cfg(target_endian = "little")]
     /// {
     ///     assert_eq!(be.to_string_with_radix(16).unwrap(), "70895B6A3D4C1F2EEEFFCCDDAABB99007788556633441122CDEF90AB56781234");
@@ -1795,6 +1987,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     assert_eq!(be.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
     ///     assert_eq!(le.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");        
     /// }
+    /// assert_eq!(le.is_overflow(), false);
+    /// assert_eq!(le.is_underflow(), false);
+    /// assert_eq!(le.is_infinity(), false);
+    /// assert_eq!(le.is_divided_by_zero(), false);
+    /// assert_eq!(le.is_undefined(), false);
+    /// assert_eq!(le.is_left_carry(), false);
+    /// assert_eq!(le.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn from_be(be: Self) -> Self
@@ -1821,11 +2020,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let le = U256::from_be_bytes(be_array.clone());
     /// print!("be_array = ");
     /// for elem in be_array
-    ///     { print!("0x{:8x} ", elem); }
+    ///     { print!("{:#8x} ", elem); }
     /// println!();
-    /// println!("le = 0x{}", le.to_string_with_radix_and_stride_and_delimiter(16, 8, " 0x").unwrap());
+    /// println!("le = {#x}", le);
     /// #[cfg(target_endian = "little")]    assert_eq!(le.to_string_with_radix_and_stride(16, 8).unwrap(), "78563412_EFCDAB90_44332211_88776655_BBAA0099_FFEEDDCC_4C3D2E1F_89706A5B");
     /// #[cfg(target_endian = "big")]       assert_eq!(le.to_string_with_radix(16).unwrap(), "12345678_90ABCDEF_11223344_55667788_9900AABB_CCDDEEFF_1F2E3D4C_5B6A7089");
+    /// assert_eq!(le.is_overflow(), false);
+    /// assert_eq!(le.is_underflow(), false);
+    /// assert_eq!(le.is_infinity(), false);
+    /// assert_eq!(le.is_divided_by_zero(), false);
+    /// assert_eq!(le.is_undefined(), false);
+    /// assert_eq!(le.is_left_carry(), false);
+    /// assert_eq!(le.is_right_carry(), false);
     /// ```
     pub fn from_be_bytes(be_bytes: [T; N]) -> Self
     {
@@ -1856,8 +2062,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///                 0x9900, 0xaabb, 0xccdd, 0xeeff,
     ///                 0x1f2e, 0x3d4c, 0x5b6a, 0x7089]);
     /// let le2 = U256::from_le(le1.clone());
-    /// println!("le1 = 0x{}", le1.to_string_with_radix(16).unwrap());
-    /// println!("le2 = 0x{}", le2.to_string_with_radix(16).unwrap());
+    /// println!("le1 = {:#x}", le1);
+    /// println!("le2 = {:#x}", le2);
     /// #[cfg(target_endian = "little")]
     /// {
     ///     assert_eq!(le1.to_string_with_radix(16).unwrap(), "70895B6A3D4C1F2EEEFFCCDDAABB99007788556633441122CDEF90AB56781234");
@@ -1868,6 +2074,13 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     assert_eq!(le1.to_string_with_radix(16).unwrap(), "1234567890ABCDEF11223344556677889900AABBCCDDEEFF1F2E3D4C5B6A7089");
     ///     assert_eq!(le2.to_string_with_radix(16).unwrap(), "34127856AB90EFCD22114433665588770099BBAADDCCFFEE2E1F4C3D6A5B8970");
     /// }
+    /// assert_eq!(le2.is_overflow(), false);
+    /// assert_eq!(le2.is_underflow(), false);
+    /// assert_eq!(le2.is_infinity(), false);
+    /// assert_eq!(le2.is_divided_by_zero(), false);
+    /// assert_eq!(le2.is_undefined(), false);
+    /// assert_eq!(le2.is_left_carry(), false);
+    /// assert_eq!(le2.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn from_le(le: Self) -> Self
@@ -1893,11 +2106,18 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let le = U256::from_le_bytes(le_array.clone());
     /// print!("le_array = ");
     /// for elem in le_array
-    ///     { print!("0x{:8x} ", elem); }
+    ///     { print!("{:#8x} ", elem); }
     /// println!();
-    /// println!("le = 0x{}", le.to_string_with_radix_and_stride_and_delimiter(16, 8, " 0x").unwrap());
+    /// println!("le = {#x}", le);
     /// #[cfg(target_endian = "little")]    assert_eq!(le.to_string_with_radix_and_stride(16, 8).unwrap(), "5B6A7089_1F2E3D4C_CCDDEEFF_9900AABB_55667788_11223344_90ABCDEF_12345678");
     /// #[cfg(target_endian = "big")]       assert_eq!(le.to_string_with_radix(16).unwrap(), "12345678_90ABCDEF_11223344_55667788_9900AABB_CCDDEEFF_1F2E3D4C_5B6A7089");
+    /// assert_eq!(le.is_overflow(), false);
+    /// assert_eq!(le.is_underflow(), false);
+    /// assert_eq!(le.is_infinity(), false);
+    /// assert_eq!(le.is_divided_by_zero(), false);
+    /// assert_eq!(le.is_undefined(), false);
+    /// assert_eq!(le.is_left_carry(), false);
+    /// assert_eq!(le.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn from_le_bytes(le_bytes: [T; N]) -> Self
@@ -1917,8 +2137,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// # Output
     /// The constructed object will be wrapped in `Ok(BigUInt<T, N>)` if it is
     /// successfully created. Otherwise, this method returns one of
-    /// `Err(NumberErr::NotAlphaNumeric)`, and `Err(NumberErr::NotFitToRadix)`
-    /// according to its failure reason.
+    /// `Err(NumberErr::NotAlphaNumeric)`, `Err(NumberErr::NotFitToRadix)`,
+    /// and `Err(NumberErr::TooBigNumber)` according to its failure reason.
     /// 
     /// # Delimiter _
     /// In the number expression in a string, you can separate the digits with
@@ -1929,7 +2149,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// | priority | argument | value                                           | Caused Error                 |
     /// |----------|----------|-------------------------------------------------|------------------------------|
     /// | 1st      | `txt`    | contains any non-alphanumeric letter except '_' | `NumberErr::NotAlphaNumeric` |
-    /// | 2nd      | `txt`    | contains any alphabet                           | `NumberErr::NotFitToRadix`   |
+    /// | 2nd      | `txt`    | contains any letter other than number           | `NumberErr::NotFitToRadix`   |
     /// | 3rd      | `txt`    | expresses bigger number than maximum value      | `NumberErr::TooBigNumber`    |
     /// 
     /// When multiple errors were caused, only the error with higher priority is
@@ -1937,7 +2157,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 1 for correct case
     /// ```
-    /// use std::fmt::Write as _;
     /// use cryptocol::number::NumberErr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -1946,24 +2165,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// match a_correct
     /// {
     ///     Ok(n) => {
-    ///             println!("a_correct = {}", n);
-    ///             assert_eq!(n.to_string(), "1234567890123456789012345678901234567890123456789012345678901234567890");
-    ///         },
-    ///     Err(e) => {
-    ///             match e
-    ///             {
-    ///                 NumberErr::NotAlphaNumeric =>  { println!("Failed: Not alphanumeric!") },
-    ///                 NumberErr::NotFitToRadix =>    { println!("Failed: Not decimal number!") },
-    ///                 NumberErr::TooBigNumber =>     { println!("Failed: Too big number!") },
-    ///                 _ => {},
-    ///             }
-    ///         },
+    ///         println!("a_correct = {}", n);
+    ///         assert_eq!(n.to_string(), "1234567890123456789012345678901234567890123456789012345678901234567890");
+    ///         assert_eq!(n.is_overflow(), false);
+    ///         assert_eq!(n.is_underflow(), false);
+    ///         assert_eq!(n.is_infinity(), false);
+    ///         assert_eq!(n.is_divided_by_zero(), false);
+    ///         assert_eq!(n.is_undefined(), false);
+    ///         assert_eq!(n.is_left_carry(), false);
+    ///         assert_eq!(n.is_right_carry(), false);
+    ///     },
+    ///     Err(e) => { println!("Failed: {}", e); },
     /// }
     /// ```
     /// 
     /// # Example 2 for NumberErr::NotAlphaNumeric case
     /// ```
-    /// use std::fmt::Write as _;
     /// use cryptocol::number::NumberErr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -1973,25 +2190,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// {
     ///     Ok(n) =>  { println!("a_correct = {}", n); },
     ///     Err(e) => {
-    ///         match e
-    ///         {
-    ///             NumberErr::NotAlphaNumeric => {
-    ///                     println!("Failed: Not alphanumeric!");
-    ///                     let mut txt = String::new();
-    ///                     write!(&mut txt, "{:?}", b_contains_non_alphanumeric).unwrap();
-    ///                     assert_eq!(txt, "Err(NotAlphaNumeric)");
-    ///                 },
-    ///             NumberErr::NotFitToRadix =>    { println!("Failed: Not decimal number!"); },
-    ///             NumberErr::TooBigNumber =>     { println!("Failed: Too big number!"); },
-    ///             _ => {},
-    ///         }
+    ///         println!("Failed: {}", e);
+    ///         assert_eq!(e, NumberErr::NotAlphaNumeric);
     ///     },
     /// }
     /// ```
     /// 
     /// # Example 3 for NumberErr::NotFitToRadix case
     /// ```
-    /// use std::fmt::Write as _;
     /// use cryptocol::number::NumberErr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -2001,25 +2207,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// {
     ///     Ok(n) =>  { println!("c_constains_not_fit_to_radix = {}", n); },
     ///     Err(e) => {
-    ///         match e
-    ///         {
-    ///             NumberErr::NotAlphaNumeric =>  { println!("Failed: Not alphanumeric!"); },
-    ///             NumberErr::NotFitToRadix => {
-    ///                     println!("Failed: Not decimal number!");
-    ///                     let mut txt = String::new();
-    ///                     write!(&mut txt, "{:?}", c_constains_not_fit_to_radix).unwrap();
-    ///                     assert_eq!(txt, "Err(NotFitToRadix)");
-    ///                 },
-    ///                 NumberErr::TooBigNumber =>     { println!("Failed: Too big number!"); },
-    ///             _ => {},
-    ///         }
+    ///         println!("Failed: {}", e);
+    ///         assert_eq!(e, NumberErr::NotFitToRadix);
     ///     },
     /// }
     /// ```
     /// 
     /// # Example 4 for NumberErr::TooBigNumber case
     /// ```
-    /// use std::fmt::Write as _;
     /// use cryptocol::number::NumberErr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -2027,27 +2222,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// let d_constains_too_big_number = U256::from_string("1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890_1234567890");
     /// match d_constains_too_big_number
     /// {
-    ///     Ok(n) =>  { println!("d_constains_too_big_number = {}", n); },
+    ///     Ok(n) =>  { println!("c_constains_too_big_number = {}", n); },
     ///     Err(e) => {
-    ///         match e
-    ///         {
-    ///             NumberErr::NotAlphaNumeric =>  { println!("Failed: Not alphanumeric!"); },
-    ///             NumberErr::NotFitToRadix =>    { println!("Failed: Not decimal number!"); },
-    ///             NumberErr::TooBigNumber => {
-    ///                     println!("Failed: Too big number!");
-    ///                     let mut txt = String::new();
-    ///                     write!(&mut txt, "{:?}", d_constains_too_big_number).unwrap();
-    ///                     assert_eq!(txt, "Err(TooBigNumber)");
-    ///                 },
-    ///             _ => {},
-    ///         }
+    ///         println!("Failed: {}", e);
+    ///         assert_eq!(e, NumberErr::TooBigNumber);
     ///     },
     /// }
     /// ```
     /// 
     /// # Example 5 for NumberErr::NotAlphaNumeric and NumberErr::NotFitToRadix case
     /// ```
-    /// use std::fmt::Write as _;
     /// use cryptocol::number::NumberErr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -2057,18 +2241,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// {
     ///     Ok(n) =>  { println!("e_contains_non_alphanumeric_not_fit_to_radix = {}", n); },
     ///     Err(e) => {
-    ///         match e
-    ///         {
-    ///             NumberErr::NotAlphaNumeric => {
-    ///                     println!("Failed: Not alphanumeric!");
-    ///                     let mut txt = String::new();
-    ///                     write!(&mut txt, "{:?}", e_contains_non_alphanumeric_not_fit_to_radix).unwrap();
-    ///                     assert_eq!(txt, "Err(NotAlphaNumeric)");
-    ///                 },
-    ///             NumberErr::NotFitToRadix =>    { println!("Failed: Not decimal number!"); },
-    ///             NumberErr::TooBigNumber =>     { println!("Failed: Too big number!"); },
-    ///             _ => {},
-    ///         }
+    ///         println!("Failed: {}", e);
+    ///         assert_eq!(e, NumberErr::NotFitToRadix); // The first letter is 'F'.
     ///     },
     /// }
     /// ```
@@ -2142,7 +2316,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// # Example 1 for correct case
     /// ```
-    /// use std::fmt::Write as _;
     /// use cryptocol::number::NumberErr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -2151,24 +2324,22 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// match a_correct
     /// {
     ///     Ok(n) => {
-    ///             println!("a_correct = {}", n);
-    ///             assert_eq!(n.to_string_with_radix_and_stride(16, 4).unwrap(), "1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0");
-    ///         },
-    ///     Err(e) => {
-    ///             match e
-    ///             {
-    ///                 NumberErr::OutOfValidRadixRange =>  { println!("Failed: Out of Valid Radix Range!") },
-    ///                 NumberErr::NotAlphaNumeric =>       { println!("Failed: Not alphanumeric!") },
-    ///                 NumberErr::NotFitToRadix =>         { println!("Failed: Not decimal number!") },
-    ///                 NumberErr::TooBigNumber =>          { println!("Failed: Too big number!") },
-    ///             }
-    ///         },
+    ///         println!("a_correct = {}", n);
+    ///         assert_eq!(n.to_string_with_radix_and_stride(16, 4).unwrap(), "1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0_1234_5678_9ABC_DEF0");
+    ///         assert_eq!(n.is_overflow(), false);
+    ///         assert_eq!(n.is_underflow(), false);
+    ///         assert_eq!(n.is_infinity(), false);
+    ///         assert_eq!(n.is_divided_by_zero(), false);
+    ///         assert_eq!(n.is_undefined(), false);
+    ///         assert_eq!(n.is_left_carry(), false);
+    ///         assert_eq!(n.is_right_carry(), false);
+    ///     },
+    ///     Err(e) => { println!("Failed: {}", e); },
     /// }
     /// ```
     /// 
     /// # Example 2 for NumberErr::OutOfValidRadixRange case
     /// ```
-    /// use std::fmt::Write as _;
     /// use cryptocol::number::NumberErr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -2178,25 +2349,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// {
     ///     Ok(n) =>  { println!("a_correct = {}", n); },
     ///     Err(e) => {
-    ///         match e
-    ///         {
-    ///             NumberErr::OutOfValidRadixRange => {
-    ///                     println!("Failed: Out of Valid Radix Range!");
-    ///                     let mut txt = String::new();
-    ///                     write!(&mut txt, "{:?}", b_contains_out_of_valid_radix_range).unwrap();
-    ///                     assert_eq!(txt, "Err(OutOfValidRadixRange)");
-    ///                 },
-    ///             NumberErr::NotAlphaNumeric =>   { println!("Failed: Not alphanumeric!"); },
-    ///             NumberErr::NotFitToRadix =>     { println!("Failed: Not decimal number!"); },
-    ///             NumberErr::TooBigNumber =>      { println!("Failed: Too big number!"); },
-    ///         }
+    ///         println!("Failed: {}", e);
+    ///         assert_eq!(e, NumberErr::OutOfValidRadixRange);
     ///     },
     /// }
     /// ```
     /// 
     /// # Example 3 for NumberErr::NotAlphaNumeric case
     /// ```
-    /// use std::fmt::Write as _;
     /// use cryptocol::number::NumberErr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -2206,25 +2366,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// {
     ///     Ok(n) =>  { println!("a_correct = {}", n); },
     ///     Err(e) => {
-    ///         match e
-    ///         {
-    ///             NumberErr::OutOfValidRadixRange => { println!("Failed: Out of Valid Radix Range!") },
-    ///             NumberErr::NotAlphaNumeric => {
-    ///                     println!("Failed: Not alphanumeric!");
-    ///                     let mut txt = String::new();
-    ///                     write!(&mut txt, "{:?}", c_contains_non_alphanumeric).unwrap();
-    ///                     assert_eq!(txt, "Err(NotAlphaNumeric)");
-    ///                 },
-    ///             NumberErr::NotFitToRadix => { println!("Failed: Not decimal number!"); },
-    ///             NumberErr::TooBigNumber =>  { println!("Failed: Too big number!"); },
-    ///         }
+    ///         println!("Failed: {}", e);
+    ///         assert_eq!(e, NumberErr::NotAlphaNumeric);
     ///     },
     /// }
     /// ```
     /// 
     /// # Example 4 for NumberErr::NotFitToRadix case
     /// ```
-    /// use std::fmt::Write as _;
     /// use cryptocol::number::NumberErr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -2234,25 +2383,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// {
     ///     Ok(n) =>  { println!("d_constains_not_fit_to_radix = {}", n); },
     ///     Err(e) => {
-    ///         match e
-    ///         {
-    ///             NumberErr::OutOfValidRadixRange =>  { println!("Failed: Out of Valid Radix Range!") },
-    ///             NumberErr::NotAlphaNumeric =>       { println!("Failed: Not alphanumeric!"); },
-    ///             NumberErr::NotFitToRadix => {
-    ///                     println!("Failed: Not hexadecimal number!");
-    ///                     let mut txt = String::new();
-    ///                     write!(&mut txt, "{:?}", d_constains_not_fit_to_radix).unwrap();
-    ///                     assert_eq!(txt, "Err(NotFitToRadix)");
-    ///                 },
-    ///                 NumberErr::TooBigNumber =>     { println!("Failed: Too big number!"); },
-    ///         }
+    ///         println!("Failed: {}", e);
+    ///         assert_eq!(e, NumberErr::NotFitToRadix);
     ///     },
     /// }
     /// ```
     /// 
     /// # Example 5 for NumberErr::TooBigNumber case
     /// ```
-    /// use std::fmt::Write as _;
     /// use cryptocol::number::NumberErr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -2262,25 +2400,14 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// {
     ///     Ok(n) =>  { println!("c_constains_too_big_number = {}", n); },
     ///     Err(e) => {
-    ///         match e
-    ///         {
-    ///             NumberErr::OutOfValidRadixRange =>  { println!("Failed: Out of Valid Radix Range!") },
-    ///             NumberErr::NotAlphaNumeric =>       { println!("Failed: Not alphanumeric!"); },
-    ///             NumberErr::NotFitToRadix =>         { println!("Failed: Not decimal number!"); },
-    ///             NumberErr::TooBigNumber => {
-    ///                     println!("Failed: Too big number!");
-    ///                     let mut txt = String::new();
-    ///                     write!(&mut txt, "{:?}", e_constains_too_big_number).unwrap();
-    ///                     assert_eq!(txt, "Err(TooBigNumber)");
-    ///                 },
-    ///         }
+    ///         println!("Failed: {}", e);
+    ///         assert_eq!(e, NumberErr::TooBigNumber);
     ///     },
     /// }
     /// ```
     /// 
     /// # Example 6 for NumberErr::NotAlphaNumeric, NumberErr::NotFitToRadix, and NumberErr::TooBigNumber case
     /// ```
-    /// use std::fmt::Write as _;
     /// use cryptocol::number::NumberErr;
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u64);
@@ -2290,18 +2417,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// {
     ///     Ok(n) =>  { println!("f_contains_non_alphanumeric_not_fit_to_radix = {}", n); },
     ///     Err(e) => {
-    ///         match e
-    ///         {
-    ///             NumberErr::OutOfValidRadixRange =>  { println!("Failed: Out of Valid Radix Range!") },
-    ///             NumberErr::NotAlphaNumeric => {
-    ///                     println!("Failed: Not alphanumeric!");
-    ///                     let mut txt = String::new();
-    ///                     write!(&mut txt, "{:?}", f_contains_non_alphanumeric_not_fit_to_radix).unwrap();
-    ///                     assert_eq!(txt, "Err(NotAlphaNumeric)");
-    ///                 },
-    ///             NumberErr::NotFitToRadix =>    { println!("Failed: Not decimal number!"); },
-    ///             NumberErr::TooBigNumber =>     { println!("Failed: Too big number!"); },
-    ///         }
+    ///         println!("Failed: {}", e);
+    ///         assert_eq!(e, NumberErr::NotAlphaNumeric);
     ///     },
     /// }
     /// ```
@@ -2376,26 +2493,68 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// (Least Significant Bit) reguardless endian. So, if the bit_pos is `0`,
     /// only LSB is set to be `1` and all the other bits will be set to `0`.
     /// 
-    /// # Example
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with_u32;
     /// define_utypes_with_u32!();
     /// 
     /// let a_0 = U256::generate_check_bits(0).unwrap();
-    /// println!("a_0 = {}", a_0.to_string_with_radix_and_stride(2, 10).unwrap());
+    /// println!("a_0 = {:#b}", a_0);
     /// assert_eq!(a_0.to_string_with_radix_and_stride(2, 10).unwrap(), "1");
+    /// assert_eq!(a_0.is_overflow(), false);
+    /// assert_eq!(a_0.is_underflow(), false);
+    /// assert_eq!(a_0.is_infinity(), false);
+    /// assert_eq!(a_0.is_divided_by_zero(), false);
+    /// assert_eq!(a_0.is_undefined(), false);
+    /// assert_eq!(a_0.is_left_carry(), false);
+    /// assert_eq!(a_0.is_right_carry(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with_u32;
+    /// define_utypes_with_u32!();
     /// 
     /// let a_12 = U256::generate_check_bits(12).unwrap();
-    /// println!("a_12 = {}", a_12.to_string_with_radix_and_stride(2, 10).unwrap());
+    /// println!("a_12 = {:#b}", a_12);
     /// assert_eq!(a_12.to_string_with_radix_and_stride(2, 10).unwrap(), "100_0000000000");
+    /// assert_eq!(a_12.is_overflow(), false);
+    /// assert_eq!(a_12.is_underflow(), false);
+    /// assert_eq!(a_12.is_infinity(), false);
+    /// assert_eq!(a_12.is_divided_by_zero(), false);
+    /// assert_eq!(a_12.is_undefined(), false);
+    /// assert_eq!(a_12.is_left_carry(), false);
+    /// assert_eq!(a_12.is_right_carry(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with_u32;
+    /// define_utypes_with_u32!();
     /// 
     /// let a_255 = U256::generate_check_bits(255).unwrap();
-    /// println!("a_255 = {}", a_255.to_string_with_radix_and_stride(2, 10).unwrap());
+    /// println!("a_255 = {:#b}", a_255);
     /// assert_eq!(a_255.to_string_with_radix_and_stride(2, 10).unwrap(), "100000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000");
+    /// assert_eq!(a_255.is_overflow(), false);
+    /// assert_eq!(a_255.is_underflow(), false);
+    /// assert_eq!(a_255.is_infinity(), false);
+    /// assert_eq!(a_255.is_divided_by_zero(), false);
+    /// assert_eq!(a_255.is_undefined(), false);
+    /// assert_eq!(a_255.is_left_carry(), false);
+    /// assert_eq!(a_255.is_right_carry(), false);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use cryptocol::define_utypes_with_u32;
+    /// define_utypes_with_u32!();
     /// 
     /// let a_256 = U256::generate_check_bits(256);
-    /// println!("a_256 = {:?}", a_256);
-    /// assert_eq!(a_256, None);
+    /// match a_256
+    /// {
+    ///     Some(n) => { println!("a_256 = {:#b}", n); },
+    ///     None => { assert_eq!(a_256, None); },
+    /// }
     /// ```
     /// 
     /// # Big-endian issue
@@ -2435,8 +2594,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with_u32!();
     /// 
     /// let a_0 = U256::generate_check_bits_(0);
-    /// println!("a_0 = {}", a_0.to_string_with_radix_and_stride(2, 10).unwrap());
+    /// println!("a_0 = {:#b}", a_0);
     /// assert_eq!(a_0.to_string_with_radix_and_stride(2, 10).unwrap(), "1");
+    /// assert_eq!(a_0.is_overflow(), false);
+    /// assert_eq!(a_0.is_underflow(), false);
+    /// assert_eq!(a_0.is_infinity(), false);
+    /// assert_eq!(a_0.is_divided_by_zero(), false);
+    /// assert_eq!(a_0.is_undefined(), false);
+    /// assert_eq!(a_0.is_left_carry(), false);
+    /// assert_eq!(a_0.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 2
@@ -2445,8 +2611,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with_u32!();
     /// 
     /// let a_12 = U256::generate_check_bits_(12);
-    /// println!("a_12 = {}", a_12.to_string_with_radix_and_stride(2, 10).unwrap());
+    /// println!("a_12 = {:#b}", a_12);
     /// assert_eq!(a_12.to_string_with_radix_and_stride(2, 10).unwrap(), "100_0000000000");
+    /// assert_eq!(a_12.is_overflow(), false);
+    /// assert_eq!(a_12.is_underflow(), false);
+    /// assert_eq!(a_12.is_infinity(), false);
+    /// assert_eq!(a_12.is_divided_by_zero(), false);
+    /// assert_eq!(a_12.is_undefined(), false);
+    /// assert_eq!(a_12.is_left_carry(), false);
+    /// assert_eq!(a_12.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 3
@@ -2455,8 +2628,15 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with_u32!();
     /// 
     /// let a_255 = U256::generate_check_bits_(255);
-    /// println!("a_255 = {}", a_255.to_string_with_radix_and_stride(2, 10).unwrap());
+    /// println!("a_255 = {:#b}", a_255);
     /// assert_eq!(a_255.to_string_with_radix_and_stride(2, 10).unwrap(), "100000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000_0000000000");
+    /// assert_eq!(a_255.is_overflow(), false);
+    /// assert_eq!(a_255.is_underflow(), false);
+    /// assert_eq!(a_255.is_infinity(), false);
+    /// assert_eq!(a_255.is_divided_by_zero(), false);
+    /// assert_eq!(a_255.is_undefined(), false);
+    /// assert_eq!(a_255.is_left_carry(), false);
+    /// assert_eq!(a_255.is_right_carry(), false);
     /// ```
     /// 
     /// # Panic Examples
@@ -2583,6 +2763,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
 
     /***** METHODS TO GET, SET, AND CHECK *****/
 
+//================================
     // pub fn turn_check_bits(&mut self, bit_pos: usize)
     /// Changes a `BigUInt<T, N>` to have the value zero and sets only
     /// the bit specified by the argument `bit_pos` to be 1.
@@ -7805,6 +7986,260 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         self.set_all_flags(flags);
     }
 
+    // pub fn safe_add_uint<U>(&self, rhs: U) -> Self
+    /// Calculates `self` + `rhs`,
+    /// and returns an addition result `self` + `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If overflow happened, it will panic in debug mode.
+    /// 
+    /// # Output
+    /// It returns `self` + `rhs`.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) addition in release mode.
+    /// - If overflow happened, the flag `OVERFLOW` of the return value
+    ///   will be set in release mode, but it will panic in debug mode.
+    /// - This method works as if it was wrapping_add_uint() in release mode.
+    /// - This method works as if it was unchecked_add_uint() in debug mode.
+    /// 
+    /// # Why does this method work differently between release mode and debug mode?
+    /// If you want to make sure that the addition does not cause overflow
+    /// at all, you may want to use this method. When you test your code that
+    /// uses this method in debug mode, this method will cause panic if overflow
+    /// happens with this method. It will help you find the bug in your code.
+    /// After you fix all the bugs you found, all the overflow checking code
+    /// which may be unnecessary now and only slow down your code will be
+    /// removed from your code in release mode.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger tham `u128`, the method
+    /// [safe_add()](struct@BigUInt#method.safe_add)
+    /// is proper rather than this method.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U512::max().safe_sub_uint(1_u8);
+    /// let res = a_biguint.safe_add_uint(1_u8);
+    /// println!("{} + 1 = {}", a_biguint, res);
+    /// assert_eq!(res.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// #[cfg(not(debug_assertions))]
+    /// {
+    ///     let a_biguint = U512::max().safe_sub_uint(1_u8);
+    ///     let res = a_biguint.safe_add_uint(2_u8);
+    ///     println!("{} + 2 = {}", a_biguint, res);
+    ///     assert_eq!(res.to_string(), "0");
+    ///     assert_eq!(res.is_overflow(), true);
+    ///     assert_eq!(res.is_underflow(), false);
+    ///     assert_eq!(res.is_divided_by_zero(), false);
+    ///     assert_eq!(res.is_infinity(), false);
+    ///     assert_eq!(res.is_undefined(), false);
+    ///     assert_eq!(res.is_left_carry(), false);
+    ///     assert_eq!(res.is_right_carry(), false);
+    /// }
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// #[cfg(not(debug_assertions))]
+    /// {
+    ///     let a_biguint = U512::max().safe_sub_uint(1_u8);
+    ///     let res = a_biguint.safe_add_uint(3_u8);
+    ///     println!("{} + 3 = {}", a_biguint, res);
+    ///     assert_eq!(res.to_string(), "1");
+    ///     assert_eq!(res.is_overflow(), true);
+    ///     assert_eq!(res.is_underflow(), false);
+    ///     assert_eq!(res.is_divided_by_zero(), false);
+    ///     assert_eq!(res.is_infinity(), false);
+    ///     assert_eq!(res.is_undefined(), false);
+    ///     assert_eq!(res.is_left_carry(), false);
+    ///     assert_eq!(res.is_right_carry(), false);
+    /// }
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```should_panic
+    /// #[cfg(debug_assertions)]
+    /// {
+    ///     use cryptocol::define_utypes_with;
+    ///     define_utypes_with!(u128);
+    /// 
+    ///     let _a_biguint = U512::max().wrapping_sub_uint(1_u8);
+    ///     let _res = _a_biguint.safe_add_uint(2_u8);
+    ///     let _res = _a_biguint.safe_add_uint(3_u8);
+    /// }
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn safe_add_uint<U>(&self, rhs: U) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        safe_calc!(self, Self::wrapping_add_uint, Self::unchecked_add_uint, rhs);
+    }
+
+    // pub fn safe_add_assign_uint<U>(&mut self, rhs: U)
+    /// Calculates `self` + `rhs`,
+    /// and assigns an addition result `self` + `rhs` back to `self`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If overflow happened, it will panic in debug mode.
+    /// 
+    /// # Output
+    /// It returns `self` + `rhs`.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) addition in release mode.
+    /// - If overflow happened, the flag `OVERFLOW` of `self`
+    ///   will be set in release mode, but it will panic in debug mode.
+    /// - This method works as if it was wrapping_add_assign_uint()
+    ///   in release mode.
+    /// - This method works as if it was *self = unchecked_add_uint()
+    ///   in debug mode.
+    /// 
+    /// # Why does this method work differently between release mode and debug mode?
+    /// If you want to make sure that the addition does not cause overflow
+    /// at all, you may want to use this method. When you test your code that
+    /// uses this method in debug mode, this method will cause panic if overflow
+    /// happens with this method. It will help you find the bug in your code.
+    /// After you fix all the bugs you found, all the overflow checking code
+    /// which may be unnecessary now and only slow down your code will be
+    /// removed from your code in release mode.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger tham `u128`, the method
+    /// [safe_add_assign()](struct@BigUInt#method.safe_add_assign)
+    /// is proper rather than this method.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = UU64::max().safe_sub_uint(1_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
+    /// 
+    /// a_biguint.safe_add_assign_uint(1_u8);
+    /// println!("After a_biguint.safe_add_assign_uint(1_u8), a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint, UU64::max());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// #[cfg(not(debug_assertions))]
+    /// {
+    ///     a_biguint.safe_add_assign_uint(1_u8);
+    ///     println!("After a_biguint.safe_add_assign_uint(1_u8), a_biguint = {}", a_biguint);
+    ///     assert_eq!(a_biguint.to_string(), "0");
+    ///     assert_eq!(a_biguint.is_overflow(), true);
+    ///     assert_eq!(a_biguint.is_underflow(), false);
+    ///     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    ///     assert_eq!(a_biguint.is_infinity(), false);
+    ///     assert_eq!(a_biguint.is_undefined(), false);
+    ///     assert_eq!(a_biguint.is_left_carry(), false);
+    ///     assert_eq!(a_biguint.is_right_carry(), false);
+    /// 
+    ///     a_biguint.safe_add_assign_uint(1_u8);
+    ///     println!("After a_biguint.safe_add_assign_uint(1_u8), a_biguint = {}", a_biguint);
+    ///     assert_eq!(a_biguint.to_string(), "1");
+    ///     assert_eq!(a_biguint.is_overflow(), true);
+    ///     assert_eq!(a_biguint.is_underflow(), false);
+    ///     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    ///     assert_eq!(a_biguint.is_infinity(), false);
+    ///     assert_eq!(a_biguint.is_undefined(), false);
+    ///     assert_eq!(a_biguint.is_left_carry(), false);
+    ///     assert_eq!(a_biguint.is_right_carry(), false);
+    /// }
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```should_panic
+    /// #[cfg(debug_assertions)]
+    /// {
+    ///     use cryptocol::define_utypes_with;
+    ///     define_utypes_with!(u8);
+    /// 
+    ///     let mut _a_biguint = U512::max();
+    ///     _a_biguint.safe_add_assign_uint(1_u8);
+    ///     _a_biguint.safe_add_assign_uint(1_u8);
+    /// }
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn safe_add_assign_uint<U>(&mut self, rhs: U)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        safe_calc_assign!(self, Self::wrapping_add_assign_uint, Self::overflowing_add_assign_uint, rhs);
+    }
 
     /*** Subtraction ***/
 
@@ -7982,7 +8417,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///   is not changed even if this current operation does not cause underflow.
     /// 
     /// # Counterpart Method
-    /// If `rhs` is bigger tham `ui128`, the method
+    /// If `rhs` is bigger than `ui128`, the method
     /// [borrowing_sub_assign()](struct@BigUInt#method.borrowing_sub_assign)
     /// is proper rather than this method.
     /// 
@@ -10522,6 +10957,300 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             else
                 { self.wrapping_sub_uint(t_other) }
         }
+    }
+
+    // pub fn safe_sub_uint<U>(&self, rhs: U) -> Self
+    /// Calculates `self` - `rhs`,
+    /// and returns an subtraction result `self` - `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be subtracted from `self`, and primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If underflow happened, it will panic in debug mode.
+    /// 
+    /// # Output
+    /// It returns `self` - `rhs`.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) subtraction in release mode.
+    /// - If underflow happened, the flag `UNDERFLOW` of `self`
+    ///   will be set in release mode, but it will panic in debug mode.
+    /// - This method works as if it was wrapping_sub_uint()
+    ///   in release mode.
+    /// - This method works as if it was *self = unchecked_sub_uint()
+    ///   in debug mode.
+    /// 
+    /// # Why does this method work differently between release mode and debug mode?
+    /// If you want to make sure that the subtraction does not cause underflow
+    /// at all, you may want to use this method. When you test your code that
+    /// uses this method in debug mode, this method will cause panic if underflow
+    /// happens with this method. It will help you find the bug in your code.
+    /// After you fix all the bugs you found, all the underflow checking code
+    /// which may be unnecessary now and only slow down your code will be
+    /// removed from your code in release mode.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger tham `u128`, the method
+    /// [safe_sub()](struct@BigUInt#method.safe_sub)
+    /// is proper rather than this method.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U512::one();
+    /// let res = a_biguint.safe_sub_uint(1_u8);
+    /// println!("{} - 1 = {}", a_biguint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// #[cfg(not(debug_assertions))]
+    /// {
+    ///     let a_biguint = U512::one();
+    ///     let res = a_biguint.safe_sub_uint(2_u8);
+    ///     println!("{} - 2 = {}", a_biguint, res);
+    ///     assert_eq!(res.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    ///     assert_eq!(res.is_underflow(), true);
+    ///     assert_eq!(res.is_overflow(), false);
+    ///     assert_eq!(res.is_divided_by_zero(), false);
+    ///     assert_eq!(res.is_infinity(), false);
+    ///     assert_eq!(res.is_undefined(), false);
+    ///     assert_eq!(res.is_left_carry(), false);
+    ///     assert_eq!(res.is_right_carry(), false);
+    /// 
+    ///     let a_biguint = U512::one();
+    ///     let res = a_biguint.safe_sub_uint(3_u8);
+    ///     println!("{} - 3 = {}", a_biguint, res);
+    ///     assert_eq!(res.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    ///     assert_eq!(res.is_underflow(), true);
+    ///     assert_eq!(res.is_overflow(), false);
+    ///     assert_eq!(res.is_divided_by_zero(), false);
+    ///     assert_eq!(res.is_infinity(), false);
+    ///     assert_eq!(res.is_undefined(), false);
+    ///     assert_eq!(res.is_left_carry(), false);
+    ///     assert_eq!(res.is_right_carry(), false);
+    /// }
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// #[cfg(not(debug_assertions))]
+    /// {
+    ///     use cryptocol::define_utypes_with;
+    ///     define_utypes_with!(u8);
+    /// 
+    ///     let _a_biguint = U512::one();
+    ///     let _res = _a_biguint.safe_sub_uint(2_u8);
+    /// 
+    ///     let _a_biguint = U512::one();
+    ///     let _res = _a_biguint.safe_sub_uint(3_u8);
+    /// }
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn safe_sub_uint<U>(&self, rhs: U) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        safe_calc!(self, Self::wrapping_sub_uint, Self::unchecked_sub_uint, rhs);
+    }
+
+    // pub fn safe_sub_assign_uint<U>(&mut self, rhs: U)
+    /// Calculates `self` - `rhs`,
+    /// and assigns an subtraction result `self` - `rhs` back to `self`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be subtracted from `self`, and primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If underflow happened, it will panic in debug mode.
+    /// 
+    /// # Output
+    /// It returns `self` - `rhs`.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) subtraction in release mode.
+    /// - If underflow happened, the flag `UNDERFLOW` of `self`
+    ///   will be set in release mode, but it will panic in debug mode.
+    /// - This method works as if it was wrapping_sub_assign_uint()
+    ///   in release mode.
+    /// - This method works as if it was *self = unchecked_sub_uint()
+    ///   in debug mode.
+    /// 
+    /// # Why does this method work differently between release mode and debug mode?
+    /// If you want to make sure that the subtraction does not cause underflow
+    /// at all, you may want to use this method. When you test your code that
+    /// uses this method in debug mode, this method will cause panic if underflow
+    /// happens with this method. It will help you find the bug in your code.
+    /// After you fix all the bugs you found, all the underflow checking code
+    /// which may be unnecessary now and only slow down your code will be
+    /// removed from your code in release mode.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger tham `u128`, the method
+    /// [safe_sub_assign()](struct@BigUInt#method.safe_sub_assign)
+    /// is proper rather than this method.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let mut a_biguint = UU64::one();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
+    /// 
+    /// a_biguint.safe_sub_assign_uint(1_u8);
+    /// println!("After a_biguint.safe_sub_assign_uint(1_u8), a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// #[cfg(not(debug_assertions))]
+    /// {
+    ///     let mut a_biguint = UU64::one();
+    ///     println!("Originally, a_biguint = {}", a_biguint);
+    ///     assert_eq!(a_biguint.to_string(), "1");
+    ///     assert_eq!(a_biguint.is_overflow(), false);
+    ///     assert_eq!(a_biguint.is_underflow(), false);
+    ///     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    ///     assert_eq!(a_biguint.is_infinity(), false);
+    ///     assert_eq!(a_biguint.is_undefined(), false);
+    ///     assert_eq!(a_biguint.is_left_carry(), false);
+    ///     assert_eq!(a_biguint.is_right_carry(), false);
+    /// 
+    ///     a_biguint.safe_sub_assign_uint(2_u8);
+    ///     println!("After a_biguint.safe_sub_assign_uint(2_u8), a_biguint = {}", a_biguint);
+    ///     assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    ///     assert_eq!(a_biguint.is_underflow(), true);
+    ///     assert_eq!(a_biguint.is_overflow(), false);
+    ///     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    ///     assert_eq!(a_biguint.is_infinity(), false);
+    ///     assert_eq!(a_biguint.is_undefined(), false);
+    ///     assert_eq!(a_biguint.is_left_carry(), false);
+    ///     assert_eq!(a_biguint.is_right_carry(), false);
+    /// }
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// #[cfg(not(debug_assertions))]
+    /// {
+    ///     let mut a_biguint = UU64::one();
+    ///     println!("Originally, a_biguint = {}", a_biguint);
+    ///     assert_eq!(a_biguint.to_string(), "1");
+    ///     assert_eq!(a_biguint.is_underflow(), false);
+    ///     assert_eq!(a_biguint.is_overflow(), false);
+    ///     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    ///     assert_eq!(a_biguint.is_infinity(), false);
+    ///     assert_eq!(a_biguint.is_undefined(), false);
+    ///     assert_eq!(a_biguint.is_left_carry(), false);
+    ///     assert_eq!(a_biguint.is_right_carry(), false);
+    /// 
+    ///     a_biguint.safe_sub_assign_uint(3_u8);
+    ///     println!("After a_biguint.safe_sub_assign_uint(3_u8), a_biguint = {}", a_biguint);
+    ///     assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    ///     assert_eq!(a_biguint.is_underflow(), true);
+    ///     assert_eq!(a_biguint.is_overflow(), false);
+    ///     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    ///     assert_eq!(a_biguint.is_infinity(), false);
+    ///     assert_eq!(a_biguint.is_undefined(), false);
+    ///     assert_eq!(a_biguint.is_left_carry(), false);
+    ///     assert_eq!(a_biguint.is_right_carry(), false);
+    /// 
+    ///     a_biguint.safe_sub_assign_uint(1_u8);
+    ///     println!("After a_biguint.safe_sub_assign_uint(1_u8), a_biguint = {}", a_biguint);
+    ///     assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084093");
+    ///     assert_eq!(a_biguint.is_underflow(), true);
+    ///     assert_eq!(a_biguint.is_overflow(), false);
+    ///     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    ///     assert_eq!(a_biguint.is_infinity(), false);
+    ///     assert_eq!(a_biguint.is_undefined(), false);
+    ///     assert_eq!(a_biguint.is_left_carry(), false);
+    ///     assert_eq!(a_biguint.is_right_carry(), false);
+    /// }
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```should_panic
+    /// #[cfg(debug_assertions)]
+    /// {
+    ///     use cryptocol::define_utypes_with;
+    ///     define_utypes_with!(u16);
+    /// 
+    ///     let mut _a_biguint = UU64::one();
+    ///     _a_biguint.safe_sub_assign_uint(2_u8);
+    /// 
+    ///     let mut _a_biguint = UU64::one();
+    ///     _a_biguint.safe_sub_assign_uint(3_u8);
+    /// }
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn safe_sub_assign_uint<U>(&mut self, rhs: U)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        safe_calc_assign!(self, Self::wrapping_sub_assign_uint, Self::overflowing_sub_assign_uint, rhs);
     }
 
 
@@ -13280,6 +14009,268 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             }
         }
         self.set_flag_bit(flags);
+    }
+
+    // pub fn safe_mul_uint<U>(& self, rhs: U) -> Self
+    /// Calculates `self` * `rhs`,
+    /// and returns an multiplication result `self` * `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be multiplied to `self`, and primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If overflow happened, it will panic in debug mode.
+    /// 
+    /// # Output
+    /// It returns `self` * `rhs`.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) multiplication in release mode.
+    /// - If overflow happened, the flag `OVERFLOW` of `self`
+    ///   will be set in release mode, but it will panic in debug mode.
+    /// - This method works as if it was wrapping_mul_uint()
+    ///   in release mode.
+    /// - This method works as if it was unchecked_mul_uint()
+    ///   in debug mode.
+    /// 
+    /// # Why does this method work differently between release mode and debug mode?
+    /// If you want to make sure that the multiplication does not cause overflow
+    /// at all, you may want to use this method. When you test your code that
+    /// uses this method in debug mode, this method will cause panic if overflow
+    /// happens with this method. It will help you find the bug in your code.
+    /// After you fix all the bugs you found, all the overflow checking code
+    /// which may be unnecessary now and only slow down your code will be
+    /// removed from your code in release mode.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger tham `u128`, the method
+    /// [safe_mul()](struct@BigUInt#method.safe_mul)
+    /// is proper rather than this method.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_string("12380187429816690342769003185818648605085375388281194656994643364900608").unwrap();
+    /// let b_uint = 248_u16;
+    /// let res = a_biguint.safe_mul_uint(b_uint);
+    /// println!("{} X {} = {}", a_biguint, b_uint, res);
+    /// assert_eq!(res.to_string(), "3070286482594539205006712790083024854061173096293736274934671554495350784");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// #[cfg(not(debug_assertions))]
+    /// {
+    ///     let b_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    ///     let b_uint = 248_u16;
+    ///     let res = b_biguint.safe_mul_uint(b_uint);
+    ///     println!("{} X {} = {}", b_biguint, b_uint, res);
+    ///     assert_eq!(res.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    ///     assert_eq!(res.is_overflow(), true);
+    ///     assert_eq!(res.is_underflow(), false);
+    ///     assert_eq!(res.is_divided_by_zero(), false);
+    ///     assert_eq!(res.is_infinity(), false);
+    ///     assert_eq!(res.is_undefined(), false);
+    ///     assert_eq!(res.is_left_carry(), false);
+    ///     assert_eq!(res.is_right_carry(), false);
+    /// }
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```should_panic
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// #[cfg(debug_assertions)]
+    /// {
+    ///     use cryptocol::define_utypes_with;
+    ///     define_utypes_with!(u16);
+    /// 
+    ///     let _b_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    ///     let _b_uint = 248_u16;
+    ///     let _res = _b_biguint.safe_mul_uint(_b_uint);
+    /// }
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn safe_mul_uint<U>(&self, rhs: U) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        safe_calc!(self, Self::wrapping_mul_uint, Self::unchecked_mul_uint, rhs);
+    }
+
+    // pub fn safe_mul_assign_uint<U>(&mut self, rhs: U)
+    /// Calculates `self` * `rhs`,
+    /// and assigns an multiplication result `self` * `rhs` back to `self`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be multiplied to `self`, and primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If overflow happened, it will panic in debug mode.
+    /// 
+    /// # Output
+    /// It returns `self` * `rhs`.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) multiplication in release mode.
+    /// - If overflow happened, the flag `OVERFLOW` of `self`
+    ///   will be set in release mode, but it will panic in debug mode.
+    /// - This method works as if it was wrapping_mul_assign_uint()
+    ///   in release mode.
+    /// - This method works as if it was *self = unchecked_mul_uint()
+    ///   in debug mode.
+    /// 
+    /// # Why does this method work differently between release mode and debug mode?
+    /// If you want to make sure that the multiplication does not cause overflow
+    /// at all, you may want to use this method. When you test your code that
+    /// uses this method in debug mode, this method will cause panic if overflow
+    /// happens with this method. It will help you find the bug in your code.
+    /// After you fix all the bugs you found, all the overflow checking code
+    /// which may be unnecessary now and only slow down your code will be
+    /// removed from your code in release mode.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger tham `u128`, the method
+    /// [safe_mul_assign()](struct@BigUInt#method.safe_mul_assign)
+    /// is proper rather than this method.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = UU32::from_string("12380187429816690342769003185818648605085375388281194656994643364900608").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "12380187429816690342769003185818648605085375388281194656994643364900608");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
+    /// 
+    /// let b_uint = 248_u16;
+    /// a_biguint.safe_mul_assign_uint(b_uint);
+    /// println!("After a_biguint.safe_mul_assign_uint(248_u16), a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "3070286482594539205006712790083024854061173096293736274934671554495350784");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// #[cfg(not(debug_assertions))]
+    /// {
+    ///     let mut a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    ///     println!("Originally, a_biguint = {}", a_biguint);
+    ///     assert_eq!(a_biguint.to_string(), "876801874298166903427690031858186486050853753882811946569946433649006084094");
+    ///     assert_eq!(a_biguint.is_overflow(), false);
+    ///     assert_eq!(a_biguint.is_underflow(), false);
+    ///     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    ///     assert_eq!(a_biguint.is_infinity(), false);
+    ///     assert_eq!(a_biguint.is_undefined(), false);
+    ///     assert_eq!(a_biguint.is_left_carry(), false);
+    ///     assert_eq!(a_biguint.is_right_carry(), false);
+    /// 
+    ///     let b_uint = 248_u16;
+    ///     a_biguint.safe_mul_assign_uint(b_uint);
+    ///     println!("After a_biguint.safe_mul_assign_uint(248_u16), a_biguint = {}", a_biguint);
+    ///     assert_eq!(a_biguint.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    ///     assert_eq!(a_biguint.is_overflow(), true);
+    ///     assert_eq!(a_biguint.is_underflow(), false);
+    ///     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    ///     assert_eq!(a_biguint.is_infinity(), false);
+    ///     assert_eq!(a_biguint.is_undefined(), false);
+    ///     assert_eq!(a_biguint.is_left_carry(), false);
+    ///     assert_eq!(a_biguint.is_right_carry(), false);
+    /// }
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// #[cfg(debug_assertions)]
+    /// {
+    ///     use cryptocol::define_utypes_with;
+    ///     define_utypes_with!(u32);
+    /// 
+    ///     let mut a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    ///     println!("Originally, a_biguint = {}", a_biguint);
+    ///     assert_eq!(a_biguint.to_string(), "876801874298166903427690031858186486050853753882811946569946433649006084094");
+    ///     assert_eq!(a_biguint.is_overflow(), false);
+    ///     assert_eq!(a_biguint.is_underflow(), false);
+    ///     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    ///     assert_eq!(a_biguint.is_infinity(), false);
+    ///     assert_eq!(a_biguint.is_undefined(), false);
+    ///     assert_eq!(a_biguint.is_left_carry(), false);
+    ///     assert_eq!(a_biguint.is_right_carry(), false);
+    /// 
+    ///     let b_uint = 248_u16;
+    ///     a_biguint.safe_mul_assign_uint(b_uint);
+    ///     println!("After a_biguint.safe_mul_assign_uint(248_u16), a_biguint = {}", a_biguint);
+    ///     assert_eq!(a_biguint.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    ///     assert_eq!(a_biguint.is_overflow(), true);
+    ///     assert_eq!(a_biguint.is_underflow(), false);
+    ///     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    ///     assert_eq!(a_biguint.is_infinity(), false);
+    ///     assert_eq!(a_biguint.is_undefined(), false);
+    ///     assert_eq!(a_biguint.is_left_carry(), false);
+    ///     assert_eq!(a_biguint.is_right_carry(), false);
+    /// }
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn safe_mul_assign_uint<U>(&mut self, rhs: U)
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        safe_calc_assign!(self, Self::wrapping_mul_assign_uint, Self::overflowing_mul_assign_uint, rhs);
     }
 
 
@@ -16063,6 +17054,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         }
         self.set_flag_bit(flags);
     }
+
 
     // pub fn wrapping_rem_uint<U>(&self, rhs: U) -> Self
     /// Divides `self` by `rhs`, and returns the remainder.
@@ -29386,6 +30378,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     {
         modular_calc_assign!(self, Self::common_modular_add_assign, rhs, modulo);
     }
+
     // pub fn panic_free_modular_add(&self, rhs: &Self, modulo: &Self) -> Self
     /// Calculates (`self` + `rhs`) % `modulo`,
     /// wrapping around at `modulo` of the `Self` type.
@@ -30168,6 +31161,261 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             self.wrapping_add_assign(mrhs);
         }
         self.set_all_flags(flags);
+    }
+
+    // pub fn safe_add(& self, rhs: &Self) -> Self
+    /// Calculates `self` + `rhs`,
+    /// and returns an addition result `self` + `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If overflow happened, it will panic in debug mode.
+    /// 
+    /// # Output
+    /// It returns `self` + `rhs`.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) addition in release mode.
+    /// - If overflow happened, the flag `OVERFLOW` of the return value
+    ///   will be set in release mode, but it will panic in debug mode.
+    /// - This method works as if it was wrapping_add() in release mode.
+    /// - This method works as if it was unchecked_add() in debug mode.
+    /// 
+    /// # Why does this method work differently between release mode and debug mode?
+    /// If you want to make sure that the addition does not cause overflow
+    /// at all, you may want to use this method. When you test your code that
+    /// uses this method in debug mode, this method will cause panic if overflow
+    /// happens with this method. It will help you find the bug in your code.
+    /// After you fix all the bugs you found, all the overflow checking code
+    /// which may be unnecessary now and only slow down your code will be
+    /// removed from your code in release mode.
+    /// 
+    /// # Counterpart Method
+    /// The method
+    /// [safe_add_uint()](struct@BigUInt#method.safe_add_uint)
+    /// is a bit faster than this method `safe_add()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [safe_add_uint()](struct@BigUInt#method.safe_add_uint).
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U512::max().safe_sub_uint(1_u8);
+    /// let one_biguint = U512::one();
+    /// let res = a_biguint.safe_add(&one_biguint);
+    /// println!("{} + {} = {}", a_biguint, one_biguint, res);
+    /// assert_eq!(res, U512::max());
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// #[cfg(not(debug_assertions))]
+    /// {
+    ///     let b_biguint = U512::max();
+    ///     let one_biguint = U512::one();
+    ///     let res = b_biguint.safe_add(&one_biguint);
+    ///     println!("{} + {} = {}", b_biguint, one_biguint, res);
+    ///     assert_eq!(res.to_string(), "0");
+    ///     assert_eq!(res.is_overflow(), true);
+    ///     assert_eq!(res.is_underflow(), false);
+    ///     assert_eq!(res.is_infinity(), false);
+    ///     assert_eq!(res.is_divided_by_zero(), false);
+    ///     assert_eq!(res.is_undefined(), false);
+    ///     assert_eq!(res.is_left_carry(), false);
+    ///     assert_eq!(res.is_right_carry(), false);
+    /// }
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let c_biguint = U512::zero();
+    /// let one_biguint = U512::one();
+    /// let res = c_biguint.safe_add(&one_biguint);
+    /// println!("{} + {} = {}", c_biguint, one_biguint, res);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```should_panic
+    /// #[cfg(debug_assertions)]
+    /// {
+    ///     use cryptocol::define_utypes_with;
+    ///     define_utypes_with!(u128);
+    /// 
+    ///     let _b_biguint = U512::max();
+    ///     let _one_biguint = U512::one();
+    ///     let _res = _b_biguint.safe_add(&_one_biguint);
+    /// } 
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn safe_add(&self, rhs: &Self) -> Self
+    {
+        safe_calc!(self, Self::wrapping_add, Self::unchecked_add, rhs);
+    }
+
+    // pub fn safe_add_assign(&mut self, rhs: &Self)
+    /// Calculates `self` + `rhs`,
+    /// and assigns an addition result `self` + `rhs` back to `self`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If overflow happened, it will panic in debug mode.
+    /// 
+    /// # Output
+    /// It returns `self` + `rhs`.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) addition in release mode.
+    /// - If overflow happened, the flag `OVERFLOW` of `self`
+    ///   will be set in release mode, but it will panic in debug mode.
+    /// - This method works as if it was wrapping_add_assign_uint()
+    ///   in release mode.
+    /// - This method works as if it was *self = unchecked_add_uint()
+    ///   in debug mode.
+    /// 
+    /// # Why does this method work differently between release mode and debug mode?
+    /// If you want to make sure that the addition does not cause overflow
+    /// at all, you may want to use this method. When you test your code that
+    /// uses this method in debug mode, this method will cause panic if overflow
+    /// happens with this method. It will help you find the bug in your code.
+    /// After you fix all the bugs you found, all the overflow checking code
+    /// which may be unnecessary now and only slow down your code will be
+    /// removed from your code in release mode.
+    /// 
+    /// # Counterpart Method
+    /// The method
+    /// [safe_add_assign_uint()](struct@BigUInt#method.safe_add_assign_uint)
+    /// is a bit faster than this method `safe_add_assign()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [safe_add_assign()](struct@BigUInt#method.safe_add_assign).
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = U512::max().safe_sub_uint(1_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
+    /// 
+    /// let one_biguint = U512::one();
+    /// a_biguint.safe_add_assign(&one_biguint);
+    /// println!("After a_biguint.safe_add_assign(&U512::one()), a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint, U512::max());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// #[cfg(not(debug_assertions))]
+    /// {
+    ///     let mut a_biguint = U512::max();
+    ///     println!("Originally, a_biguint = {}", a_biguint);
+    ///     assert_eq!(a_biguint.is_overflow(), false);
+    ///     assert_eq!(a_biguint.is_underflow(), false);
+    ///     assert_eq!(a_biguint.is_infinity(), false);
+    ///     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    ///     assert_eq!(a_biguint.is_undefined(), false);
+    ///     assert_eq!(a_biguint.is_left_carry(), false);
+    ///     assert_eq!(a_biguint.is_right_carry(), false);
+    /// 
+    ///     let one_biguint = U512::one();
+    ///     a_biguint.safe_add_assign(&one_biguint);
+    ///     println!("After a_biguint.safe_add_assign(&U512::one()), a_biguint = {}", a_biguint);
+    ///     assert_eq!(a_biguint.to_string(), "0");
+    ///     assert_eq!(a_biguint.is_overflow(), true);
+    ///     assert_eq!(a_biguint.is_underflow(), false);
+    ///     assert_eq!(a_biguint.is_infinity(), false);
+    ///     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    ///     assert_eq!(a_biguint.is_undefined(), false);
+    ///     assert_eq!(a_biguint.is_left_carry(), false);
+    ///     assert_eq!(a_biguint.is_right_carry(), false);
+    /// 
+    ///     a_biguint.safe_add_assign(&one_biguint);
+    ///     println!("After a_biguint.safe_add_assign(&U512::one()),\ta_biguint = {}", a_biguint);
+    ///     assert_eq!(a_biguint.to_string(), "1");
+    ///     assert_eq!(a_biguint.is_overflow(), true);
+    ///     assert_eq!(a_biguint.is_underflow(), false);
+    ///     assert_eq!(a_biguint.is_infinity(), false);
+    ///     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    ///     assert_eq!(a_biguint.is_undefined(), false);
+    ///     assert_eq!(a_biguint.is_left_carry(), false);
+    ///     assert_eq!(a_biguint.is_right_carry(), false);
+    /// }
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```should_panic
+    /// #[cfg(debug_assertions)]
+    /// {
+    ///     use cryptocol::define_utypes_with;
+    ///     define_utypes_with!(u8);
+    /// 
+    ///     let mut _a_biguint = U512::max();
+    ///     let _one_biguint = U512::one();
+    ///     _a_biguint.safe_add_assign(&_one_biguint);
+    ///     _a_biguint.safe_add_assign(&_one_biguint);
+    /// }
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn safe_add_assign(&mut self, rhs: &Self)
+    {
+        safe_calc_assign!(self, Self::wrapping_add_assign, Self::overflowing_add_assign, rhs);
     }
 
 
@@ -32608,6 +33856,297 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             { other.wrapping_sub(self) }
         else
             { self.wrapping_sub(other) }
+    }
+
+    // pub fn safe_sub(&self, rhs: &Self) -> Self
+    /// Calculates `self` - `rhs`,
+    /// and returns an subtraction result `self` - `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be subtracted from `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If underflow happened, it will panic in debug mode.
+    /// 
+    /// # Output
+    /// It returns `self` - `rhs`.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) subtraction in release mode.
+    /// - If underflow happened, the flag `UNDERFLOW` of `self`
+    ///   will be set in release mode, but it will panic in debug mode.
+    /// - This method works as if it was wrapping_sub()
+    ///   in release mode.
+    /// - This method works as if it was *self = unchecked_sub()
+    ///   in debug mode.
+    /// 
+    /// # Why does this method work differently between release mode and debug mode?
+    /// If you want to make sure that the subtraction does not cause underflow
+    /// at all, you may want to use this method. When you test your code that
+    /// uses this method in debug mode, this method will cause panic if underflow
+    /// happens with this method. It will help you find the bug in your code.
+    /// After you fix all the bugs you found, all the underflow checking code
+    /// which may be unnecessary now and only slow down your code will be
+    /// removed from your code in release mode.
+    /// 
+    /// # Counterpart Method
+    /// The method
+    /// [safe_sub_uint()](struct@BigUInt#method.safe_sub_uint)
+    /// is a bit faster than this method `safe_sub()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [safe_sub_uint()](struct@BigUInt#method.safe_sub_uint).
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let a_biguint = U512::one();
+    /// let one = U512::one();
+    /// let res = a_biguint.safe_sub(&one);
+    /// println!("{} - {} = {}", a_biguint, one, res);
+    /// assert_eq!(res, U512::zero());
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// #[cfg(not(debug_assertions))]
+    /// {
+    ///     let b_biguint = U512::zero();
+    ///     let one = U512::one();
+    ///     let res = b_biguint.safe_sub(&one);
+    ///     println!("{} - {} = {}", b_biguint, one, res);
+    ///     assert_eq!(res, U512::max());
+    ///     assert_eq!(res.is_underflow(), true);
+    ///     assert_eq!(res.is_overflow(), false);
+    ///     assert_eq!(res.is_divided_by_zero(), false);
+    ///     assert_eq!(res.is_infinity(), false);
+    ///     assert_eq!(res.is_undefined(), false);
+    ///     assert_eq!(res.is_left_carry(), false);
+    ///     assert_eq!(res.is_right_carry(), false);
+    /// }
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let c_biguint = U512::max();
+    /// let one = U512::one();
+    /// let res = c_biguint.safe_sub(&one);
+    /// println!("{} - {} = {}", c_biguint, one, res);
+    /// assert_eq!(res.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```should_panic
+    /// #[cfg(debug_assertions)]
+    /// {
+    ///     use cryptocol::define_utypes_with;
+    ///     define_utypes_with!(u128);
+    /// 
+    ///     let _b_biguint = U512::zero();
+    ///     let _one = U512::one();
+    ///     let _res = _b_biguint.safe_sub(&_one);
+    /// }
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn safe_sub(&self, rhs: &Self) -> Self
+    {
+        safe_calc!(self, Self::wrapping_sub, Self::unchecked_sub, rhs);
+    }
+
+    // pub fn safe_sub_assign(&mut self, rhs: &Self)
+    /// Calculates `self` - `rhs`,
+    /// and assigns an subtraction result `self` - `rhs` back to `self`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be subtracted from `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If underflow happened, it will panic in debug mode.
+    /// 
+    /// # Output
+    /// It returns `self` - `rhs`.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) subtraction in release mode.
+    /// - If underflow happened, the flag `UNDERFLOW` of `self`
+    ///   will be set in release mode, but it will panic in debug mode.
+    /// - This method works as if it was wrapping_sub_assign()
+    ///   in release mode.
+    /// - This method works as if it was *self = unchecked_sub()
+    ///   in debug mode.
+    /// 
+    /// # Why does this method work differently between release mode and debug mode?
+    /// If you want to make sure that the subtraction does not cause underflow
+    /// at all, you may want to use this method. When you test your code that
+    /// uses this method in debug mode, this method will cause panic if underflow
+    /// happens with this method. It will help you find the bug in your code.
+    /// After you fix all the bugs you found, all the underflow checking code
+    /// which may be unnecessary now and only slow down your code will be
+    /// removed from your code in release mode.
+    /// 
+    /// # Counterpart Method
+    /// The method
+    /// [safe_sub_assign_uint()](struct@BigUInt#method.safe_sub_assign_uint)
+    /// is a bit faster than this method `safe_sub_assign()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [safe_sub_assign_uint()](struct@BigUInt#method.safe_sub_assign_uint).
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = U512::one();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
+    /// 
+    /// let one = U512::one();
+    /// a_biguint.safe_sub_assign(&one);
+    /// println!("After a_biguint.safe_sub_assign(&U512::one(
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// #[cfg(not(debug_assertions))]
+    /// {
+    ///     let mut a_biguint = U512::zero();
+    ///     println!("Originally, a_biguint = {}", a_biguint);
+    ///     assert_eq!(a_biguint.is_underflow(), false);
+    ///     assert_eq!(a_biguint.is_overflow(), false);
+    ///     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    ///     assert_eq!(a_biguint.is_infinity(), false);
+    ///     assert_eq!(a_biguint.is_undefined(), false);
+    ///     assert_eq!(a_biguint.is_left_carry(), false);
+    ///     assert_eq!(a_biguint.is_right_carry(), false);
+    /// 
+    ///     let one = U512::one();
+    ///     a_biguint.safe_sub_assign(&one);
+    ///     println!("After a_biguint.safe_sub_assign(&U512::one()), a_biguint = {}", a_biguint);
+    ///     assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    ///     assert_eq!(a_biguint.is_underflow(), true);
+    ///     assert_eq!(a_biguint.is_overflow(), false);
+    ///     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    ///     assert_eq!(a_biguint.is_infinity(), false);
+    ///     assert_eq!(a_biguint.is_undefined(), false);
+    ///     assert_eq!(a_biguint.is_left_carry(), false);
+    ///     assert_eq!(a_biguint.is_right_carry(), false);
+    /// }
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let mut a_biguint = U512::max();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
+    /// 
+    /// let one = U512::one();
+    /// a_biguint.safe_sub_assign(&one);
+    /// println!("After a_biguint.safe_sub_assign(&U512::one()), a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```
+    /// #[cfg(debug_assertions)]
+    /// {
+    ///     use cryptocol::define_utypes_with;
+    ///     define_utypes_with!(u8);
+    /// 
+    ///     let mut a_biguint = U512::zero();
+    ///     println!("Originally, a_biguint = {}", a_biguint);
+    ///     assert_eq!(a_biguint.is_underflow(), false);
+    ///     assert_eq!(a_biguint.is_overflow(), false);
+    ///     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    ///     assert_eq!(a_biguint.is_infinity(), false);
+    ///     assert_eq!(a_biguint.is_undefined(), false);
+    ///     assert_eq!(a_biguint.is_left_carry(), false);
+    ///     assert_eq!(a_biguint.is_right_carry(), false);
+    /// 
+    ///     let one = U512::one();
+    ///     a_biguint.safe_sub_assign(&one);
+    ///     println!("After a_biguint.safe_sub_assign(&U512::one()), a_biguint = {}", a_biguint);
+    ///     assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
+    ///     assert_eq!(a_biguint.is_underflow(), true);
+    ///     assert_eq!(a_biguint.is_overflow(), false);
+    ///     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    ///     assert_eq!(a_biguint.is_infinity(), false);
+    ///     assert_eq!(a_biguint.is_undefined(), false);
+    ///     assert_eq!(a_biguint.is_left_carry(), false);
+    ///     assert_eq!(a_biguint.is_right_carry(), false);
+    /// }
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn safe_sub_assign(&mut self, rhs: &Self)
+    {
+        safe_calc_assign!(self, Self::wrapping_sub_assign, Self::overflowing_sub_assign, rhs);
     }
 
 
@@ -35450,6 +36989,232 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
                 { flags |= Self::OVERFLOW; }
         }
         self.set_all_flags(flags);
+    }
+
+    // pub fn safe_mul(& self, rhs: &Self) -> Self
+    /// Calculates `self` * `rhs`,
+    /// and returns an multiplication result `self` * `rhs`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be multiplied to `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If overflow happened, it will panic in debug mode.
+    /// 
+    /// # Output
+    /// It returns `self` * `rhs`.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) multiplication in release mode.
+    /// - If overflow happened, the flag `OVERFLOW` of `self`
+    ///   will be set in release mode, but it will panic in debug mode.
+    /// - This method works as if it was wrapping_mul_uint()
+    ///   in release mode.
+    /// - This method works as if it was unchecked_mul_uint()
+    ///   in debug mode.
+    /// 
+    /// # Why does this method work differently between release mode and debug mode?
+    /// If you want to make sure that the multiplication does not cause overflow
+    /// at all, you may want to use this method. When you test your code that
+    /// uses this method in debug mode, this method will cause panic if overflow
+    /// happens with this method. It will help you find the bug in your code.
+    /// After you fix all the bugs you found, all the overflow checking code
+    /// which may be unnecessary now and only slow down your code will be
+    /// removed from your code in release mode.
+    /// 
+    /// # Counterpart Method
+    /// The method
+    /// [safe_add_uint()](struct@BigUInt#method.safe_add_uint)
+    /// is a bit faster than this method `safe_add()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [safe_add_uint()](struct@BigUInt#method.safe_add_uint).
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// let a_biguint = U256::from_string("12380187429816690342769003185818648605085375388281194656994643364900608").unwrap();
+    /// let b_biguint = U256::from_uint(248_u8);
+    /// let res = a_biguint.safe_mul(&b_biguint);
+    /// println!("{} X {} = {}", a_biguint, b_biguint, res);
+    /// assert_eq!(res.to_string(), "3070286482594539205006712790083024854061173096293736274934671554495350784");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_left_carry(), false);
+    /// assert_eq!(res.is_right_carry(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u16);
+    /// 
+    /// #[cfg(not(debug_assertions))]
+    /// {
+    ///     let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    ///     let b_biguint = U256::from_uint(248_u8);
+    ///     let res = a_biguint.safe_mul(&b_biguint);
+    ///     println!("{} X {} = {}", a_biguint, b_biguint, res);
+    ///     assert_eq!(res.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    ///     assert_eq!(res.is_overflow(), true);
+    ///     assert_eq!(res.is_underflow(), false);
+    ///     assert_eq!(res.is_divided_by_zero(), false);
+    ///     assert_eq!(res.is_infinity(), false);
+    ///     assert_eq!(res.is_undefined(), false);
+    ///     assert_eq!(res.is_left_carry(), false);
+    ///     assert_eq!(res.is_right_carry(), false);
+    /// }
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```should_panic
+    /// #[cfg(debug_assertions)]
+    /// {
+    ///     use cryptocol::define_utypes_with;
+    ///     define_utypes_with!(u16);
+    ///     
+    ///     let _a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    ///     let _b_biguint = U256::from_uint(248_u8);
+    ///     let _res = _a_biguint.safe_mul(&_b_biguint);
+    /// }
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn safe_mul(&self, rhs: &Self) -> Self
+    {
+        safe_calc!(self, Self::wrapping_mul, Self::unchecked_mul, rhs);
+    }
+
+    // pub fn safe_mul_assign(&mut self, rhs: &Self)
+    /// Calculates `self` * `rhs`,
+    /// and assigns an multiplication result `self` * `rhs` back to `self`.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be multiplied to `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If overflow happened, it will panic in debug mode.
+    /// 
+    /// # Output
+    /// It returns `self` * `rhs`.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) multiplication in release mode.
+    /// - If overflow happened, the flag `OVERFLOW` of `self`
+    ///   will be set in release mode, but it will panic in debug mode.
+    /// - This method works as if it was wrapping_mul_assign_uint()
+    ///   in release mode.
+    /// - This method works as if it was *self = unchecked_mul_uint()
+    ///   in debug mode.
+    /// 
+    /// # Why does this method work differently between release mode and debug mode?
+    /// If you want to make sure that the multiplication does not cause overflow
+    /// at all, you may want to use this method. When you test your code that
+    /// uses this method in debug mode, this method will cause panic if overflow
+    /// happens with this method. It will help you find the bug in your code.
+    /// After you fix all the bugs you found, all the overflow checking code
+    /// which may be unnecessary now and only slow down your code will be
+    /// removed from your code in release mode.
+    /// 
+    /// # Counterpart Method
+    /// The method
+    /// [safe_add_uint()](struct@BigUInt#method.safe_add_uint)
+    /// is a bit faster than this method `safe_add()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [safe_add_uint()](struct@BigUInt#method.safe_add_uint).
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// let mut a_biguint = UU32::from_string("12380187429816690342769003185818648605085375388281194656994643364900608").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
+    /// 
+    /// let b_biguint = U256::from_uint(248_u8);
+    /// a_biguint.safe_mul_assign(&b_biguint);
+    /// println!("After a_biguint.safe_mul_assign(&b_biguint), a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "3070286482594539205006712790083024854061173096293736274934671554495350784");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u32);
+    /// 
+    /// #[cfg(not(debug_assertions))]
+    /// {
+    ///     let mut a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    ///     println!("Originally, a_biguint = {}", a_biguint);
+    ///     assert_eq!(a_biguint.is_overflow(), false);
+    ///     assert_eq!(a_biguint.is_underflow(), false);
+    ///     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    ///     assert_eq!(a_biguint.is_infinity(), false);
+    ///     assert_eq!(a_biguint.is_undefined(), false);
+    ///     assert_eq!(a_biguint.is_left_carry(), false);
+    ///     assert_eq!(a_biguint.is_right_carry(), false);
+    /// 
+    ///     let b_biguint = U256::from_uint(248_u8);
+    ///     a_biguint.safe_mul_assign(&b_biguint);
+    ///     println!("After c_biguint.safe_mul_assign(&b_biguint), a_biguint = {}", a_biguint);
+    ///     assert_eq!(a_biguint.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
+    ///     assert_eq!(a_biguint.is_overflow(), true);
+    ///     assert_eq!(a_biguint.is_underflow(), false);
+    ///     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    ///     assert_eq!(a_biguint.is_infinity(), false);
+    ///     assert_eq!(a_biguint.is_undefined(), false);
+    ///     assert_eq!(a_biguint.is_left_carry(), false);
+    ///     assert_eq!(a_biguint.is_right_carry(), false);
+    /// }
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```should_panic
+    /// #[cfg(debug_assertions)]
+    /// {
+    ///     use cryptocol::define_utypes_with;
+    ///     define_utypes_with!(u32);
+    /// 
+    ///     let mut _a_biguint = UU32::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    ///     let _b_biguint = U256::from_uint(248_u8);
+    ///     _a_biguint.safe_mul_assign(&_b_biguint);
+    /// }
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn safe_mul_assign(&mut self, rhs: &Self)
+    {
+        safe_calc_assign!(self, Self::wrapping_mul_assign, Self::overflowing_mul_assign, rhs);
     }
 
 
@@ -53799,7 +55564,6 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         BigUInt::<U, M>::from_biguint(&self)
     }
 
-    //===================
     // pub fn into_uint<U>(&self) -> U
     /// Converts `self` into `U`-type small value
     /// such as `u8`, `u16`, `u32`, `u64`, and `u128` type value,
@@ -55433,6 +57197,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// a_biguint.set_overflow();
     /// println!("a_biguint = {}", a_biguint);
@@ -55442,6 +57208,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn set_overflow(&mut self)
@@ -55470,6 +57238,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// a_biguint.set_overflow();
     /// println!("a_biguint = {}", a_biguint);
@@ -55479,6 +57249,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// a_biguint.reset_overflow();
     /// println!("a_biguint = {}", a_biguint);
@@ -55488,6 +57260,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn reset_overflow(&mut self)
@@ -55520,6 +57294,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// a_biguint.set_overflow();
     /// println!("a_biguint = {}", a_biguint);
@@ -55529,6 +57305,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn is_overflow(&self) -> bool
@@ -55557,6 +57335,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// a_biguint.set_underflow();
     /// println!("a_biguint = {}", a_biguint);
@@ -55566,6 +57346,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn set_underflow(&mut self)
@@ -55594,6 +57376,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// a_biguint.set_underflow();
     /// println!("a_biguint = {}", a_biguint);
@@ -55603,6 +57387,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// a_biguint.reset_underflow();
     /// println!("a_biguint = {}", a_biguint);
@@ -55612,6 +57398,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn reset_underflow(&mut self)
@@ -55644,6 +57432,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// a_biguint.set_underflow();
     /// println!("a_biguint = {}", a_biguint);
@@ -55653,6 +57443,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn is_underflow(&self) -> bool
@@ -55681,6 +57473,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// a_biguint.set_infinity();
     /// println!("a_biguint = {}", a_biguint);
@@ -55690,6 +57484,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), true);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn set_infinity(&mut self)
@@ -55718,6 +57514,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// a_biguint.set_infinity();
     /// println!("a_biguint = {}", a_biguint);
@@ -55727,6 +57525,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), true);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// a_biguint.reset_infinity();
     /// println!("a_biguint = {}", a_biguint);
@@ -55736,6 +57536,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn reset_infinity(&mut self)
@@ -55768,6 +57570,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// a_biguint.set_infinity();
     /// println!("a_biguint = {}", a_biguint);
@@ -55777,6 +57581,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), true);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn is_infinity(&self) -> bool
@@ -55805,6 +57611,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// a_biguint.set_divided_by_zero();
     /// println!("a_biguint = {}", a_biguint);
@@ -55814,6 +57622,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), true);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn set_divided_by_zero(&mut self)
@@ -55842,6 +57652,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// a_biguint.set_divided_by_zero();
     /// println!("a_biguint = {}", a_biguint);
@@ -55851,6 +57663,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), true);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// a_biguint.reset_divided_by_zero();
     /// println!("a_biguint = {}", a_biguint);
@@ -55860,6 +57674,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn reset_divided_by_zero(&mut self)
@@ -55892,6 +57708,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// a_biguint.set_divided_by_zero();
     /// println!("a_biguint = {}", a_biguint);
@@ -55901,6 +57719,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), true);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn is_divided_by_zero(&self) -> bool
@@ -55929,6 +57749,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// a_biguint.set_undefined();
     /// println!("a_biguint = {}", a_biguint);
@@ -55938,6 +57760,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), true);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn set_undefined(&mut self)
@@ -55966,6 +57790,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// a_biguint.set_undefined();
     /// println!("a_biguint = {}", a_biguint);
@@ -55975,6 +57801,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), true);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// a_biguint.reset_undefined();
     /// println!("a_biguint = {}", a_biguint);
@@ -55984,6 +57812,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn reset_undefined(&mut self)
@@ -56025,6 +57855,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), true);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn is_undefined(&self) -> bool
@@ -56053,8 +57885,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
-    /// a_biguint.set_undefined();
+    /// a_biguint.set_left_carry();
     /// println!("a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.to_string(), "77255284354385016970177264758879158019392010587479561699232008238232688983808");
     /// assert_eq!(a_biguint.is_overflow(), false);
@@ -56062,6 +57896,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), true);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), true);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn set_left_carry(&mut self)
@@ -56090,8 +57926,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
-    /// a_biguint.set_undefined();
+    /// a_biguint.set_left_carry();
     /// println!("a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.to_string(), "77255284354385016970177264758879158019392010587479561699232008238232688983808");
     /// assert_eq!(a_biguint.is_overflow(), false);
@@ -56099,8 +57937,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), true);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), true);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
-    /// a_biguint.reset_undefined();
+    /// a_biguint.reset_left_carry();
     /// println!("a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.to_string(), "77255284354385016970177264758879158019392010587479561699232008238232688983808");
     /// assert_eq!(a_biguint.is_overflow(), false);
@@ -56108,6 +57948,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn reset_left_carry(&mut self)
@@ -56140,8 +57982,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
-    /// a_biguint.set_undefined();
+    /// a_biguint.set_left_carry();
     /// println!("a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.to_string(), "77255284354385016970177264758879158019392010587479561699232008238232688983808");
     /// assert_eq!(a_biguint.is_overflow(), false);
@@ -56149,6 +57993,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), true);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), true);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn is_left_carry(&self) -> bool
@@ -56177,8 +58023,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
-    /// a_biguint.set_undefined();
+    /// a_biguint.set_right_carry();
     /// println!("a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.to_string(), "77255284354385016970177264758879158019392010587479561699232008238232688983808");
     /// assert_eq!(a_biguint.is_overflow(), false);
@@ -56186,6 +58034,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), true);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), true);
     /// ```
     #[inline]
     pub fn set_right_carry(&mut self)
@@ -56214,8 +58064,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
-    /// a_biguint.set_undefined();
+    /// a_biguint.set_right_carry();
     /// println!("a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.to_string(), "77255284354385016970177264758879158019392010587479561699232008238232688983808");
     /// assert_eq!(a_biguint.is_overflow(), false);
@@ -56223,8 +58075,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), true);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), true);
     /// 
-    /// a_biguint.reset_undefined();
+    /// a_biguint.reset_right_carry();
     /// println!("a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.to_string(), "77255284354385016970177264758879158019392010587479561699232008238232688983808");
     /// assert_eq!(a_biguint.is_overflow(), false);
@@ -56232,6 +58086,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     #[inline]
     pub fn reset_right_carry(&mut self)
@@ -56264,8 +58120,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
-    /// a_biguint.set_undefined();
+    /// a_biguint.set_right_carry();
     /// println!("a_biguint = {}", a_biguint);
     /// assert_eq!(a_biguint.to_string(), "77255284354385016970177264758879158019392010587479561699232008238232688983808");
     /// assert_eq!(a_biguint.is_overflow(), false);
@@ -56273,6 +58131,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), true);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), true);
     /// ```
     #[inline]
     pub fn is_right_carry(&self) -> bool
