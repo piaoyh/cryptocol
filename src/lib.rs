@@ -16,6 +16,9 @@
 //! Endianness (including Little-endian and Big-endian)
 //! [Read more](https://en.wikipedia.org/wiki/Endianness).
 //! 
+//! # When any link fails
+//! The webserver `docs.rs` has been failing in generating BigUInt page from ver. 0.8.5 on for some technical reason that has not been solved yet. If the webserver `docs.rs` fails in generating BigUInt page in this version, too, you can download the manual [here](https://drive.google.com/file/d/1_lYm5pel0m_MhEgh_mM4aGdl6LmhpJt7/view?usp=drive_link). I hope that it will be fixed soon.
+//! 
 //! # Big-endian issue
 //! This crate is just experimental for Big-endian CPUs. So, you are not
 //! encouraged to use this crate for Big-endian CPUs for serious purpose.
@@ -47,7 +50,7 @@
 //! 
 //! ## Big Numbers: meaningful as itself and also the foundation for Asymmetric-Key Algorithms
 //! - [ ] Fixed Sized Big Unsigned Integer Operation ---
-//!     [`BigUInt`](number/big_uint/struct.BigUInt.html#struct.BigUInt) However, docs.rs has been failing in generating `BigUInt` page from ver. 0.8.5 on for some technical reason that has not been solved yet. So, you can download the manual [here](https://drive.google.com/file/d/107hckPdW68sCloCkGS1LaP_7StIJ-quw/view?usp=sharing). I hope that it will be fixed soon.
+//!     [`BigUInt`](number/big_uint/struct.BigUInt.html#struct.BigUInt)
 // ! - [ ] Fixed Sized Big Signed Integer Operation --- BigSInt
 // !    _--> Thinking about postponing to Roadmap for ver. 2.0_
 // ! - [ ] Variable Sized Big Signed Integer Operation --- LargeInt

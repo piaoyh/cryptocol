@@ -1,5 +1,8 @@
 # cryptocol crate provides libraries for cryptography
 
+## When any link fails
+The webserver `docs.rs` has been failing in generating BigUInt page from ver. 0.8.5 on for some technical reason that has not been solved yet. If the webserver `docs.rs` fails in generating BigUInt page in this version, too, you can download the manual [here](https://drive.google.com/file/d/1_lYm5pel0m_MhEgh_mM4aGdl6LmhpJt7/view?usp=drive_link). I hope that it will be fixed soon.
+
 ## Endianness
 
 This crate is optimized for Little-endian CPUs because Little-Endian CPUs
@@ -39,8 +42,7 @@ The checked items have already been implemented including documentation __at lea
 
 ### Big Numbers: meaningful as itself and also the foundation for Asymmetric-Key Algorithms
 
-- [X] Fixed Sized Big Unsigned Integer Operation --- [`BigUInt`](https://docs.rs/cryptocol/latest/cryptocol/number/big_uint/struct.BigUInt.html#struct.BigUInt) However, docs.rs has been failing in generating `BigUInt` page from ver. 0.8.5 on for some technical reason that has not been solved yet. So, you can download the manual [here](https://drive.google.com/file/d/107hckPdW68sCloCkGS1LaP_7StIJ-quw/view?usp=sharing). I hope that it will be fixed soon.
-
+- [X] Fixed Sized Big Unsigned Integer Operation --- [`BigUInt`](https://docs.rs/cryptocol/latest/cryptocol/number/big_uint/struct.BigUInt.html#struct.BigUInt)
 <!--
 - [ ] Fixed Sized Big Signed Integer Operation --- BigSInt
     ===> Moved to Roadmap for ver. 2.0

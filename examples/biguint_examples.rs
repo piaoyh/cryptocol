@@ -1002,35 +1002,57 @@ fn biguint_is_bit_set()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u64);
 
-    let a = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
-    println!("a = {}_U256", a.to_string_with_radix_and_stride(2, 10).unwrap());
-    let mut res = a.is_bit_set(151);
+    let a_biguint = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
+    println!("a_biguint = {}_U256", a_biguint.to_string_with_radix_and_stride(2, 10).unwrap());
+    let mut res = a_biguint.is_bit_set(151);
     match res
     {
         Some(r) => {
             println!("The {}th bit is set: {}", 151, r);
-            assert_eq!(a.is_bit_set(151).unwrap(), true);
+            assert_eq!(a_biguint.is_bit_set_(151), true);
+            assert_eq!(a_biguint.is_overflow(), false);
+            assert_eq!(a_biguint.is_underflow(), false);
+            assert_eq!(a_biguint.is_infinity(), false);
+            assert_eq!(a_biguint.is_undefined(), true);
+            assert_eq!(a_biguint.is_divided_by_zero(), false);
+            assert_eq!(a_biguint.is_left_carry(), false);
+            assert_eq!(a_biguint.is_right_carry(), false);
         },
-        None => { println!("{}_U256 does not have the {}th bit.", a, 151); }
+        None => {
+            println!("{}_U256 does not have the {}th bit.", a_biguint, 151);
+        }
     }
-
-    res = a.is_bit_set(200);
+    
+    let a_biguint = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
+    println!("a_biguint = {}_U256", a_biguint.to_string_with_radix_and_stride(2, 10).unwrap());
+    res = a_biguint.is_bit_set(200);
     match res
     {
         Some(r) => {
             println!("The {}th bit is set: {}", 200, r);
-            assert_eq!(a.is_bit_set(200).unwrap(), false);
+            assert_eq!(a_biguint.is_bit_set_(200), false);
+            assert_eq!(a_biguint.is_overflow(), false);
+            assert_eq!(a_biguint.is_underflow(), false);
+            assert_eq!(a_biguint.is_infinity(), false);
+            assert_eq!(a_biguint.is_undefined(), true);
+            assert_eq!(a_biguint.is_divided_by_zero(), false);
+            assert_eq!(a_biguint.is_left_carry(), false);
+            assert_eq!(a_biguint.is_right_carry(), false);
         },
-        None => { println!("{}_U256 does not have the {}th bit.", a, 200); }
+        None => {
+            println!("{}_U256 does not have the {}th bit.", a_biguint, 200);
+        }
     }
-
-    res = a.is_bit_set(300);
+    
+    let a_biguint = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
+    println!("a_biguint = {}_U256", a_biguint.to_string_with_radix_and_stride(2, 10).unwrap());
+    res = a_biguint.is_bit_set(300);
     match res
     {
         Some(r) => { println!("The {}th bit is set: {}", 300, r); },
         None => {
-            println!("{}_U256 does not have the {}th bit.", a, 300);
-            assert_eq!(a.is_bit_set(300), None);
+            println!("{}_U256 does not have the {}th bit.", a_biguint, 300);
+            assert_eq!(a_biguint.is_bit_set(300), None);
         }
     }
     println!("---------------------------");

@@ -103,7 +103,7 @@
 //! This module provides three kinds of long bit integers: BigUInt, BigInt,
 //! and LargeInt.
 //! - `BigUInt` --- a big-sized _unsigned_ integer with user-defined _fixed_ size.
-//! [Read more](struct@BigUInt) However, docs.rs has been failing in generating `BigUInt` page from ver. 0.8.5 on for some technical reason that has not been solved yet. So, you can download the manual [here](https://drive.google.com/file/d/107hckPdW68sCloCkGS1LaP_7StIJ-quw/view?usp=sharing). I hope that it will be fixed soon.
+//! [Read more](struct@BigUInt)
 //! - `BigSInt` --- a big-sized _signed_ integer with user-defined _fixed_ size.
 //! - `LargeInt` --- a big-sized _signed_ integer with _variable_ size.
 //! 
@@ -144,6 +144,12 @@ pub mod big_uint;
 pub mod number_errors;
 pub mod macros_for_types;
 pub mod macros_for_integer_unions;
+
+/// big_uint.rs was too big because of documentation and plenty of examples
+/// So, in order to provide documentation without `docs.rs`'s failing
+/// generating documentation, dummy codes were made and documentation and
+/// examples were moved to big_uint_arithmetic.rs.
+pub mod documentation;
 
 /// Implementaion of trait SmallUInt for u8, u16, u32, u64, u128, and usize
 pub mod trait_small_uint_for_unsigned_impl;
