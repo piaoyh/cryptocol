@@ -49,7 +49,7 @@
 // !     _--> Thinking about postponing to Roadmap for ver. 2.0_
 //! 
 //! ## Big Numbers: meaningful as itself and also the foundation for Asymmetric-Key Algorithms
-//! - [ ] Fixed Sized Big Unsigned Integer Operation ---
+//! - [X] Fixed Sized Big Unsigned Integer Operation ---
 //!     [`BigUInt`](number/big_uint/struct.BigUInt.html#struct.BigUInt)
 // ! - [ ] Fixed Sized Big Signed Integer Operation --- BigSInt
 // !    _--> Thinking about postponing to Roadmap for ver. 2.0_
