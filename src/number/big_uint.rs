@@ -17509,7 +17509,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        self.saturating_rem_assign_uint(rhs);
+        self.wrapping_rem_assign_uint(rhs);
         false
     }
 
@@ -20960,7 +20960,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        self.wrapping_pow_uint(exp)
+        calc_assign_to_calc!(self, Self::pow_assign_uint, exp);
     }
 
     // pub fn pow_assign_uint<U>(&self, exp: U) -> Self
@@ -21122,7 +21122,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        self.wrapping_pow_assign_uint(exp);
+        general_pow_assign!(self, Self::common_pow_assign_uint, exp);
     }
 
     // pub fn panic_free_pow_uint<U>(&self, exp: U) -> Self
@@ -22071,7 +22071,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
             + BitXor<Output=U> + BitXorAssign + Not<Output=U>
             + PartialEq + PartialOrd
     {
-        overflowing_calc_assign!(self, Self::wrapping_pow_assign_uint, exp);
+        overflowing_calc_assign!(self, Self::pow_assign_uint, exp);
     }
 
     // pub fn checked_pow_uint<U>(&self, exp: U) -> Option<Self>
@@ -44766,7 +44766,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for Big-endian CPUs with your own full responsibility.
     pub fn overflowing_pow_assign(&mut self, exp: &Self) -> bool
     {
-        overflowing_calc_assign!(self, Self::wrapping_pow_assign, exp);
+        overflowing_calc_assign!(self, Self::pow_assign, exp);
     }
 
     // pub fn checked_pow(&self, exp: &Self) -> Option<Self>
