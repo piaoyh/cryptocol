@@ -1,5 +1,16 @@
 # Breaking Changes
 
+## Breaking changes from ver. 0.9.0 to ver. 0.9.1
+
+| Ver. 0.9.0                                            | Ver. 0.9.1 |
+|-------------------------------------------------------|------------|
+| pub fn wrapping_pow_uint<U>(&self, exp: U) -> Self    | removed    |
+| pub fn wrapping_pow_assign_uint<U>(&mut self, exp: U) | removed    |
+| pub fn wrapping_pow(&mut self, exp: &Self) -> Self    | removed    |
+| pub fn wrapping_pow_assign(&mut self, exp: &Self)     | removed    |
+
+- The methods above have been removed because they are redundant because of pow_uint(), pow_assign_uint(), pow(), and pow_assign().
+
 ## Breaking changes from ver. 0.8.6 to ver. 0.8.7
 ### Arithmetic operators for SmallUInt, ShortUnion, IntUnion, LongUnion, and LongerUnion
 
