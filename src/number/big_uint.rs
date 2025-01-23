@@ -32209,93 +32209,93 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     //     self.checked_sub(rhs).unwrap()
     // }
 
-    // // pub fn saturating_sub(&self, rhs: &Self) -> Self
-    // /// Calculates `self` - `rhs`,
-    // /// saturating at `0` instead of underflowing.
-    // /// 
-    // /// # Arguments
-    // /// `rhs` is to be subtracted from `self`, and is of `&Self` type.
-    // /// 
-    // /// # Panics
-    // /// If `size_of::<T>() * N` <= `128`, this method may panic
-    // /// or its behavior may be undefined though it may not panic.
-    // /// 
-    // /// # Output
-    // /// It returns the difference `self` - `rhs` if the result is less than
-    // /// or equal to `0` of `Self`. If the difference `self` - `rhs`
-    // /// is less than `0`, it returns `0`.
-    // /// 
-    // /// # Features
-    // /// - This method saturates when it reaches `0` of `Self`.
-    // /// - It does not set `UNDERFLOW` flag of the return value.
-    // /// 
-    // /// # Counterpart Method
-    // /// The method
-    // /// [saturating_sub_uint()](struct@BigUInt#method.saturating_sub_uint)
-    // /// is a bit faster than this method `saturating_sub()`.
-    // /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
-    // /// u32, u64, and u128, use the method
-    // /// [saturating_sub_uint()](struct@BigUInt#method.saturating_sub_uint).
-    // /// 
-    // /// # Example 1
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u64);
-    // /// 
-    // /// let a_biguint = U512::one();
-    // /// let one = U512::one();
-    // /// let res = a_biguint.saturating_sub(&one);
-    // /// println!("{} - {} = {}", a_biguint, one, res);
-    // /// assert_eq!(res.to_string(), "0");
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// ```
-    // /// 
-    // /// # Example 2
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u64);
-    // /// 
-    // /// let b_biguint = U512::zero();
-    // /// let one = U512::one();
-    // /// let res = b_biguint.saturating_sub(&one);
-    // /// println!("{} - {} = {}", b_biguint, one, res);
-    // /// assert_eq!(res.to_string(), "0");
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// ```
-    // /// 
-    // /// # Example 3
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u64);
-    // /// 
-    // /// let b_biguint = U512::from_uint(5_u8);
-    // /// let ten = U512::from_uint(10_u8);
-    // /// let res = b_biguint.saturating_sub(&ten);
-    // /// println!("{} - {} = {}", b_biguint, ten, res);
-    // /// assert_eq!(res.to_string(), "0");
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// ```
-    // /// 
-    // /// # Big-endian issue
-    // /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    // /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    // /// for Big-endian CPUs with your own full responsibility.
     // pub fn saturating_sub(&self, rhs: &Self) -> Self
-    // {
-    //     calc_assign_to_calc!(self, Self::saturating_sub_assign, rhs);
-    // }
+    /// Calculates `self` - `rhs`,
+    /// saturating at `0` instead of underflowing.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be subtracted from `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the difference `self` - `rhs` if the result is less than
+    /// or equal to `0` of `Self`. If the difference `self` - `rhs`
+    /// is less than `0`, it returns `0`.
+    /// 
+    /// # Features
+    /// - This method saturates when it reaches `0` of `Self`.
+    /// - It does not set `UNDERFLOW` flag of the return value.
+    /// 
+    /// # Counterpart Method
+    /// The method
+    /// [saturating_sub_uint()](struct@BigUInt#method.saturating_sub_uint)
+    /// is a bit faster than this method `saturating_sub()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [saturating_sub_uint()](struct@BigUInt#method.saturating_sub_uint).
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U512::one();
+    /// let one = U512::one();
+    /// let res = a_biguint.saturating_sub(&one);
+    /// println!("{} - {} = {}", a_biguint, one, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let b_biguint = U512::zero();
+    /// let one = U512::one();
+    /// let res = b_biguint.saturating_sub(&one);
+    /// println!("{} - {} = {}", b_biguint, one, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let b_biguint = U512::from_uint(5_u8);
+    /// let ten = U512::from_uint(10_u8);
+    /// let res = b_biguint.saturating_sub(&ten);
+    /// println!("{} - {} = {}", b_biguint, ten, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn saturating_sub(&self, rhs: &Self) -> Self
+    {
+        calc_assign_to_calc!(self, Self::saturating_sub_assign, rhs);
+    }
 
     // pub fn saturating_sub_assign(&mut self, rhs: &Self)
     /// Calculates `self` - `rhs`,
