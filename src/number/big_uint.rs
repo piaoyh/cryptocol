@@ -29555,74 +29555,74 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     //     self.checked_add(rhs).unwrap()
     // }
 
-    // // pub fn saturating_add(&self, rhs: &Self) -> Self
-    // /// Calculates `self` + `rhs`,
-    // /// saturating at the numeric bounds instead of overflowing.
-    // /// 
-    // /// # Arguments
-    // /// `rhs` is to be added to `self`, and is of `&Self` type.
-    // /// 
-    // /// # Panics
-    // /// If `size_of::<T>() * N` <= `128`, this method may panic
-    // /// or its behavior may be undefined though it may not panic.
-    // /// 
-    // /// # Output
-    // /// It returns the sum `self` + `rhs` if the result is less than or equal
-    // /// to the maximum value of `Self`. If the sum `self` + `rhs` is greater
-    // /// than the maximum value it returns the maximum value.
-    // /// 
-    // /// # Features
-    // /// - This method saturates when it reaches the maximum value of `Self`.
-    // /// - It does not set `OVERFLOW` flag of the return value.
-    // /// 
-    // /// # Counterpart Method
-    // /// The method
-    // /// [saturating_add_uint()](struct@BigUInt#method.saturating_add_uint)
-    // /// is a bit faster than this method `saturating_add()`.
-    // /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
-    // /// u32, u64, and u128, use the method
-    // /// [saturating_add_uint()](struct@BigUInt#method.saturating_add_uint).
-    // /// 
-    // /// # Example 1
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u64);
-    // /// 
-    // /// let a_biguint = U512::max().wrapping_sub_uint(1_u8);
-    // /// let one_biguint = U512::one();
-    // /// let res = a_biguint.saturating_add(&one_biguint);
-    // /// assert_eq!(res, U512::max());
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// ```
-    // /// 
-    // /// # Example 2
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u64);
-    // /// 
-    // /// let b_biguint = U512::max();
-    // /// let one_biguint = U512::one();
-    // /// let res = b_biguint.saturating_add(&one_biguint);
-    // /// assert_eq!(res, U512::max());
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// ```
-    // /// 
-    // /// # Big-endian issue
-    // /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    // /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    // /// for Big-endian CPUs with your own full responsibility.
     // pub fn saturating_add(&self, rhs: &Self) -> Self
-    // {
-    //     calc_assign_to_calc!(self, Self::saturating_add_assign, rhs);
-    // }
+    /// Calculates `self` + `rhs`,
+    /// saturating at the numeric bounds instead of overflowing.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the sum `self` + `rhs` if the result is less than or equal
+    /// to the maximum value of `Self`. If the sum `self` + `rhs` is greater
+    /// than the maximum value it returns the maximum value.
+    /// 
+    /// # Features
+    /// - This method saturates when it reaches the maximum value of `Self`.
+    /// - It does not set `OVERFLOW` flag of the return value.
+    /// 
+    /// # Counterpart Method
+    /// The method
+    /// [saturating_add_uint()](struct@BigUInt#method.saturating_add_uint)
+    /// is a bit faster than this method `saturating_add()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [saturating_add_uint()](struct@BigUInt#method.saturating_add_uint).
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U512::max().wrapping_sub_uint(1_u8);
+    /// let one_biguint = U512::one();
+    /// let res = a_biguint.saturating_add(&one_biguint);
+    /// assert_eq!(res, U512::max());
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let b_biguint = U512::max();
+    /// let one_biguint = U512::one();
+    /// let res = b_biguint.saturating_add(&one_biguint);
+    /// assert_eq!(res, U512::max());
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn saturating_add(&self, rhs: &Self) -> Self
+    {
+        calc_assign_to_calc!(self, Self::saturating_add_assign, rhs);
+    }
 
     // pub fn saturating_add_assign(&mut self, rhs: &Self)
     /// Calculates `self` + `rhs`,

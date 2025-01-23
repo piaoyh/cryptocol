@@ -1,7 +1,4 @@
 # cryptocol crate provides libraries for cryptography
- 
-## When any link fails
-The webserver `docs.rs` has been failing in generating BigUInt page from ver. 0.8.5 on for some technical reason that has not been solved yet. If the webserver `docs.rs` fails in generating BigUInt page in this version, too, you can download the manual [here](https://drive.google.com/file/d/1Qt5ucLjQxtagr_td6uB7_M3z5k9dI7Zi/view?usp=drive_link). I hope that it will be fixed soon.
 
 ## Endianness
 
