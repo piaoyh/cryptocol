@@ -44126,126 +44126,126 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
         panic_free_calc_pow_assign!(self, Self::common_pow_assign, exp);
     }
 
-    // pub fn wrapping_pow(&mut self, exp: &Self) -> Self
-    /// Raises `BigUInt` type number to the power of `exp`, using
-    /// exponentiation of type `BigUInt` by squaring,
-    /// wrapping around at the boundary of the type `Self`,
-    /// and returns the result.
-    /// 
-    /// # Arguments
-    /// `exp` is the power to raise `self` to, and is of `&Self` type.
-    ///
-    /// # Panics
-    /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    ///   or its behavior may be undefined though it may not panic.
-    /// - If both `self` and `exp` are zero, the result is mathematically
-    ///   undefined, so this method will panic.
-    /// 
-    /// # Output
-    /// It returns the result of `self` raised to the power of `exp`.
-    /// 
-    /// # Features
-    /// - Wrapping (modular) exponentiation.
-    /// - If overflowing happens, the `OVERFLOW` flag of the return value will
-    ///   be set.
-    /// 
-    /// # Counterpart Method
-    /// The method [wrapping_pow_uint()](struct@BigUInt#method.wrapping_pow_uint)
-    /// is more efficient than this method `wrapping_pow()` when the exponent
-    /// `exp` is primitive unsigned integral data type
-    /// such as u8, u16, u32, u64, and u128.
-    /// If `exp` is the primitive unsigned integral data type number,
-    /// use the method [wrapping_pow_uint()](struct@BigUInt#method.wrapping_pow_uint).
-    /// 
-    /// # Example 1 for normal exponentiation
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
-    /// 
-    /// let a_biguint = UU32::from_uint(10_u8);
-    /// let exp = UU32::from_uint(30_u8);
-    /// let res = a_biguint.wrapping_pow(&exp);
-    /// println!("{} ** {} = {}", a_biguint, exp, res);
-    /// assert_eq!(res.to_string(), "1000000000000000000000000000000");
-    /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_undefined(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
-    /// ```
-    /// 
-    /// # Example 2 for wrapping (modular) exponentiation
-    /// ```
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
-    /// 
-    /// let a_biguint = UU32::from_uint(10_u8);
-    /// let exp = UU32::from_uint(100_u8);
-    /// let res = a_biguint.wrapping_pow(&exp);
-    /// println!("{} ** {} = {}", a_biguint, exp, res);
-    /// assert_eq!(res.to_string(), "60053020119642567005817971699943807522652027577520184704273238430174760927232");
-    /// assert_eq!(res.is_overflow(), true);
-    /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_undefined(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
-    /// ```
-    /// 
-    /// # Example 3 for 123456789012345678901234567890123456789 ** 0
-    /// ```
-    /// use std::str::FromStr;
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
-    /// 
-    /// let a_biguint = UU32::from_str("123456789012345678901234567890123456789").unwrap();
-    /// let exp = UU32::zero();
-    /// let res = a_biguint.wrapping_pow(&exp);
-    /// println!("{} ** {} = {}", a_biguint, exp, res);
-    /// assert_eq!(res.to_string(), "1");
-    /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_undefined(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
-    /// ```
-    /// 
-    /// # Example 4 for 0 ** 123456789012345678901234567890123456789
-    /// ```
-    /// use std::str::FromStr;
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
-    /// 
-    /// let a_biguint = UU32::zero();
-    /// let exp = UU32::from_str("123456789012345678901234567890123456789").unwrap();
-    /// let res = a_biguint.wrapping_pow(&exp);
-    /// println!("{} ** {} = {}", a_biguint, exp, res);
-    /// assert_eq!(res.to_string(), "0");
-    /// assert_eq!(res.is_overflow(), false);
-    /// assert_eq!(res.is_underflow(), false);
-    /// assert_eq!(res.is_infinity(), false);
-    /// assert_eq!(res.is_undefined(), false);
-    /// assert_eq!(res.is_divided_by_zero(), false);
-    /// ```
-    /// 
-    /// # Panic Examples
-    /// ```should_panic
-    /// use cryptocol::define_utypes_with;
-    /// define_utypes_with!(u32);
-    /// 
-    /// let _a_biguint = U256::zero();
-    /// let _exp = U256::zero();
-    /// // It will panic.
-    /// let res = _a_biguint.wrapping_pow(&_exp);
-    /// ```
-    /// 
-    /// # Big-endian issue
-    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    /// for Big-endian CPUs with your own full responsibility.
-    pub fn wrapping_pow(&self, exp: &Self) -> Self
-    {
-        calc_assign_to_calc!(self, Self::wrapping_pow_assign, exp);
-    }
+    // // pub fn wrapping_pow(&mut self, exp: &Self) -> Self
+    // /// Raises `BigUInt` type number to the power of `exp`, using
+    // /// exponentiation of type `BigUInt` by squaring,
+    // /// wrapping around at the boundary of the type `Self`,
+    // /// and returns the result.
+    // /// 
+    // /// # Arguments
+    // /// `exp` is the power to raise `self` to, and is of `&Self` type.
+    // ///
+    // /// # Panics
+    // /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    // ///   or its behavior may be undefined though it may not panic.
+    // /// - If both `self` and `exp` are zero, the result is mathematically
+    // ///   undefined, so this method will panic.
+    // /// 
+    // /// # Output
+    // /// It returns the result of `self` raised to the power of `exp`.
+    // /// 
+    // /// # Features
+    // /// - Wrapping (modular) exponentiation.
+    // /// - If overflowing happens, the `OVERFLOW` flag of the return value will
+    // ///   be set.
+    // /// 
+    // /// # Counterpart Method
+    // /// The method [wrapping_pow_uint()](struct@BigUInt#method.wrapping_pow_uint)
+    // /// is more efficient than this method `wrapping_pow()` when the exponent
+    // /// `exp` is primitive unsigned integral data type
+    // /// such as u8, u16, u32, u64, and u128.
+    // /// If `exp` is the primitive unsigned integral data type number,
+    // /// use the method [wrapping_pow_uint()](struct@BigUInt#method.wrapping_pow_uint).
+    // /// 
+    // /// # Example 1 for normal exponentiation
+    // /// ```
+    // /// use cryptocol::define_utypes_with;
+    // /// define_utypes_with!(u32);
+    // /// 
+    // /// let a_biguint = UU32::from_uint(10_u8);
+    // /// let exp = UU32::from_uint(30_u8);
+    // /// let res = a_biguint.wrapping_pow(&exp);
+    // /// println!("{} ** {} = {}", a_biguint, exp, res);
+    // /// assert_eq!(res.to_string(), "1000000000000000000000000000000");
+    // /// assert_eq!(res.is_overflow(), false);
+    // /// assert_eq!(res.is_underflow(), false);
+    // /// assert_eq!(res.is_infinity(), false);
+    // /// assert_eq!(res.is_undefined(), false);
+    // /// assert_eq!(res.is_divided_by_zero(), false);
+    // /// ```
+    // /// 
+    // /// # Example 2 for wrapping (modular) exponentiation
+    // /// ```
+    // /// use cryptocol::define_utypes_with;
+    // /// define_utypes_with!(u32);
+    // /// 
+    // /// let a_biguint = UU32::from_uint(10_u8);
+    // /// let exp = UU32::from_uint(100_u8);
+    // /// let res = a_biguint.wrapping_pow(&exp);
+    // /// println!("{} ** {} = {}", a_biguint, exp, res);
+    // /// assert_eq!(res.to_string(), "60053020119642567005817971699943807522652027577520184704273238430174760927232");
+    // /// assert_eq!(res.is_overflow(), true);
+    // /// assert_eq!(res.is_underflow(), false);
+    // /// assert_eq!(res.is_infinity(), false);
+    // /// assert_eq!(res.is_undefined(), false);
+    // /// assert_eq!(res.is_divided_by_zero(), false);
+    // /// ```
+    // /// 
+    // /// # Example 3 for 123456789012345678901234567890123456789 ** 0
+    // /// ```
+    // /// use std::str::FromStr;
+    // /// use cryptocol::define_utypes_with;
+    // /// define_utypes_with!(u32);
+    // /// 
+    // /// let a_biguint = UU32::from_str("123456789012345678901234567890123456789").unwrap();
+    // /// let exp = UU32::zero();
+    // /// let res = a_biguint.wrapping_pow(&exp);
+    // /// println!("{} ** {} = {}", a_biguint, exp, res);
+    // /// assert_eq!(res.to_string(), "1");
+    // /// assert_eq!(res.is_overflow(), false);
+    // /// assert_eq!(res.is_underflow(), false);
+    // /// assert_eq!(res.is_infinity(), false);
+    // /// assert_eq!(res.is_undefined(), false);
+    // /// assert_eq!(res.is_divided_by_zero(), false);
+    // /// ```
+    // /// 
+    // /// # Example 4 for 0 ** 123456789012345678901234567890123456789
+    // /// ```
+    // /// use std::str::FromStr;
+    // /// use cryptocol::define_utypes_with;
+    // /// define_utypes_with!(u32);
+    // /// 
+    // /// let a_biguint = UU32::zero();
+    // /// let exp = UU32::from_str("123456789012345678901234567890123456789").unwrap();
+    // /// let res = a_biguint.wrapping_pow(&exp);
+    // /// println!("{} ** {} = {}", a_biguint, exp, res);
+    // /// assert_eq!(res.to_string(), "0");
+    // /// assert_eq!(res.is_overflow(), false);
+    // /// assert_eq!(res.is_underflow(), false);
+    // /// assert_eq!(res.is_infinity(), false);
+    // /// assert_eq!(res.is_undefined(), false);
+    // /// assert_eq!(res.is_divided_by_zero(), false);
+    // /// ```
+    // /// 
+    // /// # Panic Examples
+    // /// ```should_panic
+    // /// use cryptocol::define_utypes_with;
+    // /// define_utypes_with!(u32);
+    // /// 
+    // /// let _a_biguint = U256::zero();
+    // /// let _exp = U256::zero();
+    // /// // It will panic.
+    // /// let res = _a_biguint.wrapping_pow(&_exp);
+    // /// ```
+    // /// 
+    // /// # Big-endian issue
+    // /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    // /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    // /// for Big-endian CPUs with your own full responsibility.
+    // pub fn wrapping_pow(&self, exp: &Self) -> Self
+    // {
+    //     calc_assign_to_calc!(self, Self::wrapping_pow_assign, exp);
+    // }
 
     // pub fn wrapping_pow_assign(&mut self, exp: &Self) -> Self
     /// Raises `BigUInt` type number to the power of `exp`, using
