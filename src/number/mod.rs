@@ -21,6 +21,7 @@
 //! - large variable-sized signed integers bigger than 128-bit size.
 //! 
 //! # Background
+//! 
 //! ## Generic Programming of Primitive Data Types
 //! When you write any code in Rust, you will find that it is tricky to write
 //! generic code for primitive data types such as `u8`, `u16`, `u32`, `u64`,
@@ -29,6 +30,7 @@
 //! You have to do so-called 'trait control' in order to write generic code for
 //! primitive data types in Rust. The traits `SmallUInt` and `SmallSInt` are
 //! written for you who would like to write generic code.
+//! 
 //! ## Additional Useful Methods for Primitive Data Types
 //! There are plenty of or even more than enough of methods prepared for
 //! primitive data types. However, what if you need some more methods that
@@ -38,6 +40,7 @@
 //! `SmallUInt` and `SmallSInt` will give you hints about how to write your own
 //! traits and their implementation to add your own methods to primitive data
 //! types.
+//! 
 //! ## Arithmatic Operations of Big Numbers
 //! Most of the modern programming languages do not support big numbers
 //! such as 256-bit, 512-bit, and 1024-bit integers or even bigger integers.

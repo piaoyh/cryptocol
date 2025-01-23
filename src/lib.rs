@@ -16,9 +16,6 @@
 //! Endianness (including Little-endian and Big-endian)
 //! [Read more](https://en.wikipedia.org/wiki/Endianness).
 //! 
-//! # When any link fails
-//! The webserver `docs.rs` has been failing in generating BigUInt page from ver. 0.8.5 on for some technical reason that has not been solved yet. If the webserver `docs.rs` fails in generating BigUInt page in this version, too, you can download the manual [here](https://drive.google.com/file/d/1Qt5ucLjQxtagr_td6uB7_M3z5k9dI7Zi/view?usp=drive_link). I hope that it will be fixed soon.
-//! 
 //! # Big-endian issue
 //! This crate is just experimental for Big-endian CPUs. So, you are not
 //! encouraged to use this crate for Big-endian CPUs for serious purpose.
