@@ -133,6 +133,7 @@
 
 pub mod small_uint;
 pub mod small_sint;
+// pub mod trait_arithmetic;
 pub mod short_union;
 pub mod int_union;
 pub mod long_union;
@@ -145,11 +146,11 @@ pub mod number_errors;
 pub mod macros_for_types;
 pub mod macros_for_integer_unions;
 
-/// big_uint.rs was too big because of documentation and plenty of examples
-/// So, in order to provide documentation without `docs.rs`'s failing
-/// generating documentation, dummy codes were made and documentation and
-/// examples were moved to big_uint_arithmetic.rs.
-pub mod documentation;
+// /// big_uint.rs was too big because of documentation and plenty of examples
+// /// So, in order to provide documentation without `docs.rs`'s failing
+// /// generating documentation, dummy codes were made and documentation and
+// /// examples were moved to big_uint_arithmetic.rs.
+// pub mod documentation;
 
 /// Implementaion of trait SmallUInt for u8, u16, u32, u64, u128, and usize
 pub mod trait_small_uint_for_unsigned_impl;
@@ -160,9 +161,14 @@ pub mod trait_small_uint_for_integer_unions_impl;
 /// Implementaion of various traits for BigUInt
 pub mod traits_for_big_uint_impl;
 
+// /// Implementaion of arithmetic trait for BigUInt
+// pub mod trait_arithmetic_for_big_uint_impl;
+
+
 
 pub use small_uint::*;
 pub use small_sint::*;
+// pub use trait_arithmetic::*;
 pub use short_union::*;
 pub use int_union::*;
 pub use long_union::*;

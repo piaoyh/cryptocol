@@ -148,7 +148,6 @@ use crate::number::{ ShortUnion, IntUnion, LongUnion, LongerUnion, SizeUnion };
 /// It is just experimental for big-endian CPUs. So, you are not encouraged
 /// to use it for big-endian CPUs for serious purpose.
 /// Only use this crate for big-endian CPUs with your own full responsibility.
-
 pub trait SmallUInt: Copy + Clone + Sized //+ Display + Debug + ToString
 {
     /***** ADDITION *****/
