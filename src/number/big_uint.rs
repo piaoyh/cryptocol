@@ -6383,96 +6383,96 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     //     self.checked_add_uint(rhs).unwrap()
     // }
 
-    // // pub fn saturating_add_uint<U>(&self, rhs: U) -> Self
-    // /// Calculates `self` + `rhs`,
-    // /// saturating at the numeric bounds instead of overflowing.
-    // /// 
-    // /// # Arguments
-    // /// `rhs` is to be added to `self`, and primitive unsigned integer
-    // /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    // /// 
-    // /// # Panics
-    // /// If `size_of::<T>() * N` <= `128`, this method may panic
-    // /// or its behavior may be undefined though it may not panic.
-    // /// 
-    // /// # Output
-    // /// It returns the sum `self` + `rhs` if the result is less than or equal
-    // /// to the maximum value of `Self`. If the sum `self` + `rhs` is greater
-    // /// than the maximum value it returns the maximum value.
-    // /// 
-    // /// # Features
-    // /// - This method saturates when it reaches the maximum value of `Self`.
-    // /// - It does not set `OVERFLOW` flag of the return value.
-    // /// 
-    // /// # Counterpart Method
-    // /// If `rhs` is bigger tham `ui128`, the method
-    // /// [saturating_add()](struct@BigUInt#method.saturating_add)
-    // /// is proper rather than this method.
-    // /// 
-    // /// # Example 1
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u64);
-    // /// 
-    // /// let a_biguint = U512::max().wrapping_sub_uint(2_u8);
-    // /// let res = a_biguint.saturating_add_uint(1_u8);
-    // /// println!("{} + 1 = {}", a_biguint, res);
-    // /// assert_eq!(res.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// ```
-    // /// 
-    // /// # Example 2
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u64);
-    // /// 
-    // /// let a_biguint = U512::max().wrapping_sub_uint(2_u8);
-    // /// let res = a_biguint.saturating_add_uint(2_u8);
-    // /// println!("{} + 2 = {}", a_biguint, res);
-    // /// assert_eq!(res, U512::max());
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// ```
-    // /// 
-    // /// # Example 3
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u64);
-    // /// 
-    // /// let a_biguint = U512::max().wrapping_sub_uint(2_u8);
-    // /// let res = a_biguint.saturating_add_uint(3_u8);
-    // /// println!("{} + 3 = {}", a_biguint, res);
-    // /// assert_eq!(res, U512::max());
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// ```
-    // /// 
-    // /// # Big-endian issue
-    // /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    // /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    // /// for Big-endian CPUs with your own full responsibility.
     // pub fn saturating_add_uint<U>(&self, rhs: U) -> Self
-    // where U: SmallUInt + Copy + Clone + Display + Debug + ToString
-    //         + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
-    //         + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
-    //         + Rem<Output=U> + RemAssign
-    //         + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
-    //         + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
-    //         + BitXor<Output=U> + BitXorAssign + Not<Output=U>
-    //         + PartialEq + PartialOrd
-    // {
-    //     calc_assign_to_calc!(self, Self::saturating_add_assign_uint, rhs);
-    // }
+    /// Calculates `self` + `rhs`,
+    /// saturating at the numeric bounds instead of overflowing.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the sum `self` + `rhs` if the result is less than or equal
+    /// to the maximum value of `Self`. If the sum `self` + `rhs` is greater
+    /// than the maximum value it returns the maximum value.
+    /// 
+    /// # Features
+    /// - This method saturates when it reaches the maximum value of `Self`.
+    /// - It does not set `OVERFLOW` flag of the return value.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger tham `ui128`, the method
+    /// [saturating_add()](struct@BigUInt#method.saturating_add)
+    /// is proper rather than this method.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U512::max().wrapping_sub_uint(2_u8);
+    /// let res = a_biguint.saturating_add_uint(1_u8);
+    /// println!("{} + 1 = {}", a_biguint, res);
+    /// assert_eq!(res.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084094");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U512::max().wrapping_sub_uint(2_u8);
+    /// let res = a_biguint.saturating_add_uint(2_u8);
+    /// println!("{} + 2 = {}", a_biguint, res);
+    /// assert_eq!(res, U512::max());
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U512::max().wrapping_sub_uint(2_u8);
+    /// let res = a_biguint.saturating_add_uint(3_u8);
+    /// println!("{} + 3 = {}", a_biguint, res);
+    /// assert_eq!(res, U512::max());
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn saturating_add_uint<U>(&self, rhs: U) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        calc_assign_to_calc!(self, Self::saturating_add_assign_uint, rhs);
+    }
 
     // pub fn saturating_add_assign_uint<U>(&mut self, rhs: T)
     /// Calculates `self` + `rhs`,
@@ -9241,96 +9241,96 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     //     self.checked_sub_uint(rhs).unwrap()
     // }
 
-    // // pub fn saturating_sub_uint<U>(&self, rhs: U) -> Self
-    // /// Calculates `self` - `rhs`,
-    // /// saturating at `0` instead of underflowing.
-    // /// 
-    // /// # Arguments
-    // /// `rhs` is to be subtracted from `self`, and primitive unsigned integer
-    // /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    // /// 
-    // /// # Panics
-    // /// If `size_of::<T>() * N` <= `128`, this method may panic
-    // /// or its behavior may be undefined though it may not panic.
-    // /// 
-    // /// # Output
-    // /// It returns the difference `self` - `rhs` if the result is less than
-    // /// or equal to `0` of `Self`. If the difference `self` - `rhs`
-    // /// is less than `0`, it returns `0`.
-    // /// 
-    // /// # Features
-    // /// - This method saturates when it reaches `0` of `Self`.
-    // /// - It does not set `UNDERFLOW` flag of the return value.
-    // /// 
-    // /// # Counterpart Method
-    // /// If `rhs` is bigger tham `ui128`, the method
-    // /// [saturating_sub()](struct@BigUInt#method.saturating_sub)
-    // /// is proper rather than this method.
-    // /// 
-    // /// # Example 1
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u64);
-    // /// 
-    // /// let a_biguint = U512::from_uint(2_u8);
-    // /// let res = a_biguint.saturating_sub_uint(1_u8);
-    // /// println!("{} - 1 = {}", a_biguint, res);
-    // /// assert_eq!(res.to_string(), "1");
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// ```
-    // /// 
-    // /// # Example 2
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u64);
-    // /// 
-    // /// let a_biguint = U512::from_uint(2_u8);
-    // /// let res = a_biguint.saturating_sub_uint(2_u8);
-    // /// println!("{} - 2 = {}", a_biguint, res);
-    // /// assert_eq!(res.to_string(), "0");
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// ```
-    // /// 
-    // /// # Example 3
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u64);
-    // /// 
-    // /// let a_biguint = U512::from_uint(2_u8);
-    // /// let res = a_biguint.saturating_sub_uint(3_u8);
-    // /// println!("{} - 3 = {}", a_biguint, res);
-    // /// assert_eq!(res.to_string(), "0");
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// ```
-    // /// 
-    // /// # Big-endian issue
-    // /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    // /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    // /// for Big-endian CPUs with your own full responsibility.
     // pub fn saturating_sub_uint<U>(&self, rhs: U) -> Self
-    // where U: SmallUInt + Copy + Clone + Display + Debug + ToString
-    //         + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
-    //         + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
-    //         + Rem<Output=U> + RemAssign
-    //         + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
-    //         + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
-    //         + BitXor<Output=U> + BitXorAssign + Not<Output=U>
-    //         + PartialEq + PartialOrd
-    // {
-    //     calc_assign_to_calc!(self, Self::saturating_sub_assign_uint, rhs);
-    // }
+    /// Calculates `self` - `rhs`,
+    /// saturating at `0` instead of underflowing.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be subtracted from `self`, and primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the difference `self` - `rhs` if the result is less than
+    /// or equal to `0` of `Self`. If the difference `self` - `rhs`
+    /// is less than `0`, it returns `0`.
+    /// 
+    /// # Features
+    /// - This method saturates when it reaches `0` of `Self`.
+    /// - It does not set `UNDERFLOW` flag of the return value.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger tham `ui128`, the method
+    /// [saturating_sub()](struct@BigUInt#method.saturating_sub)
+    /// is proper rather than this method.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U512::from_uint(2_u8);
+    /// let res = a_biguint.saturating_sub_uint(1_u8);
+    /// println!("{} - 1 = {}", a_biguint, res);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U512::from_uint(2_u8);
+    /// let res = a_biguint.saturating_sub_uint(2_u8);
+    /// println!("{} - 2 = {}", a_biguint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = U512::from_uint(2_u8);
+    /// let res = a_biguint.saturating_sub_uint(3_u8);
+    /// println!("{} - 3 = {}", a_biguint, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn saturating_sub_uint<U>(&self, rhs: U) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        calc_assign_to_calc!(self, Self::saturating_sub_assign_uint, rhs);
+    }
 
     // pub fn saturating_sub_assign_uint<U>(&mut self, rhs: T)
     /// Calculates `self` - `rhs`,
@@ -12462,82 +12462,82 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     //     self.checked_mul_uint(rhs).unwrap()
     // }
 
-    // // pub fn saturating_mul_uint<U>(&self, rhs: U) -> Self
-    // /// Calculates `self` * `rhs`,
-    // /// saturating at the numeric bounds instead of overflowing.
-    // /// 
-    // /// # Arguments
-    // /// `rhs` is to be multiplied to `self`, and primitive unsigned integer
-    // /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    // /// 
-    // /// # Panics
-    // /// If `size_of::<T>() * N` <= `128`, this method may panic
-    // /// or its behavior may be undefined though it may not panic.
-    // /// 
-    // /// # Output
-    // /// It returns the multiplication result `self` * `rhs` if the result is
-    // /// less than or equal to the maximum value of `Self`. If the sum
-    // /// `self` + `rhs` is greater than the maximum value it returns the
-    // /// maximum value.
-    // /// 
-    // /// # Features
-    // /// - This method saturates when it reaches the maximum value of `Self`.
-    // /// - It does not set `OVERFLOW` flag of the return value.
-    // /// 
-    // /// # Counterpart Method
-    // /// If `rhs` is bigger tham `ui128`, the method
-    // /// [saturating_mul()](struct@BigUInt#method.saturating_mul)
-    // /// is proper rather than this method.
-    // /// 
-    // /// # Example 1
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u8);
-    // /// 
-    // /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    // /// let res = a_biguint.saturating_mul_uint(5_u8);
-    // /// println!("{} X {} = {}", a_biguint, 5_u8, res);
-    // /// assert_eq!(res.to_string(), "4384009371490834517138450159290932430254268769414059732849732168245030420470");
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// ```
-    // /// 
-    // /// # Example 2
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u8);
-    // /// 
-    // /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    // /// let res = a_biguint.saturating_mul_uint(248_u8);
-    // /// println!("{} X {} = {}", a_biguint, 248_u8, res);
-    // /// assert_eq!(res.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
-    // /// assert_eq!(res, UU32::max());
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// ```
-    // /// 
-    // /// # Big-endian issue
-    // /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    // /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    // /// for Big-endian CPUs with your own full responsibility.
     // pub fn saturating_mul_uint<U>(&self, rhs: U) -> Self
-    // where U: SmallUInt + Copy + Clone + Display + Debug + ToString
-    //         + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
-    //         + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
-    //         + Rem<Output=U> + RemAssign
-    //         + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
-    //         + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
-    //         + BitXor<Output=U> + BitXorAssign + Not<Output=U>
-    //         + PartialEq + PartialOrd
-    // {
-    //     calc_assign_to_calc!(self, Self::saturating_mul_assign_uint, rhs);
-    // }
+    /// Calculates `self` * `rhs`,
+    /// saturating at the numeric bounds instead of overflowing.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be multiplied to `self`, and primitive unsigned integer
+    /// such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the multiplication result `self` * `rhs` if the result is
+    /// less than or equal to the maximum value of `Self`. If the sum
+    /// `self` + `rhs` is greater than the maximum value it returns the
+    /// maximum value.
+    /// 
+    /// # Features
+    /// - This method saturates when it reaches the maximum value of `Self`.
+    /// - It does not set `OVERFLOW` flag of the return value.
+    /// 
+    /// # Counterpart Method
+    /// If `rhs` is bigger tham `ui128`, the method
+    /// [saturating_mul()](struct@BigUInt#method.saturating_mul)
+    /// is proper rather than this method.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let res = a_biguint.saturating_mul_uint(5_u8);
+    /// println!("{} X {} = {}", a_biguint, 5_u8, res);
+    /// assert_eq!(res.to_string(), "4384009371490834517138450159290932430254268769414059732849732168245030420470");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let res = a_biguint.saturating_mul_uint(248_u8);
+    /// println!("{} X {} = {}", a_biguint, 248_u8, res);
+    /// assert_eq!(res.to_string(), "115792089237316195423570985008687907853269984665640564039457584007913129639935");
+    /// assert_eq!(res, UU32::max());
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn saturating_mul_uint<U>(&self, rhs: U) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        calc_assign_to_calc!(self, Self::saturating_mul_assign_uint, rhs);
+    }
 
     // pub fn saturating_mul_assign_uint<U>(&mut self, rhs: U)
     /// Calculates `self` * `rhs`,
@@ -22343,132 +22343,132 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     //     self.checked_pow_uint(exp).unwrap()
     // }
 
-    // // pub fn saturating_pow_uint<U>(&self, exp: U) -> Self
-    // /// Raises `BigUInt` type number to the power of `exp`, using
-    // /// exponentiation of type `BigUInt` by squaring,
-    // /// saturating at the numeric bounds instead of overflowing,
-    // /// and returns the result. The type `U` has the trait `SmallUInt`.
-    // /// 
-    // /// # Arguments
-    // /// `exp` is the power to raise `self` to, and is a primitive unsigned
-    // /// integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    // ///
-    // /// # Panics
-    // /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    // ///   or its behavior may be undefined though it may not panic.
-    // /// - If both `self` and `exp` are zero, the result is mathematically
-    // ///   undefined, so this method will panic.
-    // /// 
-    // /// # Output
-    // /// It returns the result of `self` raised to the power of `exp`.
-    // /// It returns the maximum value instead of overflowing.
-    // /// 
-    // /// # Features
-    // /// - Wrapping (modular) exponentiation.
-    // /// - Overflowing never happens.
-    // /// - This method saturates when it reaches maximum value.
-    // /// - It does not set `OVERFLOW` flag of the return value.
-    // /// 
-    // /// # Counterpart Method
-    // /// If `exp` is bigger than `u128`, the method
-    // /// [saturating_pow()](struct@BigUInt#method.saturating_pow)
-    // /// is proper rather than this method `saturating_pow_uint()`.
-    // /// 
-    // /// # Example 1
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u8);
-    // /// 
-    // /// let a_biguint = U256::from_uint(10_u8);
-    // /// let mut exp = 30_u8;
-    // /// let mut res = a_biguint.saturating_pow_uint(exp);
-    // /// println!("{} ** {} = {}", a_biguint, exp, res);
-    // /// assert_eq!(res.to_string(), "1000000000000000000000000000000");
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// ```
-    // /// 
-    // /// # Example 2
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u8);
-    // /// 
-    // /// let a_biguint = U256::from_uint(10_u8);
-    // /// let exp = 100_u8;
-    // /// let res = a_biguint.saturating_pow_uint(exp);
-    // /// println!("{} ** {} = {}", a_biguint, exp, res);
-    // /// assert_eq!(res, UU32::max());
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// ```
-    // /// 
-    // /// # Example 3
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u8);
-    // /// 
-    // /// let a_biguint = U256::from_uint(10_u8);
-    // /// let mut exp = 0_u8;
-    // /// let mut res = a_biguint.saturating_pow_uint(exp);
-    // /// println!("{} ** {} = {}", a_biguint, exp, res);
-    // /// assert_eq!(res.to_string(), "1");
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// ```
-    // /// 
-    // /// # Example 4
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u8);
-    // /// 
-    // /// let a_biguint = U256::zero();
-    // /// let mut exp = 30_u8;
-    // /// let mut res = a_biguint.saturating_pow_uint(exp);
-    // /// println!("{} ** {} = {}", a_biguint, exp, res);
-    // /// assert_eq!(res.to_string(), "0");
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// ```
-    // /// 
-    // /// # Panic Examples
-    // /// ```should_panic
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u8);
-    // /// 
-    // /// let _a_biguint = UU32::zero();
-    // /// let _exp = 0_u8;
-    // /// // It will panic.
-    // /// let res = _a_biguint.saturating_pow_uint(_exp);
-    // /// ```
-    // /// 
-    // /// # Big-endian issue
-    // /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    // /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    // /// for Big-endian CPUs with your own full responsibility.
     // pub fn saturating_pow_uint<U>(&self, exp: U) -> Self
-    // where U: SmallUInt + Copy + Clone + Display + Debug + ToString
-    //         + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
-    //         + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
-    //         + Rem<Output=U> + RemAssign
-    //         + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
-    //         + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
-    //         + BitXor<Output=U> + BitXorAssign + Not<Output=U>
-    //         + PartialEq + PartialOrd
-    // {
-    //     calc_assign_to_calc!(self, Self::saturating_pow_assign_uint, exp);
-    // }
+    /// Raises `BigUInt` type number to the power of `exp`, using
+    /// exponentiation of type `BigUInt` by squaring,
+    /// saturating at the numeric bounds instead of overflowing,
+    /// and returns the result. The type `U` has the trait `SmallUInt`.
+    /// 
+    /// # Arguments
+    /// `exp` is the power to raise `self` to, and is a primitive unsigned
+    /// integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If both `self` and `exp` are zero, the result is mathematically
+    ///   undefined, so this method will panic.
+    /// 
+    /// # Output
+    /// It returns the result of `self` raised to the power of `exp`.
+    /// It returns the maximum value instead of overflowing.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) exponentiation.
+    /// - Overflowing never happens.
+    /// - This method saturates when it reaches maximum value.
+    /// - It does not set `OVERFLOW` flag of the return value.
+    /// 
+    /// # Counterpart Method
+    /// If `exp` is bigger than `u128`, the method
+    /// [saturating_pow()](struct@BigUInt#method.saturating_pow)
+    /// is proper rather than this method `saturating_pow_uint()`.
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_uint(10_u8);
+    /// let mut exp = 30_u8;
+    /// let mut res = a_biguint.saturating_pow_uint(exp);
+    /// println!("{} ** {} = {}", a_biguint, exp, res);
+    /// assert_eq!(res.to_string(), "1000000000000000000000000000000");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_uint(10_u8);
+    /// let exp = 100_u8;
+    /// let res = a_biguint.saturating_pow_uint(exp);
+    /// println!("{} ** {} = {}", a_biguint, exp, res);
+    /// assert_eq!(res, UU32::max());
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 3
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_uint(10_u8);
+    /// let mut exp = 0_u8;
+    /// let mut res = a_biguint.saturating_pow_uint(exp);
+    /// println!("{} ** {} = {}", a_biguint, exp, res);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 4
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::zero();
+    /// let mut exp = 30_u8;
+    /// let mut res = a_biguint.saturating_pow_uint(exp);
+    /// println!("{} ** {} = {}", a_biguint, exp, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```should_panic
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let _a_biguint = UU32::zero();
+    /// let _exp = 0_u8;
+    /// // It will panic.
+    /// let res = _a_biguint.saturating_pow_uint(_exp);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn saturating_pow_uint<U>(&self, exp: U) -> Self
+    where U: SmallUInt + Copy + Clone + Display + Debug + ToString
+            + Add<Output=U> + AddAssign + Sub<Output=U> + SubAssign
+            + Mul<Output=U> + MulAssign + Div<Output=U> + DivAssign
+            + Rem<Output=U> + RemAssign
+            + Shl<Output=U> + ShlAssign + Shr<Output=U> + ShrAssign
+            + BitAnd<Output=U> + BitAndAssign + BitOr<Output=U> + BitOrAssign
+            + BitXor<Output=U> + BitXorAssign + Not<Output=U>
+            + PartialEq + PartialOrd
+    {
+        calc_assign_to_calc!(self, Self::saturating_pow_assign_uint, exp);
+    }
 
     // pub fn saturating_pow_assign_uint<U>(&self, exp: U)
     /// Raises `BigUInt` type number to the power of `exp`, using
@@ -35389,77 +35389,77 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     //     self.checked_mul(rhs).unwrap()
     // }
 
-    // // pub fn saturating_mul(&self, rhs: &Self) -> Self
-    // /// Calculates `self` * `rhs`,
-    // /// saturating at the numeric bounds instead of overflowing.
-    // /// 
-    // /// # Arguments
-    // /// `rhs` is to be added to `self`, and is of `&Self` type.
-    // /// 
-    // /// # Panics
-    // /// If `size_of::<T>() * N` <= `128`, this method may panic
-    // /// or its behavior may be undefined though it may not panic.
-    // /// 
-    // /// # Output
-    // /// It returns the multiplication result `self` * `rhs` if the result is
-    // /// less than or equal to the maximum value of `Self`. If the sum
-    // /// `self` + `rhs` is greater than the maximum value it returns the
-    // /// maximum value.
-    // /// 
-    // /// # Features
-    // /// - This method saturates when it reaches the maximum value of `Self`.
-    // /// - It does not set `OVERFLOW` flag of the return value.
-    // /// 
-    // /// # Counterpart Method
-    // /// The method
-    // /// [saturating_mul_uint()](struct@BigUInt#method.saturating_mul_uint)
-    // /// is a bit faster than this method `saturating_mul()`.
-    // /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
-    // /// u32, u64, and u128, use the method
-    // /// [saturating_mul_uint()](struct@BigUInt#method.saturating_mul_uint).
-    // /// 
-    // /// # Example 1
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u8);
-    // /// 
-    // /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    // /// let b_biguint = UU32::from_uint(5_u8);
-    // /// let res = a_biguint.saturating_mul(&b_biguint);
-    // /// println!("{} X {} = {}", a_biguint, b_biguint, res);
-    // /// assert_eq!(res.to_string(), "4384009371490834517138450159290932430254268769414059732849732168245030420470");
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// ```
-    // /// 
-    // /// # Example 2
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u8);
-    // /// 
-    // /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
-    // /// let b_biguint = UU32::from_uint(248_u8);
-    // /// let res = a_biguint.saturating_mul(&b_biguint);
-    // /// println!("{} X {} = {}", a_biguint, b_biguint, res);
-    // /// assert_eq!(res, UU32::max());
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// ```
-    // /// 
-    // /// # Big-endian issue
-    // /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    // /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    // /// for Big-endian CPUs with your own full responsibility.
     // pub fn saturating_mul(&self, rhs: &Self) -> Self
-    // {
-    //     calc_assign_to_calc!(self, Self::saturating_mul_assign, rhs);
-    // }
+    /// Calculates `self` * `rhs`,
+    /// saturating at the numeric bounds instead of overflowing.
+    /// 
+    /// # Arguments
+    /// `rhs` is to be added to `self`, and is of `&Self` type.
+    /// 
+    /// # Panics
+    /// If `size_of::<T>() * N` <= `128`, this method may panic
+    /// or its behavior may be undefined though it may not panic.
+    /// 
+    /// # Output
+    /// It returns the multiplication result `self` * `rhs` if the result is
+    /// less than or equal to the maximum value of `Self`. If the sum
+    /// `self` + `rhs` is greater than the maximum value it returns the
+    /// maximum value.
+    /// 
+    /// # Features
+    /// - This method saturates when it reaches the maximum value of `Self`.
+    /// - It does not set `OVERFLOW` flag of the return value.
+    /// 
+    /// # Counterpart Method
+    /// The method
+    /// [saturating_mul_uint()](struct@BigUInt#method.saturating_mul_uint)
+    /// is a bit faster than this method `saturating_mul()`.
+    /// So, if `rhs` is primitive unsigned integral data type such as u8, u16,
+    /// u32, u64, and u128, use the method
+    /// [saturating_mul_uint()](struct@BigUInt#method.saturating_mul_uint).
+    /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_biguint = UU32::from_uint(5_u8);
+    /// let res = a_biguint.saturating_mul(&b_biguint);
+    /// println!("{} X {} = {}", a_biguint, b_biguint, res);
+    /// assert_eq!(res.to_string(), "4384009371490834517138450159290932430254268769414059732849732168245030420470");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Example 2
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u8);
+    /// 
+    /// let a_biguint = U256::from_string("876801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
+    /// let b_biguint = UU32::from_uint(248_u8);
+    /// let res = a_biguint.saturating_mul(&b_biguint);
+    /// println!("{} X {} = {}", a_biguint, b_biguint, res);
+    /// assert_eq!(res, UU32::max());
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn saturating_mul(&self, rhs: &Self) -> Self
+    {
+        calc_assign_to_calc!(self, Self::saturating_mul_assign, rhs);
+    }
 
     // pub fn saturating_mul_assign(&mut self, rhs: &Self)
     /// Calculates `self` * `rhs`,
@@ -45029,278 +45029,278 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     //     self.checked_pow(&exp).unwrap()
     // }
 
-    // // pub fn saturating_pow(&self, exp: &Self) -> Self
-    // /// Raises `BigUInt` type number to the power of `exp`, using
-    // /// exponentiation of type `BigUInt` by squaring,
-    // /// saturating at the numeric bounds instead of overflowing,
-    // /// and returns the result.
-    // /// 
-    // /// # Arguments
-    // /// `exp` is the power to raise `self` to, and is of `&Self` type.
-    // ///
-    // /// # Panics
-    // /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    // ///   or its behavior may be undefined though it may not panic.
-    // /// - If both `self` and `exp` are zero, the result is mathematically
-    // ///   undefined, so this method will panic.
-    // /// 
-    // /// # Output
-    // /// It returns the result of `self` raised to the power of `exp`.
-    // /// 
-    // /// # Features
-    // /// - Wrapping (modular) exponentiation.
-    // /// - Overflowing never happens.
-    // /// - This method saturates when it reaches maximum value.
-    // /// - It does not set `OVERFLOW` flag of the return value.
-    // /// 
-    // /// # Counterpart Method
-    // /// The method [saturating_pow_uint()](struct@BigUInt#method.saturating_pow_uint)
-    // /// is more efficient than this method `saturating_pow()` when the exponent
-    // /// `exp` is primitive unsigned integral data type
-    // /// such as u8, u16, u32, u64, and u128.
-    // /// If `exp` is the primitive unsigned integral data type number,
-    // /// use the method [pow_uint()](struct@BigUInt#method.pow_uint).
-    // /// 
-    // /// # Example 1 for normal exponentiation
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u64);
-    // /// 
-    // /// let a_biguint = UU32::from_uint(10_u8);
-    // /// let exp = UU32::from_uint(30_u8);
-    // /// let res = a_biguint.saturating_pow(&exp);
-    // /// println!("{} ** {} = {}", a_biguint, exp, res);
-    // /// assert_eq!(res.to_string(), "1000000000000000000000000000000");
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// ```
-    // /// 
-    // /// # Example 2 for wrapping (modular) exponentiation
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u64);
-    // /// 
-    // /// let a_biguint = UU32::from_uint(10_u8);
-    // /// let exp = UU32::from_uint(100_u8);
-    // /// let res = a_biguint.saturating_pow(&exp);
-    // /// println!("{} ** {} = {}", a_biguint, exp, res);
-    // /// assert_eq!(res, UU32::max());
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// ```
-    // /// 
-    // /// # Example 3 for 123456789012345678901234567890123456789 ** 0
-    // /// ```
-    // /// use std::str::FromStr;
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u64);
-    // /// 
-    // /// let a_biguint = UU32::from_str("123456789012345678901234567890123456789").unwrap();
-    // /// let exp = UU32::zero();
-    // /// let res = a_biguint.saturating_pow(&exp);
-    // /// println!("{} ** {} = {}", a_biguint, exp, res);
-    // /// assert_eq!(res.to_string(), "1");
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// ```
-    // /// 
-    // /// # Example 4 for 0 ** 123456789012345678901234567890123456789
-    // /// ```
-    // /// use std::str::FromStr;
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u64);
-    // /// 
-    // /// let a_biguint = UU32::zero();
-    // /// let exp = UU32::from_str("123456789012345678901234567890123456789").unwrap();
-    // /// let res = a_biguint.saturating_pow(&exp);
-    // /// println!("{} ** {} = {}", a_biguint, exp, res);
-    // /// assert_eq!(res.to_string(), "0");
-    // /// assert_eq!(res.is_overflow(), false);
-    // /// assert_eq!(res.is_underflow(), false);
-    // /// assert_eq!(res.is_infinity(), false);
-    // /// assert_eq!(res.is_undefined(), false);
-    // /// assert_eq!(res.is_divided_by_zero(), false);
-    // /// ```
-    // /// 
-    // /// # Panic Examples
-    // /// ```should_panic
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u64);
-    // /// 
-    // /// let _a_biguint = U256::zero();
-    // /// let _exp = U256::zero();
-    // /// // It will panic.
-    // /// let res = _a_biguint.saturating_pow(&_exp);
-    // /// ```
-    // /// 
-    // /// # Big-endian issue
-    // /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    // /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    // /// for Big-endian CPUs with your own full responsibility.
     // pub fn saturating_pow(&self, exp: &Self) -> Self
-    // {
-    //     calc_assign_to_calc!(self, Self::saturating_pow_assign, exp);
-    // }
+    /// Raises `BigUInt` type number to the power of `exp`, using
+    /// exponentiation of type `BigUInt` by squaring,
+    /// saturating at the numeric bounds instead of overflowing,
+    /// and returns the result.
+    /// 
+    /// # Arguments
+    /// `exp` is the power to raise `self` to, and is of `&Self` type.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If both `self` and `exp` are zero, the result is mathematically
+    ///   undefined, so this method will panic.
+    /// 
+    /// # Output
+    /// It returns the result of `self` raised to the power of `exp`.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) exponentiation.
+    /// - Overflowing never happens.
+    /// - This method saturates when it reaches maximum value.
+    /// - It does not set `OVERFLOW` flag of the return value.
+    /// 
+    /// # Counterpart Method
+    /// The method [saturating_pow_uint()](struct@BigUInt#method.saturating_pow_uint)
+    /// is more efficient than this method `saturating_pow()` when the exponent
+    /// `exp` is primitive unsigned integral data type
+    /// such as u8, u16, u32, u64, and u128.
+    /// If `exp` is the primitive unsigned integral data type number,
+    /// use the method [pow_uint()](struct@BigUInt#method.pow_uint).
+    /// 
+    /// # Example 1 for normal exponentiation
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = UU32::from_uint(10_u8);
+    /// let exp = UU32::from_uint(30_u8);
+    /// let res = a_biguint.saturating_pow(&exp);
+    /// println!("{} ** {} = {}", a_biguint, exp, res);
+    /// assert_eq!(res.to_string(), "1000000000000000000000000000000");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 2 for wrapping (modular) exponentiation
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = UU32::from_uint(10_u8);
+    /// let exp = UU32::from_uint(100_u8);
+    /// let res = a_biguint.saturating_pow(&exp);
+    /// println!("{} ** {} = {}", a_biguint, exp, res);
+    /// assert_eq!(res, UU32::max());
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 3 for 123456789012345678901234567890123456789 ** 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = UU32::from_str("123456789012345678901234567890123456789").unwrap();
+    /// let exp = UU32::zero();
+    /// let res = a_biguint.saturating_pow(&exp);
+    /// println!("{} ** {} = {}", a_biguint, exp, res);
+    /// assert_eq!(res.to_string(), "1");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 4 for 0 ** 123456789012345678901234567890123456789
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let a_biguint = UU32::zero();
+    /// let exp = UU32::from_str("123456789012345678901234567890123456789").unwrap();
+    /// let res = a_biguint.saturating_pow(&exp);
+    /// println!("{} ** {} = {}", a_biguint, exp, res);
+    /// assert_eq!(res.to_string(), "0");
+    /// assert_eq!(res.is_overflow(), false);
+    /// assert_eq!(res.is_underflow(), false);
+    /// assert_eq!(res.is_infinity(), false);
+    /// assert_eq!(res.is_undefined(), false);
+    /// assert_eq!(res.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```should_panic
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u64);
+    /// 
+    /// let _a_biguint = U256::zero();
+    /// let _exp = U256::zero();
+    /// // It will panic.
+    /// let res = _a_biguint.saturating_pow(&_exp);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn saturating_pow(&self, exp: &Self) -> Self
+    {
+        calc_assign_to_calc!(self, Self::saturating_pow_assign, exp);
+    }
 
-    // // pub fn saturating_pow_assign(&mut self, exp: &Self)
-    // /// Raises `BigUInt` type number to the power of `exp`, using
-    // /// exponentiation of type `BigUInt` by squaring,
-    // /// saturating at the numeric bounds instead of overflowing,
-    // /// and assign the result to `self` back.
-    // /// 
-    // /// # Arguments
-    // /// `exp` is the power to raise `self` to, and is a primitive unsigned
-    // /// integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
-    // ///
-    // /// # Panics
-    // /// - If `size_of::<T>() * N` <= `128`, this method may panic
-    // ///   or its behavior may be undefined though it may not panic.
-    // /// - If both `self` and `exp` are zero, the result is mathematically
-    // ///   undefined, so this method will panic.
-    // /// 
-    // /// # Features
-    // /// - Wrapping (modular) exponentiation.
-    // /// - Overflowing never happens.
-    // /// - `self` will be the maximum value instead of overflowing.
-    // /// - This method saturates when it reaches maximum value.
-    // /// - It does not set `OVERFLOW` flag.
-    // /// 
-    // /// # Counterpart Method
-    // /// The method [saturating_pow_assign_uint()](struct@BigUInt#method.saturating_pow_uint)
-    // /// is more efficient than this method `saturating_pow_assign()` when the exponent
-    // /// `exp` is primitive unsigned integral data type
-    // /// such as u8, u16, u32, u64, and u128.
-    // /// If `exp` is the primitive unsigned integral data type number,
-    // /// use the method [saturating_pow_assign_uint()](struct@BigUInt#method.saturating_pow_assign_uint).
-    // /// 
-    // /// # Example 1 for normal exponentiation
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u128);
-    // /// 
-    // /// let mut a_biguint = U256::from_uint(10_u8);
-    // /// println!("Originally, a_biguint = {}", a_biguint);
-    // /// assert_eq!(a_biguint.is_overflow(), false);
-    // /// assert_eq!(a_biguint.is_underflow(), false);
-    // /// assert_eq!(a_biguint.is_infinity(), false);
-    // /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    // /// assert_eq!(a_biguint.is_undefined(), false);
-    // /// 
-    // /// let exp = U256::from_uint(30_u8);
-    // /// a_biguint.saturating_pow_assign(&exp);
-    // /// println!("After a_biguint.wrapping_pow_assign({}), a_biguint = {}", exp, a_biguint);
-    // /// assert_eq!(a_biguint.to_string(), "1000000000000000000000000000000");
-    // /// assert_eq!(a_biguint.is_overflow(), false);
-    // /// assert_eq!(a_biguint.is_underflow(), false);
-    // /// assert_eq!(a_biguint.is_infinity(), false);
-    // /// assert_eq!(a_biguint.is_undefined(), false);
-    // /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    // /// ```
-    // /// 
-    // /// # Example 2 for wrapping (modular) exponentiation
-    // /// ```
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u128);
-    // /// 
-    // /// let mut a_biguint = U256::from_uint(10_u8);
-    // /// println!("Originally, a_biguint = {}", a_biguint);
-    // /// assert_eq!(a_biguint.is_overflow(), false);
-    // /// assert_eq!(a_biguint.is_underflow(), false);
-    // /// assert_eq!(a_biguint.is_infinity(), false);
-    // /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    // /// assert_eq!(a_biguint.is_undefined(), false);
-    // /// 
-    // /// let exp = U256::from_uint(100_u8);
-    // /// a_biguint.saturating_pow_assign(&exp);
-    // /// println!("After a_biguint.saturating_pow_assign({}), a_biguint = {}", exp, a_biguint);
-    // /// assert_eq!(a_biguint, U256::max());
-    // /// assert_eq!(a_biguint.is_overflow(), false);
-    // /// assert_eq!(a_biguint.is_underflow(), false);
-    // /// assert_eq!(a_biguint.is_infinity(), false);
-    // /// assert_eq!(a_biguint.is_undefined(), false);
-    // /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    // /// ```
-    // /// 
-    // /// # Example 3 for 123456789012345678901234567890123456789 ** 0
-    // /// ```
-    // /// use std::str::FromStr;
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u128);
-    // /// 
-    // /// let mut a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
-    // /// println!("Originally, a_biguint = {}", a_biguint);
-    // /// assert_eq!(a_biguint.is_overflow(), false);
-    // /// assert_eq!(a_biguint.is_underflow(), false);
-    // /// assert_eq!(a_biguint.is_infinity(), false);
-    // /// assert_eq!(a_biguint.is_undefined(), false);
-    // /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    // /// 
-    // /// let exp = U256::zero();
-    // /// a_biguint.saturating_pow_assign(&exp);
-    // /// println!("After a_biguint.saturating_pow_assign({}), a_biguint = {}", exp, a_biguint);
-    // /// assert_eq!(a_biguint.to_string(), "1");
-    // /// assert_eq!(a_biguint.is_overflow(), false);
-    // /// assert_eq!(a_biguint.is_underflow(), false);
-    // /// assert_eq!(a_biguint.is_infinity(), false);
-    // /// assert_eq!(a_biguint.is_undefined(), false);
-    // /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    // /// ```
-    // /// 
-    // /// # Example 4 for 0 ** 123456789012345678901234567890123456789
-    // /// ```
-    // /// use std::str::FromStr;
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u128);
-    // /// 
-    // /// let mut a_biguint = U256::zero();
-    // /// println!("Originally, a_biguint = {}", a_biguint);
-    // /// assert_eq!(a_biguint.is_overflow(), false);
-    // /// assert_eq!(a_biguint.is_underflow(), false);
-    // /// assert_eq!(a_biguint.is_infinity(), false);
-    // /// assert_eq!(a_biguint.is_undefined(), false);
-    // /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    // /// 
-    // /// let exp = U256::from_str("123456789012345678901234567890123456789").unwrap();
-    // /// a_biguint.wrapping_pow_assign(&exp);
-    // /// println!("After a_biguint.saturating_pow_assign({}), a_biguint = {}", exp, a_biguint);
-    // /// assert_eq!(a_biguint.to_string(), "0");
-    // /// assert_eq!(a_biguint.is_overflow(), false);
-    // /// assert_eq!(a_biguint.is_underflow(), false);
-    // /// assert_eq!(a_biguint.is_infinity(), false);
-    // /// assert_eq!(a_biguint.is_undefined(), false);
-    // /// assert_eq!(a_biguint.is_divided_by_zero(), false);
-    // /// ```
-    // /// 
-    // /// # Panic Examples
-    // /// ```should_panic
-    // /// use std::str::FromStr;
-    // /// use cryptocol::define_utypes_with;
-    // /// define_utypes_with!(u128);
-    // /// 
-    // /// let mut _a_biguint = U256::zero();
-    // /// let _exp = U256::zero();
-    // /// println!("Originally, a_biguint = {}", _a_biguint);
-    // /// // It will panic.
-    // /// _a_biguint.saturating_pow_assign(&_exp);
-    // /// ```
-    // /// 
-    // /// # Big-endian issue
-    // /// It is just experimental for Big Endian CPUs. So, you are not encouraged
-    // /// to use it for Big Endian CPUs for serious purpose. Only use this crate
-    // /// for Big-endian CPUs with your own full responsibility.
     // pub fn saturating_pow_assign(&mut self, exp: &Self)
-    // {
-    //     saturating_calc_assign!(self, Self::overflowing_pow_assign, exp);
-    // }
+    /// Raises `BigUInt` type number to the power of `exp`, using
+    /// exponentiation of type `BigUInt` by squaring,
+    /// saturating at the numeric bounds instead of overflowing,
+    /// and assign the result to `self` back.
+    /// 
+    /// # Arguments
+    /// `exp` is the power to raise `self` to, and is a primitive unsigned
+    /// integer such as `u8`, `u16`, `u32`, `u64`, and `u128`.
+    ///
+    /// # Panics
+    /// - If `size_of::<T>() * N` <= `128`, this method may panic
+    ///   or its behavior may be undefined though it may not panic.
+    /// - If both `self` and `exp` are zero, the result is mathematically
+    ///   undefined, so this method will panic.
+    /// 
+    /// # Features
+    /// - Wrapping (modular) exponentiation.
+    /// - Overflowing never happens.
+    /// - `self` will be the maximum value instead of overflowing.
+    /// - This method saturates when it reaches maximum value.
+    /// - It does not set `OVERFLOW` flag.
+    /// 
+    /// # Counterpart Method
+    /// The method [saturating_pow_assign_uint()](struct@BigUInt#method.saturating_pow_uint)
+    /// is more efficient than this method `saturating_pow_assign()` when the exponent
+    /// `exp` is primitive unsigned integral data type
+    /// such as u8, u16, u32, u64, and u128.
+    /// If `exp` is the primitive unsigned integral data type number,
+    /// use the method [saturating_pow_assign_uint()](struct@BigUInt#method.saturating_pow_assign_uint).
+    /// 
+    /// # Example 1 for normal exponentiation
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U256::from_uint(10_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let exp = U256::from_uint(30_u8);
+    /// a_biguint.saturating_pow_assign(&exp);
+    /// println!("After a_biguint.wrapping_pow_assign({}), a_biguint = {}", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1000000000000000000000000000000");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 2 for wrapping (modular) exponentiation
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U256::from_uint(10_u8);
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// 
+    /// let exp = U256::from_uint(100_u8);
+    /// a_biguint.saturating_pow_assign(&exp);
+    /// println!("After a_biguint.saturating_pow_assign({}), a_biguint = {}", exp, a_biguint);
+    /// assert_eq!(a_biguint, U256::max());
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 3 for 123456789012345678901234567890123456789 ** 0
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = U256::zero();
+    /// a_biguint.saturating_pow_assign(&exp);
+    /// println!("After a_biguint.saturating_pow_assign({}), a_biguint = {}", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "1");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Example 4 for 0 ** 123456789012345678901234567890123456789
+    /// ```
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U256::zero();
+    /// println!("Originally, a_biguint = {}", a_biguint);
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// 
+    /// let exp = U256::from_str("123456789012345678901234567890123456789").unwrap();
+    /// a_biguint.wrapping_pow_assign(&exp);
+    /// println!("After a_biguint.saturating_pow_assign({}), a_biguint = {}", exp, a_biguint);
+    /// assert_eq!(a_biguint.to_string(), "0");
+    /// assert_eq!(a_biguint.is_overflow(), false);
+    /// assert_eq!(a_biguint.is_underflow(), false);
+    /// assert_eq!(a_biguint.is_infinity(), false);
+    /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_divided_by_zero(), false);
+    /// ```
+    /// 
+    /// # Panic Examples
+    /// ```should_panic
+    /// use std::str::FromStr;
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut _a_biguint = U256::zero();
+    /// let _exp = U256::zero();
+    /// println!("Originally, a_biguint = {}", _a_biguint);
+    /// // It will panic.
+    /// _a_biguint.saturating_pow_assign(&_exp);
+    /// ```
+    /// 
+    /// # Big-endian issue
+    /// It is just experimental for Big Endian CPUs. So, you are not encouraged
+    /// to use it for Big Endian CPUs for serious purpose. Only use this crate
+    /// for Big-endian CPUs with your own full responsibility.
+    pub fn saturating_pow_assign(&mut self, exp: &Self)
+    {
+        saturating_calc_assign!(self, Self::overflowing_pow_assign, exp);
+    }
 
     // pub fn modular_pow(&self, exp: &Self, modulo: &Self) -> Self
     /// Raises `BigUInt` type number to the power of `exp`, using
