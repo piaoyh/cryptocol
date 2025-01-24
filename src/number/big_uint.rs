@@ -2020,7 +2020,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for elem in be_array
     ///     { print!("{:#8x} ", elem); }
     /// println!();
-    /// println!("le = {#x}", le);
+    /// println!("le = {:#x}", le);
     /// #[cfg(target_endian = "little")]    assert_eq!(le.to_string_with_radix_and_stride(16, 8).unwrap(), "78563412_EFCDAB90_44332211_88776655_BBAA0099_FFEEDDCC_4C3D2E1F_89706A5B");
     /// #[cfg(target_endian = "big")]       assert_eq!(le.to_string_with_radix(16).unwrap(), "12345678_90ABCDEF_11223344_55667788_9900AABB_CCDDEEFF_1F2E3D4C_5B6A7089");
     /// assert_eq!(le.is_overflow(), false);
@@ -2106,7 +2106,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// for elem in le_array
     ///     { print!("{:#8x} ", elem); }
     /// println!();
-    /// println!("le = {#x}", le);
+    /// println!("le = {:#x}", le);
     /// #[cfg(target_endian = "little")]    assert_eq!(le.to_string_with_radix_and_stride(16, 8).unwrap(), "5B6A7089_1F2E3D4C_CCDDEEFF_9900AABB_55667788_11223344_90ABCDEF_12345678");
     /// #[cfg(target_endian = "big")]       assert_eq!(le.to_string_with_radix(16).unwrap(), "12345678_90ABCDEF_11223344_55667788_9900AABB_CCDDEEFF_1F2E3D4C_5B6A7089");
     /// assert_eq!(le.is_overflow(), false);
@@ -2842,7 +2842,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let a_biguint = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
     /// println!("a_biguint = {}_U256", a_biguint.to_string_with_radix_and_stride(2, 10).unwrap());
-    /// let mut res = a_biguint.is_bit_set(151);
+    /// let res = a_biguint.is_bit_set(151);
     /// match res
     /// {
     ///     Some(r) => {
@@ -2851,7 +2851,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///         assert_eq!(a_biguint.is_overflow(), false);
     ///         assert_eq!(a_biguint.is_underflow(), false);
     ///         assert_eq!(a_biguint.is_infinity(), false);
-    ///         assert_eq!(a_biguint.is_undefined(), true);
+    ///         assert_eq!(a_biguint.is_undefined(), false);
     ///         assert_eq!(a_biguint.is_divided_by_zero(), false);
     ///         assert_eq!(a_biguint.is_left_carry(), false);
     ///         assert_eq!(a_biguint.is_right_carry(), false);
@@ -2869,7 +2869,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let a_biguint = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
     /// println!("a_biguint = {}_U256", a_biguint.to_string_with_radix_and_stride(2, 10).unwrap());
-    /// res = a_biguint.is_bit_set(200);
+    /// let res = a_biguint.is_bit_set(200);
     /// match res
     /// {
     ///     Some(r) => {
@@ -2878,7 +2878,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///         assert_eq!(a_biguint.is_overflow(), false);
     ///         assert_eq!(a_biguint.is_underflow(), false);
     ///         assert_eq!(a_biguint.is_infinity(), false);
-    ///         assert_eq!(a_biguint.is_undefined(), true);
+    ///         assert_eq!(a_biguint.is_undefined(), false);
     ///         assert_eq!(a_biguint.is_divided_by_zero(), false);
     ///         assert_eq!(a_biguint.is_left_carry(), false);
     ///         assert_eq!(a_biguint.is_right_carry(), false);
@@ -2896,7 +2896,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let a_biguint = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
     /// println!("a_biguint = {}_U256", a_biguint.to_string_with_radix_and_stride(2, 10).unwrap());
-    /// res = a_biguint.is_bit_set(300);
+    /// let res = a_biguint.is_bit_set(300);
     /// match res
     /// {
     ///     Some(r) => { println!("The {}th bit is set: {}", 300, r); },
@@ -3396,10 +3396,10 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u16);
     /// 
     /// let mut a_biguint = U256::new();
-    /// println!("arr = {:?}", a);
+    /// println!("arr = {:?}", a_biguint);
     /// let arr = [1_u16, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
     /// a_biguint.set_number(&arr);
-    /// println!("arr = {:?}", a);
+    /// println!("arr = {:?}", a_biguint);
     /// assert_eq!(a_biguint.get_number(), &arr);
     /// ```
     #[inline]
@@ -3641,7 +3641,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u32);
     /// 
     /// let a_biguint = U256::zero();
-    /// println!("a_biguint = {}", a);
+    /// println!("a_biguint = {}", a_biguint);
     /// let b_zero_or_one = a_biguint.is_zero_or_one();
     /// if b_zero_or_one
     /// {
@@ -3660,7 +3660,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u32);
     /// 
     /// let a_biguint = U256::one();
-    /// println!("a_biguint = {}", a);
+    /// println!("a_biguint = {}", a_biguint);
     /// let b_zero_or_one = a_biguint.is_zero_or_one();
     /// if b_zero_or_one
     /// {
@@ -3715,7 +3715,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u64);
     /// 
     /// let mut a_biguint = U256::new();
-    /// println!("a_biguint = {}", a);
+    /// println!("a_biguint = {}", a_biguint);
     /// a_biguint.set_max();
     /// println!("a_biguint = {}", a_biguint.to_string_with_radix_and_stride(16, 8).unwrap());
     /// assert_eq!(a_biguint.to_string_with_radix_and_stride(16, 8).unwrap(), "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF");
@@ -3788,7 +3788,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// define_utypes_with!(u8);
     /// 
     /// let mut a_biguint = U256::new();
-    /// println!("a_biguint = {}", a);
+    /// println!("a_biguint = {}", a_biguint);
     /// a_biguint.set_halfmax();
     /// println!("a_biguint = {}", a_biguint.to_string_with_radix_and_stride(16, 8).unwrap());
     /// assert_eq!(a_biguint.to_string_with_radix_and_stride(16, 8).unwrap(), "FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF");
@@ -3821,9 +3821,9 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let b_biguint = U256::max().wrapping_sub_uint(1_u8);
-    /// println!("Is {} a 256-bit maximum? - {}", b, b.is_max());
-    /// assert_eq!(b.is_max(), false);
+    /// let a_biguint = U256::max().wrapping_sub_uint(1_u8);
+    /// println!("Is {} the 256-bit maximum? - {}", a_biguint, a_biguint.is_max());
+    /// assert_eq!(a_biguint.is_max(), false);
     /// ```
     /// 
     /// # Big-endian issue
@@ -4127,19 +4127,25 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// It will return `true`, if the MSB of `self` is set to be one.
     /// Otherwise, it will return `false`.
     /// 
-    /// # Examples
+    /// # Example 1
     /// ```
     /// use cryptocol::define_utypes_with;
     /// define_utypes_with!(u128);
     /// 
-    /// let mut a_biguint = U256::new();
-    /// a_biguint.set_uint(169743176821145534028236692093846345739_u128);
+    /// let mut a_biguint = U256::from_uint(169743176821145534028236692093846345739_u128);
     /// if a_biguint.is_msb_set()
-    ///     { println!("{} is greater than halfmax ({}).", a, U256::halfmax()); }
+    ///     { println!("{} is greater than halfmax ({}).", a_biguint, U256::halfmax()); }
     /// else
-    ///     { println!("{} is less than or equal to halfmax ({}).", a, U256::halfmax()); }
+    ///     { println!("{} is less than or equal to halfmax ({}).", a_biguint, U256::halfmax()); }
     /// assert_eq!(a_biguint.is_msb_set(), false);
+    /// ```
     /// 
+    /// # Example 1
+    /// ```
+    /// use cryptocol::define_utypes_with;
+    /// define_utypes_with!(u128);
+    /// 
+    /// let mut a_biguint = U256::from_uint(169743176821145534028236692093846345739_u128);
     /// a_biguint.set_msb();
     /// if a_biguint.is_msb_set()
     ///     { println!("{} is greater than halfmax ({}).", a_biguint, U256::halfmax()); }
@@ -14216,7 +14222,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// #[cfg(debug_assertions)]
     /// {
     ///     use cryptocol::define_utypes_with;
@@ -14234,6 +14240,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     ///     let b_uint = 248_u16;
+    ///     // It will panic.
     ///     a_biguint.safe_mul_assign_uint(b_uint);
     ///     println!("After a_biguint.safe_mul_assign_uint(248_u16), a_biguint = {}", a_biguint);
     ///     assert_eq!(a_biguint.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
@@ -22471,16 +22478,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let exp = 30_u8;
     /// a_biguint.saturating_pow_assign_uint(exp);
-    /// println!("After a_biguint.overflowing_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
+    /// println!("After a_biguint.saturating_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "1000000000000000000000000000000");
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 2
@@ -22495,16 +22506,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let exp = 30_u8;
     /// a_biguint.saturating_pow_assign_uint(exp);
-    /// println!("After a_biguint.overflowing_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
+    /// println!("After a_biguint.saturating_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint, UU32::max());
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 3
@@ -22519,16 +22534,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let exp = 0_u8;
     /// a_biguint.saturating_pow_assign_uint(exp);
-    /// println!("After a_biguint.overflowing_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
+    /// println!("After a_biguint.saturating_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "1");
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     /// 
     /// # Example 4
@@ -22543,16 +22562,20 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     /// let exp = 30_u8;
     /// a_biguint.saturating_pow_assign_uint(exp);
-    /// println!("After a_biguint.overflowing_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
+    /// println!("After a_biguint.saturating_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "0");
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_right_carry(), false);
     /// ```
     /// 
     /// # Panic Examples
@@ -33790,8 +33813,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// 
     /// let a_biguint = U256::from_str("500000000000000000500000000500000000500000000500000000").unwrap();
     /// let b_biguint = U256::from_str("500000000000000000000000000000000000000000000000000000").unwrap();
-    /// let c_biguint = a_biguint.abs_diff(&b);
-    /// let d_biguint = b_biguint.abs_diff(&a);
+    /// let c_biguint = a_biguint.abs_diff(&b_biguint);
+    /// let d_biguint = b_biguint.abs_diff(&a_biguint);
     /// println!("500000000000000000500000000500000000500000000500000000 <-> 500000000000000000000000000000000000000000000000000000 = {}", c_biguint);
     /// println!("500000000000000000000000000000000000000000000000000000 <-> 500000000000000000500000000500000000500000000500000000 = {}", d_biguint);
     /// assert_eq!(c_biguint, U256::from_str("500000000500000000500000000500000000").unwrap());
@@ -33800,12 +33823,16 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(c_biguint.is_divided_by_zero(), false);
     /// assert_eq!(c_biguint.is_infinity(), false);
     /// assert_eq!(c_biguint.is_undefined(), false);
+    /// assert_eq!(c_biguint.is_left_carry(), false);
+    /// assert_eq!(c_biguint.is_right_carry(), false);
     /// assert_eq!(d_biguint, U256::from_str("500000000500000000500000000500000000").unwrap());
     /// assert_eq!(d_biguint.is_overflow(), false);
     /// assert_eq!(d_biguint.is_underflow(), false);
     /// assert_eq!(d_biguint.is_divided_by_zero(), false);
     /// assert_eq!(d_biguint.is_infinity(), false);
     /// assert_eq!(d_biguint.is_undefined(), false);
+    /// assert_eq!(d_biguint.is_left_carry(), false);
+    /// assert_eq!(d_biguint.is_right_carry(), false);
     /// ```
     pub fn abs_diff(&self, other: &Self) -> Self
     {
@@ -34067,7 +34094,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// ```
     /// 
     /// # Panic Examples
-    /// ```
+    /// ```should_panic
     /// #[cfg(debug_assertions)]
     /// {
     ///     use cryptocol::define_utypes_with;
@@ -34084,6 +34111,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     ///     assert_eq!(a_biguint.is_right_carry(), false);
     /// 
     ///     let one = U512::one();
+    ///     // It will panic.
     ///     a_biguint.safe_sub_assign(&one);
     ///     println!("After a_biguint.safe_sub_assign(&U512::one()), a_biguint = {}", a_biguint);
     ///     assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
@@ -36504,6 +36532,8 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
     /// assert_eq!(a_biguint.is_undefined(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
+    /// assert_eq!(a_biguint.is_left_carry(), false);
     /// 
     /// let m = UU32::from_string("76801874298166903427690031858186486050853753882811946569946433649006084094").unwrap();
     /// let mul_biguint = UU32::from_uint(5_u8);
@@ -45230,7 +45260,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// 
     /// let exp = U256::from_str("123456789012345678901234567890123456789").unwrap();
-    /// a_biguint.wrapping_pow_assign(&exp);
+    /// a_biguint.saturating_pow_assign(&exp);
     /// println!("After a_biguint.saturating_pow_assign({}), a_biguint = {}", exp, a_biguint);
     /// assert_eq!(a_biguint.to_string(), "0");
     /// assert_eq!(a_biguint.is_overflow(), false);
@@ -57751,7 +57781,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_left_carry(), true);
     /// assert_eq!(a_biguint.is_right_carry(), false);
@@ -57792,7 +57822,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_left_carry(), true);
     /// assert_eq!(a_biguint.is_right_carry(), false);
@@ -57848,7 +57878,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_left_carry(), true);
     /// assert_eq!(a_biguint.is_right_carry(), false);
@@ -57889,7 +57919,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_left_carry(), false);
     /// assert_eq!(a_biguint.is_right_carry(), true);
@@ -57930,7 +57960,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_left_carry(), false);
     /// assert_eq!(a_biguint.is_right_carry(), true);
@@ -57986,7 +58016,7 @@ where T: SmallUInt + Copy + Clone + Display + Debug + ToString
     /// assert_eq!(a_biguint.is_overflow(), false);
     /// assert_eq!(a_biguint.is_underflow(), false);
     /// assert_eq!(a_biguint.is_infinity(), false);
-    /// assert_eq!(a_biguint.is_undefined(), true);
+    /// assert_eq!(a_biguint.is_undefined(), false);
     /// assert_eq!(a_biguint.is_divided_by_zero(), false);
     /// assert_eq!(a_biguint.is_left_carry(), false);
     /// assert_eq!(a_biguint.is_right_carry(), true);

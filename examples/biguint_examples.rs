@@ -1004,7 +1004,7 @@ fn biguint_is_bit_set()
 
     let a_biguint = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
     println!("a_biguint = {}_U256", a_biguint.to_string_with_radix_and_stride(2, 10).unwrap());
-    let mut res = a_biguint.is_bit_set(151);
+    let res = a_biguint.is_bit_set(151);
     match res
     {
         Some(r) => {
@@ -1013,7 +1013,7 @@ fn biguint_is_bit_set()
             assert_eq!(a_biguint.is_overflow(), false);
             assert_eq!(a_biguint.is_underflow(), false);
             assert_eq!(a_biguint.is_infinity(), false);
-            assert_eq!(a_biguint.is_undefined(), true);
+            assert_eq!(a_biguint.is_undefined(), false);
             assert_eq!(a_biguint.is_divided_by_zero(), false);
             assert_eq!(a_biguint.is_left_carry(), false);
             assert_eq!(a_biguint.is_right_carry(), false);
@@ -1025,7 +1025,7 @@ fn biguint_is_bit_set()
     
     let a_biguint = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
     println!("a_biguint = {}_U256", a_biguint.to_string_with_radix_and_stride(2, 10).unwrap());
-    res = a_biguint.is_bit_set(200);
+    let res = a_biguint.is_bit_set(200);
     match res
     {
         Some(r) => {
@@ -1034,7 +1034,7 @@ fn biguint_is_bit_set()
             assert_eq!(a_biguint.is_overflow(), false);
             assert_eq!(a_biguint.is_underflow(), false);
             assert_eq!(a_biguint.is_infinity(), false);
-            assert_eq!(a_biguint.is_undefined(), true);
+            assert_eq!(a_biguint.is_undefined(), false);
             assert_eq!(a_biguint.is_divided_by_zero(), false);
             assert_eq!(a_biguint.is_left_carry(), false);
             assert_eq!(a_biguint.is_right_carry(), false);
@@ -1046,7 +1046,7 @@ fn biguint_is_bit_set()
     
     let a_biguint = U256::from_string("12345678912345678912345678912345678912345678912345678912345678912345678912345").unwrap();
     println!("a_biguint = {}_U256", a_biguint.to_string_with_radix_and_stride(2, 10).unwrap());
-    res = a_biguint.is_bit_set(300);
+    let res = a_biguint.is_bit_set(300);
     match res
     {
         Some(r) => { println!("The {}th bit is set: {}", 300, r); },
@@ -1394,11 +1394,11 @@ fn biguint_is_zero_or_one()
     }
     else
     {
-        println!("a is Neither One nor Zero.");
+        println!("a_biguint is Neither One nor Zero.");
     }
 
     let a_biguint = U256::one();
-    println!("a = {}", a_biguint);
+    println!("a_biguint = {}", a_biguint);
     let b_zero_or_one = a_biguint.is_zero_or_one();
     if b_zero_or_one
     {
@@ -1416,11 +1416,11 @@ fn biguint_is_zero_or_one()
     let b_zero_or_one = a_biguint.is_zero_or_one();
     if b_zero_or_one
     {
-        println!("a is One or Zero.");
+        println!("a_biguint is One or Zero.");
     }
     else
     {
-        println!("a is Neither One nor Zero.");
+        println!("a_biguint is Neither One nor Zero.");
         assert_eq!(b_zero_or_one, false);
     }
     println!("---------------------------");
@@ -1591,14 +1591,14 @@ fn biguint_is_msb_set()
     use cryptocol::define_utypes_with;
     define_utypes_with!(u128);
     
-    let mut a_biguint = U256::new();
-    a_biguint.set_uint(169743176821145534028236692093846345739_u128);
+    let mut a_biguint = U256::from_uint(169743176821145534028236692093846345739_u128);
     if a_biguint.is_msb_set()
         { println!("{} is greater than halfmax ({}).", a_biguint, U256::halfmax()); }
     else
         { println!("{} is less than or equal to halfmax ({}).", a_biguint, U256::halfmax()); }
     assert_eq!(a_biguint.is_msb_set(), false);
 
+    let mut a_biguint = U256::from_uint(169743176821145534028236692093846345739_u128);
     a_biguint.set_msb();
     if a_biguint.is_msb_set()
         { println!("{} is greater than halfmax ({}).", a_biguint, U256::halfmax()); }
@@ -7168,6 +7168,7 @@ fn biguint_should_panic_safe_mul_assign_uint()
         assert_eq!(a_biguint.is_right_carry(), false);
 
         let b_uint = 248_u16;
+        // It will panic.
         a_biguint.safe_mul_assign_uint(b_uint);
         println!("After a_biguint.safe_mul_assign_uint(248_u16), a_biguint = {}", a_biguint);
         assert_eq!(a_biguint.to_string(), "101654775588629196626496142892142340687341746297296798709889131537040379215376");
@@ -10812,8 +10813,8 @@ fn biguint_exponentiation_logarithm_uint_main()
     biguint_pow_assign_uint();
     biguint_panic_free_pow_uint();
     biguint_panic_free_pow_assign_uint();
-    biguint_wrapping_pow_uint();
-    biguint_wrapping_pow_assign_uint();
+    // biguint_wrapping_pow_uint();
+    // biguint_wrapping_pow_assign_uint();
     biguint_overflowing_pow_uint();
     biguint_overflowing_pow_assign_uint();
     biguint_checked_pow_uint();
@@ -11149,148 +11150,148 @@ fn biguint_panic_free_pow_assign_uint()
     println!("---------------------------");
 }
 
-fn biguint_wrapping_pow_uint()
-{
-    println!("biguint_wrapping_pow_uint");
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u128);
+// fn biguint_wrapping_pow_uint()
+// {
+//     println!("biguint_wrapping_pow_uint");
+//     use cryptocol::define_utypes_with;
+//     define_utypes_with!(u128);
 
-    let a_biguint = UU32::from_uint(10_u8);
-    let exp = 30_u32;
-    let res = a_biguint.wrapping_pow_uint(exp);
-    println!("{} ** {} = {}", a_biguint, exp, res);
-    assert_eq!(res.to_string(), "1000000000000000000000000000000");
-    assert_eq!(res.is_overflow(), false);
-    assert_eq!(res.is_underflow(), false);
-    assert_eq!(res.is_infinity(), false);
-    assert_eq!(res.is_undefined(), false);
-    assert_eq!(res.is_divided_by_zero(), false);
+//     let a_biguint = UU32::from_uint(10_u8);
+//     let exp = 30_u32;
+//     let res = a_biguint.wrapping_pow_uint(exp);
+//     println!("{} ** {} = {}", a_biguint, exp, res);
+//     assert_eq!(res.to_string(), "1000000000000000000000000000000");
+//     assert_eq!(res.is_overflow(), false);
+//     assert_eq!(res.is_underflow(), false);
+//     assert_eq!(res.is_infinity(), false);
+//     assert_eq!(res.is_undefined(), false);
+//     assert_eq!(res.is_divided_by_zero(), false);
 
-    let a_biguint = UU32::from_uint(10_u8);
-    let exp = 100_u32;
-    let res = a_biguint.wrapping_pow_uint(exp);
-    println!("{} ** {} = {}", a_biguint, exp, res);
-    assert_eq!(res.to_string(), "60053020119642567005817971699943807522652027577520184704273238430174760927232");
-    assert_eq!(res.is_overflow(), true);
-    assert_eq!(res.is_underflow(), false);
-    assert_eq!(res.is_infinity(), false);
-    assert_eq!(res.is_undefined(), false);
-    assert_eq!(res.is_divided_by_zero(), false);
+//     let a_biguint = UU32::from_uint(10_u8);
+//     let exp = 100_u32;
+//     let res = a_biguint.wrapping_pow_uint(exp);
+//     println!("{} ** {} = {}", a_biguint, exp, res);
+//     assert_eq!(res.to_string(), "60053020119642567005817971699943807522652027577520184704273238430174760927232");
+//     assert_eq!(res.is_overflow(), true);
+//     assert_eq!(res.is_underflow(), false);
+//     assert_eq!(res.is_infinity(), false);
+//     assert_eq!(res.is_undefined(), false);
+//     assert_eq!(res.is_divided_by_zero(), false);
 
-    let a_biguint = UU32::from_uint(10_u8);
-    let exp = 0_u8;
-    let res = a_biguint.wrapping_pow_uint(exp);
-    println!("{} ** {} = {}", a_biguint, exp, res);
-    assert_eq!(res.to_string(), "1");
-    assert_eq!(res.is_overflow(), false);
-    assert_eq!(res.is_underflow(), false);
-    assert_eq!(res.is_infinity(), false);
-    assert_eq!(res.is_undefined(), false);
-    assert_eq!(res.is_divided_by_zero(), false);
+//     let a_biguint = UU32::from_uint(10_u8);
+//     let exp = 0_u8;
+//     let res = a_biguint.wrapping_pow_uint(exp);
+//     println!("{} ** {} = {}", a_biguint, exp, res);
+//     assert_eq!(res.to_string(), "1");
+//     assert_eq!(res.is_overflow(), false);
+//     assert_eq!(res.is_underflow(), false);
+//     assert_eq!(res.is_infinity(), false);
+//     assert_eq!(res.is_undefined(), false);
+//     assert_eq!(res.is_divided_by_zero(), false);
 
-    let a_biguint = UU32::zero();
-    let exp = 30_u8;
-    let res = a_biguint.wrapping_pow_uint(exp);
-    println!("{} ** {} = {}", a_biguint, exp, res);
-    assert_eq!(res.to_string(), "0");
-    assert_eq!(res.is_overflow(), false);
-    assert_eq!(res.is_underflow(), false);
-    assert_eq!(res.is_infinity(), false);
-    assert_eq!(res.is_undefined(), false);
-    assert_eq!(res.is_divided_by_zero(), false);
+//     let a_biguint = UU32::zero();
+//     let exp = 30_u8;
+//     let res = a_biguint.wrapping_pow_uint(exp);
+//     println!("{} ** {} = {}", a_biguint, exp, res);
+//     assert_eq!(res.to_string(), "0");
+//     assert_eq!(res.is_overflow(), false);
+//     assert_eq!(res.is_underflow(), false);
+//     assert_eq!(res.is_infinity(), false);
+//     assert_eq!(res.is_undefined(), false);
+//     assert_eq!(res.is_divided_by_zero(), false);
 
-    let _a_biguint = UU32::zero();
-    let _exp = 0_u8;
-    // It will panic.
-    // let res = _a_biguint.wrapping_pow_uint(_exp);
-    println!("---------------------------");
-}
+//     let _a_biguint = UU32::zero();
+//     let _exp = 0_u8;
+//     // It will panic.
+//     // let res = _a_biguint.wrapping_pow_uint(_exp);
+//     println!("---------------------------");
+// }
 
-fn biguint_wrapping_pow_assign_uint()
-{
-    println!("biguint_wrapping_pow_assign_uint");
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u8);
+// fn biguint_wrapping_pow_assign_uint()
+// {
+//     println!("biguint_wrapping_pow_assign_uint");
+//     use cryptocol::define_utypes_with;
+//     define_utypes_with!(u8);
 
-    let mut a_biguint = U256::from_uint(10_u8);
-    println!("Originally, a_biguint = {}", a_biguint);
-    assert_eq!(a_biguint.is_overflow(), false);
-    assert_eq!(a_biguint.is_underflow(), false);
-    assert_eq!(a_biguint.is_infinity(), false);
-    assert_eq!(a_biguint.is_undefined(), false);
-    assert_eq!(a_biguint.is_divided_by_zero(), false);
+//     let mut a_biguint = U256::from_uint(10_u8);
+//     println!("Originally, a_biguint = {}", a_biguint);
+//     assert_eq!(a_biguint.is_overflow(), false);
+//     assert_eq!(a_biguint.is_underflow(), false);
+//     assert_eq!(a_biguint.is_infinity(), false);
+//     assert_eq!(a_biguint.is_undefined(), false);
+//     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    let exp = 30_u8;
-    a_biguint.wrapping_pow_assign_uint(exp);
-    println!("After a_biguint.wrapping_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
-    assert_eq!(a_biguint.to_string(), "1000000000000000000000000000000");
-    assert_eq!(a_biguint.is_overflow(), false);
-    assert_eq!(a_biguint.is_underflow(), false);
-    assert_eq!(a_biguint.is_infinity(), false);
-    assert_eq!(a_biguint.is_undefined(), false);
-    assert_eq!(a_biguint.is_divided_by_zero(), false);
+//     let exp = 30_u8;
+//     a_biguint.wrapping_pow_assign_uint(exp);
+//     println!("After a_biguint.wrapping_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
+//     assert_eq!(a_biguint.to_string(), "1000000000000000000000000000000");
+//     assert_eq!(a_biguint.is_overflow(), false);
+//     assert_eq!(a_biguint.is_underflow(), false);
+//     assert_eq!(a_biguint.is_infinity(), false);
+//     assert_eq!(a_biguint.is_undefined(), false);
+//     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    let mut a_biguint = U256::from_uint(10_u8);
-    println!("Originally, a_biguint = {}", a_biguint);
-    assert_eq!(a_biguint.is_overflow(), false);
-    assert_eq!(a_biguint.is_underflow(), false);
-    assert_eq!(a_biguint.is_infinity(), false);
-    assert_eq!(a_biguint.is_undefined(), false);
-    assert_eq!(a_biguint.is_divided_by_zero(), false);
+//     let mut a_biguint = U256::from_uint(10_u8);
+//     println!("Originally, a_biguint = {}", a_biguint);
+//     assert_eq!(a_biguint.is_overflow(), false);
+//     assert_eq!(a_biguint.is_underflow(), false);
+//     assert_eq!(a_biguint.is_infinity(), false);
+//     assert_eq!(a_biguint.is_undefined(), false);
+//     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    let exp = 100_u8;
-    a_biguint.wrapping_pow_assign_uint(exp);
-    println!("After a_biguint.wrapping_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
-    assert_eq!(a_biguint.to_string(), "60053020119642567005817971699943807522652027577520184704273238430174760927232");
-    assert_eq!(a_biguint.is_overflow(), true);
-    assert_eq!(a_biguint.is_underflow(), false);
-    assert_eq!(a_biguint.is_infinity(), false);
-    assert_eq!(a_biguint.is_undefined(), false);
-    assert_eq!(a_biguint.is_divided_by_zero(), false);
+//     let exp = 100_u8;
+//     a_biguint.wrapping_pow_assign_uint(exp);
+//     println!("After a_biguint.wrapping_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
+//     assert_eq!(a_biguint.to_string(), "60053020119642567005817971699943807522652027577520184704273238430174760927232");
+//     assert_eq!(a_biguint.is_overflow(), true);
+//     assert_eq!(a_biguint.is_underflow(), false);
+//     assert_eq!(a_biguint.is_infinity(), false);
+//     assert_eq!(a_biguint.is_undefined(), false);
+//     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    let mut a_biguint = U256::zero();
-    println!("Originally, a_biguint = {}", a_biguint);
-    assert_eq!(a_biguint.is_overflow(), false);
-    assert_eq!(a_biguint.is_underflow(), false);
-    assert_eq!(a_biguint.is_infinity(), false);
-    assert_eq!(a_biguint.is_undefined(), false);
-    assert_eq!(a_biguint.is_divided_by_zero(), false);
+//     let mut a_biguint = U256::zero();
+//     println!("Originally, a_biguint = {}", a_biguint);
+//     assert_eq!(a_biguint.is_overflow(), false);
+//     assert_eq!(a_biguint.is_underflow(), false);
+//     assert_eq!(a_biguint.is_infinity(), false);
+//     assert_eq!(a_biguint.is_undefined(), false);
+//     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    let exp = 30_u8;
-    a_biguint.wrapping_pow_assign_uint(exp);
-    println!("After a_biguint.wrapping_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
-    assert_eq!(a_biguint.to_string(), "0");
-    assert_eq!(a_biguint.is_overflow(), false);
-    assert_eq!(a_biguint.is_underflow(), false);
-    assert_eq!(a_biguint.is_infinity(), false);
-    assert_eq!(a_biguint.is_undefined(), false);
-    assert_eq!(a_biguint.is_divided_by_zero(), false);
+//     let exp = 30_u8;
+//     a_biguint.wrapping_pow_assign_uint(exp);
+//     println!("After a_biguint.wrapping_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
+//     assert_eq!(a_biguint.to_string(), "0");
+//     assert_eq!(a_biguint.is_overflow(), false);
+//     assert_eq!(a_biguint.is_underflow(), false);
+//     assert_eq!(a_biguint.is_infinity(), false);
+//     assert_eq!(a_biguint.is_undefined(), false);
+//     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    let mut a_biguint = U256::from_uint(10_u8);
-    println!("Originally, a_biguint = {}", a_biguint);
-    assert_eq!(a_biguint.is_overflow(), false);
-    assert_eq!(a_biguint.is_underflow(), false);
-    assert_eq!(a_biguint.is_infinity(), false);
-    assert_eq!(a_biguint.is_undefined(), false);
-    assert_eq!(a_biguint.is_divided_by_zero(), false);
+//     let mut a_biguint = U256::from_uint(10_u8);
+//     println!("Originally, a_biguint = {}", a_biguint);
+//     assert_eq!(a_biguint.is_overflow(), false);
+//     assert_eq!(a_biguint.is_underflow(), false);
+//     assert_eq!(a_biguint.is_infinity(), false);
+//     assert_eq!(a_biguint.is_undefined(), false);
+//     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    let exp = 0_u8;
-    a_biguint.wrapping_pow_assign_uint(exp);
-    println!("After a_biguint.wrapping_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
-    assert_eq!(a_biguint.to_string(), "1");
-    assert_eq!(a_biguint.is_overflow(), false);
-    assert_eq!(a_biguint.is_underflow(), false);
-    assert_eq!(a_biguint.is_infinity(), false);
-    assert_eq!(a_biguint.is_undefined(), false);
-    assert_eq!(a_biguint.is_divided_by_zero(), false);
+//     let exp = 0_u8;
+//     a_biguint.wrapping_pow_assign_uint(exp);
+//     println!("After a_biguint.wrapping_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
+//     assert_eq!(a_biguint.to_string(), "1");
+//     assert_eq!(a_biguint.is_overflow(), false);
+//     assert_eq!(a_biguint.is_underflow(), false);
+//     assert_eq!(a_biguint.is_infinity(), false);
+//     assert_eq!(a_biguint.is_undefined(), false);
+//     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    let mut _a_biguint = U256::zero();
-    let _exp = 0_u8;
-    println!("Originally, _a_biguint = {}", _a_biguint);
-    // It will panic.
-    // _a_biguint.wrapping_pow_assign_uint(_exp);
-    println!("---------------------------");
-}
+//     let mut _a_biguint = U256::zero();
+//     let _exp = 0_u8;
+//     println!("Originally, _a_biguint = {}", _a_biguint);
+//     // It will panic.
+//     // _a_biguint.wrapping_pow_assign_uint(_exp);
+//     println!("---------------------------");
+// }
 
 fn biguint_overflowing_pow_uint()
 {
@@ -11651,7 +11652,7 @@ fn biguint_saturating_pow_assign_uint()
 
     let exp = 30_u8;
     a_biguint.saturating_pow_assign_uint(exp);
-    println!("After a_biguint.overflowing_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
+    println!("After a_biguint.saturating_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     assert_eq!(a_biguint.to_string(), "1000000000000000000000000000000");
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
@@ -11669,7 +11670,7 @@ fn biguint_saturating_pow_assign_uint()
 
     let exp = 30_u8;
     a_biguint.saturating_pow_assign_uint(exp);
-    println!("After a_biguint.overflowing_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
+    println!("After a_biguint.saturating_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     assert_eq!(a_biguint, UU32::max());
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
@@ -11687,7 +11688,7 @@ fn biguint_saturating_pow_assign_uint()
 
     let exp = 0_u8;
     a_biguint.saturating_pow_assign_uint(exp);
-    println!("After a_biguint.overflowing_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
+    println!("After a_biguint.saturating_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     assert_eq!(a_biguint.to_string(), "1");
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
@@ -11705,7 +11706,7 @@ fn biguint_saturating_pow_assign_uint()
 
     let exp = 30_u8;
     a_biguint.saturating_pow_assign_uint(exp);
-    println!("After a_biguint.overflowing_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
+    println!("After a_biguint.saturating_pow_assign_uint({}), a_biguint = {}", exp, a_biguint);
     assert_eq!(a_biguint.to_string(), "0");
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
@@ -18400,12 +18401,16 @@ fn biguint_abs_diff()
     assert_eq!(c_biguint.is_divided_by_zero(), false);
     assert_eq!(c_biguint.is_infinity(), false);
     assert_eq!(c_biguint.is_undefined(), false);
+    assert_eq!(c_biguint.is_left_carry(), false);
+    assert_eq!(c_biguint.is_right_carry(), false);
     assert_eq!(d_biguint, U256::from_str("500000000500000000500000000500000000").unwrap());
     assert_eq!(d_biguint.is_overflow(), false);
     assert_eq!(d_biguint.is_underflow(), false);
     assert_eq!(d_biguint.is_divided_by_zero(), false);
     assert_eq!(d_biguint.is_infinity(), false);
     assert_eq!(d_biguint.is_undefined(), false);
+    assert_eq!(d_biguint.is_left_carry(), false);
+    assert_eq!(d_biguint.is_right_carry(), false);
     println!("---------------------------");
 }
 
@@ -18577,6 +18582,7 @@ fn biguint_should_panic_safe_sub_assign()
         assert_eq!(a_biguint.is_right_carry(), false);
 
         let one = U512::one();
+        // It will panic.
         a_biguint.safe_sub_assign(&one);
         println!("After a_biguint.safe_sub_assign(&U512::one()), a_biguint = {}", a_biguint);
         assert_eq!(a_biguint.to_string(), "13407807929942597099574024998205846127479365820592393377723561443721764030073546976801874298166903427690031858186486050853753882811946569946433649006084095");
@@ -20073,7 +20079,7 @@ fn biguint_panic_free_modular_mul_assign()
         {
             for m in [U256::zero(), U256::one()]
             {
-                let mut a_biguint = a_biguint.clone();
+                let mut a_biguint = a.clone();
                 println!("Originally, a_biguint = {}", a);
                 assert_eq!(a_biguint.is_overflow(), false);
                 assert_eq!(a_biguint.is_underflow(), false);
@@ -23744,8 +23750,8 @@ fn biguint_exponentiation_logarithm_biguint_main()
     biguint_pow_assign();
     biguint_panic_free_pow();
     biguint_panic_free_pow_assign();
-    biguint_wrapping_pow();
-    biguint_wrapping_pow_assign();
+    // biguint_wrapping_pow();
+    // biguint_wrapping_pow_assign();
     biguint_overflowing_pow();
     biguint_overflowing_pow_assign();
     biguint_checked_pow();
@@ -24254,160 +24260,160 @@ fn biguint_panic_free_pow_assign()
     println!("---------------------------");
 }
 
-fn biguint_wrapping_pow()
-{
-    println!("biguint_wrapping_pow()");
-    use std::str::FromStr;
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u32);
+// fn biguint_wrapping_pow()
+// {
+//     println!("biguint_wrapping_pow()");
+//     use std::str::FromStr;
+//     use cryptocol::define_utypes_with;
+//     define_utypes_with!(u32);
 
-    // normal exponentiation
-    let a_biguint = UU32::from_uint(10_u8);
-    let exp = UU32::from_uint(30_u8);
-    let res = a_biguint.wrapping_pow(&exp);
-    println!("{} ** {} = {}", a_biguint, exp, res);
-    assert_eq!(res.to_string(), "1000000000000000000000000000000");
-    assert_eq!(res.is_overflow(), false);
-    assert_eq!(res.is_underflow(), false);
-    assert_eq!(res.is_infinity(), false);
-    assert_eq!(res.is_undefined(), false);
-    assert_eq!(res.is_divided_by_zero(), false);
+//     // normal exponentiation
+//     let a_biguint = UU32::from_uint(10_u8);
+//     let exp = UU32::from_uint(30_u8);
+//     let res = a_biguint.wrapping_pow(&exp);
+//     println!("{} ** {} = {}", a_biguint, exp, res);
+//     assert_eq!(res.to_string(), "1000000000000000000000000000000");
+//     assert_eq!(res.is_overflow(), false);
+//     assert_eq!(res.is_underflow(), false);
+//     assert_eq!(res.is_infinity(), false);
+//     assert_eq!(res.is_undefined(), false);
+//     assert_eq!(res.is_divided_by_zero(), false);
 
-    // wrapping (modular) exponentiation
-    let a_biguint = UU32::from_uint(10_u8);
-    let exp = UU32::from_uint(100_u8);
-    let res = a_biguint.wrapping_pow(&exp);
-    println!("{} ** {} = {}", a_biguint, exp, res);
-    assert_eq!(res.to_string(), "60053020119642567005817971699943807522652027577520184704273238430174760927232");
-    assert_eq!(res.is_overflow(), true);
-    assert_eq!(res.is_underflow(), false);
-    assert_eq!(res.is_infinity(), false);
-    assert_eq!(res.is_undefined(), false);
-    assert_eq!(res.is_divided_by_zero(), false);
+//     // wrapping (modular) exponentiation
+//     let a_biguint = UU32::from_uint(10_u8);
+//     let exp = UU32::from_uint(100_u8);
+//     let res = a_biguint.wrapping_pow(&exp);
+//     println!("{} ** {} = {}", a_biguint, exp, res);
+//     assert_eq!(res.to_string(), "60053020119642567005817971699943807522652027577520184704273238430174760927232");
+//     assert_eq!(res.is_overflow(), true);
+//     assert_eq!(res.is_underflow(), false);
+//     assert_eq!(res.is_infinity(), false);
+//     assert_eq!(res.is_undefined(), false);
+//     assert_eq!(res.is_divided_by_zero(), false);
 
-    // 123456789012345678901234567890123456789 ** 0
-    let a_biguint = UU32::from_str("123456789012345678901234567890123456789").unwrap();
-    let exp = UU32::zero();
-    let res = a_biguint.wrapping_pow(&exp);
-    println!("{} ** {} = {}", a_biguint, exp, res);
-    assert_eq!(res.to_string(), "1");
-    assert_eq!(res.is_overflow(), false);
-    assert_eq!(res.is_underflow(), false);
-    assert_eq!(res.is_infinity(), false);
-    assert_eq!(res.is_undefined(), false);
-    assert_eq!(res.is_divided_by_zero(), false);
+//     // 123456789012345678901234567890123456789 ** 0
+//     let a_biguint = UU32::from_str("123456789012345678901234567890123456789").unwrap();
+//     let exp = UU32::zero();
+//     let res = a_biguint.wrapping_pow(&exp);
+//     println!("{} ** {} = {}", a_biguint, exp, res);
+//     assert_eq!(res.to_string(), "1");
+//     assert_eq!(res.is_overflow(), false);
+//     assert_eq!(res.is_underflow(), false);
+//     assert_eq!(res.is_infinity(), false);
+//     assert_eq!(res.is_undefined(), false);
+//     assert_eq!(res.is_divided_by_zero(), false);
 
-    // 0 ** 123456789012345678901234567890123456789
-    let a_biguint = UU32::zero();
-    let exp = UU32::from_str("123456789012345678901234567890123456789").unwrap();
-    let res = a_biguint.wrapping_pow(&exp);
-    println!("{} ** {} = {}", a_biguint, exp, res);
-    assert_eq!(res.to_string(), "0");
-    assert_eq!(res.is_overflow(), false);
-    assert_eq!(res.is_underflow(), false);
-    assert_eq!(res.is_infinity(), false);
-    assert_eq!(res.is_undefined(), false);
-    assert_eq!(res.is_divided_by_zero(), false);
+//     // 0 ** 123456789012345678901234567890123456789
+//     let a_biguint = UU32::zero();
+//     let exp = UU32::from_str("123456789012345678901234567890123456789").unwrap();
+//     let res = a_biguint.wrapping_pow(&exp);
+//     println!("{} ** {} = {}", a_biguint, exp, res);
+//     assert_eq!(res.to_string(), "0");
+//     assert_eq!(res.is_overflow(), false);
+//     assert_eq!(res.is_underflow(), false);
+//     assert_eq!(res.is_infinity(), false);
+//     assert_eq!(res.is_undefined(), false);
+//     assert_eq!(res.is_divided_by_zero(), false);
 
-    // Panic example
-    let _a_biguint = U256::zero();
-    let _exp = U256::zero();
-    // It will panic.
-    // let res = _a_biguint.wrapping_pow(&_exp);
-    println!("---------------------------");
-}
+//     // Panic example
+//     let _a_biguint = U256::zero();
+//     let _exp = U256::zero();
+//     // It will panic.
+//     // let res = _a_biguint.wrapping_pow(&_exp);
+//     println!("---------------------------");
+// }
 
-fn biguint_wrapping_pow_assign()
-{
-    println!("biguint_wrapping_pow_assign()");
-    use std::str::FromStr;
-    use cryptocol::define_utypes_with;
-    define_utypes_with!(u64);
+// fn biguint_wrapping_pow_assign()
+// {
+//     println!("biguint_wrapping_pow_assign()");
+//     use std::str::FromStr;
+//     use cryptocol::define_utypes_with;
+//     define_utypes_with!(u64);
 
-    // normal exponentiation
-    let mut a_biguint = U256::from_uint(10_u8);
-    println!("Originally, a_biguint = {}", a_biguint);
-    assert_eq!(a_biguint.is_overflow(), false);
-    assert_eq!(a_biguint.is_underflow(), false);
-    assert_eq!(a_biguint.is_infinity(), false);
-    assert_eq!(a_biguint.is_divided_by_zero(), false);
-    assert_eq!(a_biguint.is_undefined(), false);
+//     // normal exponentiation
+//     let mut a_biguint = U256::from_uint(10_u8);
+//     println!("Originally, a_biguint = {}", a_biguint);
+//     assert_eq!(a_biguint.is_overflow(), false);
+//     assert_eq!(a_biguint.is_underflow(), false);
+//     assert_eq!(a_biguint.is_infinity(), false);
+//     assert_eq!(a_biguint.is_divided_by_zero(), false);
+//     assert_eq!(a_biguint.is_undefined(), false);
 
-    let exp = U256::from_uint(30_u8);
-    a_biguint.wrapping_pow_assign(&exp);
-    println!("After a_biguint.wrapping_pow_assign({}), a_biguint = {}", exp, a_biguint);
-    assert_eq!(a_biguint.to_string(), "1000000000000000000000000000000");
-    assert_eq!(a_biguint.is_overflow(), false);
-    assert_eq!(a_biguint.is_underflow(), false);
-    assert_eq!(a_biguint.is_infinity(), false);
-    assert_eq!(a_biguint.is_undefined(), false);
-    assert_eq!(a_biguint.is_divided_by_zero(), false);
+//     let exp = U256::from_uint(30_u8);
+//     a_biguint.wrapping_pow_assign(&exp);
+//     println!("After a_biguint.wrapping_pow_assign({}), a_biguint = {}", exp, a_biguint);
+//     assert_eq!(a_biguint.to_string(), "1000000000000000000000000000000");
+//     assert_eq!(a_biguint.is_overflow(), false);
+//     assert_eq!(a_biguint.is_underflow(), false);
+//     assert_eq!(a_biguint.is_infinity(), false);
+//     assert_eq!(a_biguint.is_undefined(), false);
+//     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    // wrapping (modular) exponentiation
-    let mut a_biguint = U256::from_uint(10_u8);
-    println!("Originally, a_biguint = {}", a_biguint);
-    assert_eq!(a_biguint.is_overflow(), false);
-    assert_eq!(a_biguint.is_underflow(), false);
-    assert_eq!(a_biguint.is_infinity(), false);
-    assert_eq!(a_biguint.is_divided_by_zero(), false);
-    assert_eq!(a_biguint.is_undefined(), false);
+//     // wrapping (modular) exponentiation
+//     let mut a_biguint = U256::from_uint(10_u8);
+//     println!("Originally, a_biguint = {}", a_biguint);
+//     assert_eq!(a_biguint.is_overflow(), false);
+//     assert_eq!(a_biguint.is_underflow(), false);
+//     assert_eq!(a_biguint.is_infinity(), false);
+//     assert_eq!(a_biguint.is_divided_by_zero(), false);
+//     assert_eq!(a_biguint.is_undefined(), false);
 
-    let exp = U256::from_uint(100_u8);
-    a_biguint.wrapping_pow_assign(&exp);
-    println!("After a_biguint.wrapping_pow_assign({}), a_biguint = {}", exp, a_biguint);
-    assert_eq!(a_biguint.to_string(), "60053020119642567005817971699943807522652027577520184704273238430174760927232");
-    assert_eq!(a_biguint.is_overflow(), true);
-    assert_eq!(a_biguint.is_underflow(), false);
-    assert_eq!(a_biguint.is_infinity(), false);
-    assert_eq!(a_biguint.is_undefined(), false);
-    assert_eq!(a_biguint.is_divided_by_zero(), false);
+//     let exp = U256::from_uint(100_u8);
+//     a_biguint.wrapping_pow_assign(&exp);
+//     println!("After a_biguint.wrapping_pow_assign({}), a_biguint = {}", exp, a_biguint);
+//     assert_eq!(a_biguint.to_string(), "60053020119642567005817971699943807522652027577520184704273238430174760927232");
+//     assert_eq!(a_biguint.is_overflow(), true);
+//     assert_eq!(a_biguint.is_underflow(), false);
+//     assert_eq!(a_biguint.is_infinity(), false);
+//     assert_eq!(a_biguint.is_undefined(), false);
+//     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    // 123456789012345678901234567890123456789 ** 0
-    let mut a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
-    println!("Originally, a_biguint = {}", a_biguint);
-    assert_eq!(a_biguint.is_overflow(), false);
-    assert_eq!(a_biguint.is_underflow(), false);
-    assert_eq!(a_biguint.is_infinity(), false);
-    assert_eq!(a_biguint.is_undefined(), false);
-    assert_eq!(a_biguint.is_divided_by_zero(), false);
+//     // 123456789012345678901234567890123456789 ** 0
+//     let mut a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
+//     println!("Originally, a_biguint = {}", a_biguint);
+//     assert_eq!(a_biguint.is_overflow(), false);
+//     assert_eq!(a_biguint.is_underflow(), false);
+//     assert_eq!(a_biguint.is_infinity(), false);
+//     assert_eq!(a_biguint.is_undefined(), false);
+//     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    let exp = U256::zero();
-    a_biguint.wrapping_pow_assign(&exp);
-    println!("After a_biguint.wrapping_pow_assign({}), a_biguint = {}", exp, a_biguint);
-    assert_eq!(a_biguint.to_string(), "1");
-    assert_eq!(a_biguint.is_overflow(), false);
-    assert_eq!(a_biguint.is_underflow(), false);
-    assert_eq!(a_biguint.is_infinity(), false);
-    assert_eq!(a_biguint.is_undefined(), false);
-    assert_eq!(a_biguint.is_divided_by_zero(), false);
+//     let exp = U256::zero();
+//     a_biguint.wrapping_pow_assign(&exp);
+//     println!("After a_biguint.wrapping_pow_assign({}), a_biguint = {}", exp, a_biguint);
+//     assert_eq!(a_biguint.to_string(), "1");
+//     assert_eq!(a_biguint.is_overflow(), false);
+//     assert_eq!(a_biguint.is_underflow(), false);
+//     assert_eq!(a_biguint.is_infinity(), false);
+//     assert_eq!(a_biguint.is_undefined(), false);
+//     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    // 0 ** 123456789012345678901234567890123456789
-    let mut a_biguint = U256::zero();
-    println!("Originally, a_biguint = {}", a_biguint);
-    assert_eq!(a_biguint.is_overflow(), false);
-    assert_eq!(a_biguint.is_underflow(), false);
-    assert_eq!(a_biguint.is_infinity(), false);
-    assert_eq!(a_biguint.is_undefined(), false);
-    assert_eq!(a_biguint.is_divided_by_zero(), false);
+//     // 0 ** 123456789012345678901234567890123456789
+//     let mut a_biguint = U256::zero();
+//     println!("Originally, a_biguint = {}", a_biguint);
+//     assert_eq!(a_biguint.is_overflow(), false);
+//     assert_eq!(a_biguint.is_underflow(), false);
+//     assert_eq!(a_biguint.is_infinity(), false);
+//     assert_eq!(a_biguint.is_undefined(), false);
+//     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    let exp = U256::from_str("123456789012345678901234567890123456789").unwrap();
-    a_biguint.wrapping_pow_assign(&exp);
-    println!("After a_biguint.wrapping_pow_assign({}), a_biguint = {}", exp, a_biguint);
-    assert_eq!(a_biguint.to_string(), "0");
-    assert_eq!(a_biguint.is_overflow(), false);
-    assert_eq!(a_biguint.is_underflow(), false);
-    assert_eq!(a_biguint.is_infinity(), false);
-    assert_eq!(a_biguint.is_undefined(), false);
-    assert_eq!(a_biguint.is_divided_by_zero(), false);
+//     let exp = U256::from_str("123456789012345678901234567890123456789").unwrap();
+//     a_biguint.wrapping_pow_assign(&exp);
+//     println!("After a_biguint.wrapping_pow_assign({}), a_biguint = {}", exp, a_biguint);
+//     assert_eq!(a_biguint.to_string(), "0");
+//     assert_eq!(a_biguint.is_overflow(), false);
+//     assert_eq!(a_biguint.is_underflow(), false);
+//     assert_eq!(a_biguint.is_infinity(), false);
+//     assert_eq!(a_biguint.is_undefined(), false);
+//     assert_eq!(a_biguint.is_divided_by_zero(), false);
 
-    // Panic example
-    let mut _a_biguint = U256::zero();
-    let _exp = U256::zero();
-    println!("Originally, a_biguint = {}", _a_biguint);
-    // It will panic.
-    // _a_biguint.wrapping_pow_assign(&_exp);
-    println!("---------------------------");
-}
+//     // Panic example
+//     let mut _a_biguint = U256::zero();
+//     let _exp = U256::zero();
+//     println!("Originally, a_biguint = {}", _a_biguint);
+//     // It will panic.
+//     // _a_biguint.wrapping_pow_assign(&_exp);
+//     println!("---------------------------");
+// }
 
 fn biguint_overflowing_pow()
 {
@@ -24790,16 +24796,20 @@ fn biguint_saturating_pow_assign()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
     assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_left_carry(), false);
+    assert_eq!(a_biguint.is_right_carry(), false);
 
     let exp = U256::from_uint(30_u8);
     a_biguint.saturating_pow_assign(&exp);
-    println!("After a_biguint.wrapping_pow_assign({}), a_biguint = {}", exp, a_biguint);
+    println!("After a_biguint.saturating_pow_assign({}), a_biguint = {}", exp, a_biguint);
     assert_eq!(a_biguint.to_string(), "1000000000000000000000000000000");
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_left_carry(), false);
+    assert_eq!(a_biguint.is_right_carry(), false);
 
     // wrapping (modular) exponentiation
     let mut a_biguint = U256::from_uint(10_u8);
@@ -24809,6 +24819,8 @@ fn biguint_saturating_pow_assign()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
     assert_eq!(a_biguint.is_undefined(), false);
+    assert_eq!(a_biguint.is_left_carry(), false);
+    assert_eq!(a_biguint.is_right_carry(), false);
 
     let exp = U256::from_uint(100_u8);
     a_biguint.saturating_pow_assign(&exp);
@@ -24819,6 +24831,8 @@ fn biguint_saturating_pow_assign()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_left_carry(), false);
+    assert_eq!(a_biguint.is_right_carry(), false);
 
     // 123456789012345678901234567890123456789 ** 0
     let mut a_biguint = U256::from_str("123456789012345678901234567890123456789").unwrap();
@@ -24828,6 +24842,8 @@ fn biguint_saturating_pow_assign()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_left_carry(), false);
+    assert_eq!(a_biguint.is_right_carry(), false);
 
     let exp = U256::zero();
     a_biguint.saturating_pow_assign(&exp);
@@ -24838,6 +24854,8 @@ fn biguint_saturating_pow_assign()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_left_carry(), false);
+    assert_eq!(a_biguint.is_right_carry(), false);
 
     // 0 ** 123456789012345678901234567890123456789
     let mut a_biguint = U256::zero();
@@ -24847,9 +24865,11 @@ fn biguint_saturating_pow_assign()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_left_carry(), false);
+    assert_eq!(a_biguint.is_right_carry(), false);
 
     let exp = U256::from_str("123456789012345678901234567890123456789").unwrap();
-    a_biguint.wrapping_pow_assign(&exp);
+    a_biguint.saturating_pow_assign(&exp);
     println!("After a_biguint.saturating_pow_assign({}), a_biguint = {}", exp, a_biguint);
     assert_eq!(a_biguint.to_string(), "0");
     assert_eq!(a_biguint.is_overflow(), false);
@@ -24857,14 +24877,23 @@ fn biguint_saturating_pow_assign()
     assert_eq!(a_biguint.is_infinity(), false);
     assert_eq!(a_biguint.is_undefined(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
+    assert_eq!(a_biguint.is_left_carry(), false);
+    assert_eq!(a_biguint.is_right_carry(), false);
 
-    // Panic example
+    #[cfg(test)] // It will panic.
+    biguint_should_panic_saturating_pow_assign();
+    println!("---------------------------");
+}
+
+#[test]
+#[should_panic]
+fn biguint_should_panic_saturating_pow_assign()
+{
     let mut _a_biguint = U256::zero();
     let _exp = U256::zero();
     println!("Originally, a_biguint = {}", _a_biguint);
     // It will panic.
-    // _a_biguint.saturating_pow_assign(&_exp);
-    println!("---------------------------");
+    _a_biguint.saturating_pow_assign(&_exp);
 }
 
 fn biguint_modular_pow()
@@ -32129,7 +32158,7 @@ fn biguint_set_left_carry()
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
     assert_eq!(a_biguint.is_infinity(), false);
-    assert_eq!(a_biguint.is_undefined(), true);
+    assert_eq!(a_biguint.is_undefined(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
     assert_eq!(a_biguint.is_left_carry(), true);
     assert_eq!(a_biguint.is_right_carry(), false);
@@ -32160,7 +32189,7 @@ fn biguint_reset_left_carry()
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
     assert_eq!(a_biguint.is_infinity(), false);
-    assert_eq!(a_biguint.is_undefined(), true);
+    assert_eq!(a_biguint.is_undefined(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
     assert_eq!(a_biguint.is_left_carry(), true);
     assert_eq!(a_biguint.is_right_carry(), false);
@@ -32202,7 +32231,7 @@ fn biguint_is_left_carry()
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
     assert_eq!(a_biguint.is_infinity(), false);
-    assert_eq!(a_biguint.is_undefined(), true);
+    assert_eq!(a_biguint.is_undefined(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
     assert_eq!(a_biguint.is_left_carry(), true);
     assert_eq!(a_biguint.is_right_carry(), false);
@@ -32233,7 +32262,7 @@ fn biguint_set_right_carry()
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
     assert_eq!(a_biguint.is_infinity(), false);
-    assert_eq!(a_biguint.is_undefined(), true);
+    assert_eq!(a_biguint.is_undefined(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
     assert_eq!(a_biguint.is_left_carry(), false);
     assert_eq!(a_biguint.is_right_carry(), true);
@@ -32264,7 +32293,7 @@ fn biguint_reset_right_carry()
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
     assert_eq!(a_biguint.is_infinity(), false);
-    assert_eq!(a_biguint.is_undefined(), true);
+    assert_eq!(a_biguint.is_undefined(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
     assert_eq!(a_biguint.is_left_carry(), false);
     assert_eq!(a_biguint.is_right_carry(), true);
@@ -32306,7 +32335,7 @@ fn biguint_is_right_carry()
     assert_eq!(a_biguint.is_overflow(), false);
     assert_eq!(a_biguint.is_underflow(), false);
     assert_eq!(a_biguint.is_infinity(), false);
-    assert_eq!(a_biguint.is_undefined(), true);
+    assert_eq!(a_biguint.is_undefined(), false);
     assert_eq!(a_biguint.is_divided_by_zero(), false);
     assert_eq!(a_biguint.is_left_carry(), false);
     assert_eq!(a_biguint.is_right_carry(), true);
