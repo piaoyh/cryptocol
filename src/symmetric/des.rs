@@ -18,21 +18,28 @@
 
 use crate::number::{ SmallUInt, LongUnion };
 
+// Converts bit number into 0-based bit number in Little Endianness.
+macro_rules! convert {
+    ($p:expr) => {
+        (($p - 1) / 8) * 8 + (7 - (($p - 1) % 8))
+    };
+}
+
 macro_rules! make_FP {
     () => {
         if true
         {
             let mut out = [0_u8; 64];
-            out[Self::IP[0] as usize] = 0;
-            out[Self::IP[1] as usize] = 1;
-            out[Self::IP[2] as usize] = 2;
-            out[Self::IP[3] as usize] = 3;
-            out[Self::IP[4] as usize] = 4;
-            out[Self::IP[5] as usize] = 5;
-            out[Self::IP[6] as usize] = 6;
-            out[Self::IP[7] as usize] = 7;
-            out[Self::IP[8] as usize] = 8;
-            out[Self::IP[9] as usize] = 9;
+            out[Self::IP[00] as usize] = 00;
+            out[Self::IP[01] as usize] = 01;
+            out[Self::IP[02] as usize] = 02;
+            out[Self::IP[03] as usize] = 03;
+            out[Self::IP[04] as usize] = 04;
+            out[Self::IP[05] as usize] = 05;
+            out[Self::IP[06] as usize] = 06;
+            out[Self::IP[07] as usize] = 07;
+            out[Self::IP[08] as usize] = 08;
+            out[Self::IP[09] as usize] = 09;
             out[Self::IP[10] as usize] = 10;
             out[Self::IP[11] as usize] = 11;
             out[Self::IP[12] as usize] = 12;
@@ -91,12 +98,71 @@ macro_rules! make_FP {
         }
         else
         {
-            let out = [0_u8; 64];
-            out
+            [0_u8; 64]
         }
-    };
+    }
 }
 
+macro_rules! permutate_data {
+    ($me:expr, $permut:expr) => {
+        let data = $me.block.get();
+        let mut permuted = 0_u64;
+        let mut idx = 0_usize;
+        // $permut and pos are already changed to be 0-based in little endianness.
+        for pos in $permut
+        {
+            if data.is_bit_set_(pos as usize)
+                { permuted |= 1_u64 << idx; } // ((7 - idx % 8) + (idx / 8) * 8); }
+            idx += 1;
+        }
+        $me.block.set(permuted);
+    };
+    // permutate_data!(Self::IP);
+    //
+    // let data = self.block.get();
+    // let mut permuted = 0_u64;
+    // let mut idx = 0_usize;
+    // // IP and pos are already changed to be 0-based in little endianness.
+    // for pos in Self::IP
+    // {
+    //     if data.is_bit_set_(pos as usize)
+    //         { permuted |= 1_u64 << idx; } // ((7 - idx % 8) + (idx / 8) * 8); }
+    //     idx += 1;
+    // }
+    // self.block.set(permuted);
+
+    ($permut:expr, $type:ty, $right:expr) => {
+        if true
+        {
+            let mut permuted = 0 as $type;
+            let mut idx = 0_usize;
+            // $permut and pos are already changed to be 0-based in little endianness.
+            for pos in $permut
+            {
+                if $right.is_bit_set_(pos as usize)
+                    { permuted |= 1 << idx; } // ((7 - idx % 8) + (idx / 8) * 8); }
+                idx += 1;
+            }
+            return permuted
+        }
+        else
+        {
+            return 0 as $type
+        }
+    };
+    // permutate_data!(Self::TP, u32, right);
+    //
+    // let mut permuted = 0_u32;
+    // let mut idx = 0_usize;
+    // // TP and pos are already changed to be 0-based in little endianness.
+    // for pos in Self::TP
+    // {
+    //     if right.is_bit_set_(pos as usize)
+    //         { permuted |= 1 << idx; }
+    //     idx += 1;
+    // }
+    // permuted
+}
 
 // /// You have freedom of changing H0 ~ H3, and ROUND.
 // #[allow(non_camel_case_types)]
@@ -117,6 +183,10 @@ macro_rules! make_FP {
 pub type DES = DES_Generic;    // equivalent to `pub type DES = DES_Expanded;`
 
 /// A DES symmetric-key algorithm for the encryption of digital data
+/// # Note
+/// *This descryption about DES is according to big endianness.*
+/// MSB (Most Significant Bit) is the first bit and LSB (Least Significant Bit)
+/// is the 64th bit in this descryption.
 /// 
 /// # Introduction
 /// // Todo
@@ -130,8 +200,8 @@ pub type DES = DES_Generic;    // equivalent to `pub type DES = DES_Expanded;`
 /// # Generic Parameters
 /// - PC101 ~ PC248: 
 /// - IP01 ~ IP64: Inital permutation constants, and is 1-based.
-/// For example, `IP01 = 58` means that the 58th bit of data from the first
-/// bit is moved to the first bit of the data at initial permutation.
+/// For example, `IP01 = 58` means that the 58th bit of data
+/// is moved to the first bit of the data which is MSB at initial permutation.
 /// You can change inital permutation wire by changing these constants
 /// The change of these constants does not change the security level.
 /// Final permutation constants is automatically calculated from Inital
@@ -157,27 +227,27 @@ pub type DES = DES_Generic;    // equivalent to `pub type DES = DES_Expanded;`
 /// // Todo
 /// 
 #[allow(non_camel_case_types)]
-pub struct DES_Generic<
+pub struct DES_Generic<const ROUND: usize = 16,
 const PC101: u8 = 57, const PC102: u8 = 49, const PC103: u8 = 41, const PC104: u8 = 33,
-const PC105: u8 = 25, const PC106: u8 = 17, const PC107: u8 = 9,  const PC108: u8 = 1,
+const PC105: u8 = 25, const PC106: u8 = 17, const PC107: u8 = 09, const PC108: u8 = 01,
 const PC109: u8 = 58, const PC110: u8 = 50, const PC111: u8 = 42, const PC112: u8 = 34,
-const PC113: u8 = 26, const PC114: u8 = 18, const PC115: u8 = 10, const PC116: u8 = 2,
+const PC113: u8 = 26, const PC114: u8 = 18, const PC115: u8 = 10, const PC116: u8 = 02,
 const PC117: u8 = 59, const PC118: u8 = 51, const PC119: u8 = 43, const PC120: u8 = 35,
-const PC121: u8 = 27, const PC122: u8 = 19, const PC123: u8 = 11, const PC124: u8 = 3,
+const PC121: u8 = 27, const PC122: u8 = 19, const PC123: u8 = 11, const PC124: u8 = 03,
 const PC125: u8 = 60, const PC126: u8 = 52, const PC127: u8 = 44, const PC128: u8 = 36,
 const PC129: u8 = 63, const PC130: u8 = 55, const PC131: u8 = 47, const PC132: u8 = 39,
-const PC133: u8 = 31, const PC134: u8 = 23, const PC135: u8 = 15, const PC136: u8 = 7,
+const PC133: u8 = 31, const PC134: u8 = 23, const PC135: u8 = 15, const PC136: u8 = 07,
 const PC137: u8 = 62, const PC138: u8 = 54, const PC139: u8 = 46, const PC140: u8 = 38,
-const PC141: u8 = 30, const PC142: u8 = 22, const PC143: u8 = 14, const PC144: u8 = 6,
+const PC141: u8 = 30, const PC142: u8 = 22, const PC143: u8 = 14, const PC144: u8 = 06,
 const PC145: u8 = 61, const PC146: u8 = 53, const PC147: u8 = 45, const PC148: u8 = 37,
-const PC149: u8 = 29, const PC150: u8 = 21, const PC151: u8 = 13, const PC152: u8 = 5,
-const PC153: u8 = 28, const PC154: u8 = 20, const PC155: u8 = 12, const PC156: u8 = 4,
+const PC149: u8 = 29, const PC150: u8 = 21, const PC151: u8 = 13, const PC152: u8 = 05,
+const PC153: u8 = 28, const PC154: u8 = 20, const PC155: u8 = 12, const PC156: u8 = 04,
 const PC201: u8 = 14, const PC202: u8 = 17, const PC203: u8 = 11, const PC204: u8 = 24,
-const PC205: u8 = 1,  const PC206: u8 = 5,  const PC207: u8 = 3,  const PC208: u8 = 28,
-const PC209: u8 = 15, const PC210: u8 = 6,  const PC211: u8 = 21, const PC212: u8 = 10,
-const PC213: u8 = 23, const PC214: u8 = 19, const PC215: u8 = 12, const PC216: u8 = 4,
-const PC217: u8 = 26, const PC218: u8 = 8,  const PC219: u8 = 16, const PC220: u8 = 7,
-const PC221: u8 = 27, const PC222: u8 = 20, const PC223: u8 = 13, const PC224: u8 = 2,
+const PC205: u8 = 01, const PC206: u8 = 05, const PC207: u8 = 03, const PC208: u8 = 28,
+const PC209: u8 = 15, const PC210: u8 = 06, const PC211: u8 = 21, const PC212: u8 = 10,
+const PC213: u8 = 23, const PC214: u8 = 19, const PC215: u8 = 12, const PC216: u8 = 04,
+const PC217: u8 = 26, const PC218: u8 = 08, const PC219: u8 = 16, const PC220: u8 = 07,
+const PC221: u8 = 27, const PC222: u8 = 20, const PC223: u8 = 13, const PC224: u8 = 02,
 const PC225: u8 = 41, const PC226: u8 = 52, const PC227: u8 = 31, const PC228: u8 = 37,
 const PC229: u8 = 47, const PC230: u8 = 55, const PC231: u8 = 30, const PC232: u8 = 40,
 const PC233: u8 = 51, const PC234: u8 = 45, const PC235: u8 = 33, const PC236: u8 = 48,
@@ -185,39 +255,23 @@ const PC237: u8 = 44, const PC238: u8 = 49, const PC239: u8 = 39, const PC240: u
 const PC241: u8 = 34, const PC242: u8 = 53, const PC243: u8 = 46, const PC244: u8 = 42,
 const PC245: u8 = 50, const PC246: u8 = 36, const PC247: u8 = 29, const PC248: u8 = 32,
 const IP01: u8 = 58, const IP02: u8 = 50, const IP03: u8 = 42, const IP04: u8 = 34,
-const IP05: u8 = 26, const IP06: u8 = 18, const IP07: u8 = 10, const IP08: u8 = 2,
+const IP05: u8 = 26, const IP06: u8 = 18, const IP07: u8 = 10, const IP08: u8 = 02,
 const IP09: u8 = 60, const IP10: u8 = 52, const IP11: u8 = 44, const IP12: u8 = 36,
-const IP13: u8 = 28, const IP14: u8 = 20, const IP15: u8 = 12, const IP16: u8 = 4,
+const IP13: u8 = 28, const IP14: u8 = 20, const IP15: u8 = 12, const IP16: u8 = 04,
 const IP17: u8 = 62, const IP18: u8 = 54, const IP19: u8 = 46, const IP20: u8 = 38,
-const IP21: u8 = 30, const IP22: u8 = 22, const IP23: u8 = 14, const IP24: u8 = 6,
+const IP21: u8 = 30, const IP22: u8 = 22, const IP23: u8 = 14, const IP24: u8 = 06,
 const IP25: u8 = 64, const IP26: u8 = 56, const IP27: u8 = 48, const IP28: u8 = 40,
-const IP29: u8 = 32, const IP30: u8 = 24, const IP31: u8 = 16, const IP32: u8 = 8,
+const IP29: u8 = 32, const IP30: u8 = 24, const IP31: u8 = 16, const IP32: u8 = 08,
 const IP33: u8 = 57, const IP34: u8 = 49, const IP35: u8 = 41, const IP36: u8 = 33,
-const IP37: u8 = 25, const IP38: u8 = 17, const IP39: u8 = 9,  const IP40: u8 = 1,
+const IP37: u8 = 25, const IP38: u8 = 17, const IP39: u8 = 09, const IP40: u8 = 01,
 const IP41: u8 = 59, const IP42: u8 = 51, const IP43: u8 = 43, const IP44: u8 = 35,
-const IP45: u8 = 27, const IP46: u8 = 19, const IP47: u8 = 11, const IP48: u8 = 3,
+const IP45: u8 = 27, const IP46: u8 = 19, const IP47: u8 = 11, const IP48: u8 = 03,
 const IP49: u8 = 61, const IP50: u8 = 53, const IP51: u8 = 45, const IP52: u8 = 37,
-const IP53: u8 = 29, const IP54: u8 = 21, const IP55: u8 = 13, const IP56: u8 = 5,
+const IP53: u8 = 29, const IP54: u8 = 21, const IP55: u8 = 13, const IP56: u8 = 05,
 const IP57: u8 = 63, const IP58: u8 = 55, const IP59: u8 = 47, const IP60: u8 = 39,
-const IP61: u8 = 31, const IP62: u8 = 23, const IP63: u8 = 15, const IP64: u8 = 7,
+const IP61: u8 = 31, const IP62: u8 = 23, const IP63: u8 = 15, const IP64: u8 = 07,
 // https://page.math.tu-berlin.de/~kant/teaching/hess/krypto-ws2006/des.htm
 // https://m.blog.naver.com/wnrjsxo/221708511553
-// const FP01: u8 = 40, const FP02: u8 = 8,  const FP03: u8 = 48, const FP04: u8 = 16,
-// const FP05: u8 = 56, const FP06: u8 = 24, const FP07: u8 = 64, const FP08: u8 = 32,
-// const FP09: u8 = 39, const FP10: u8 = 7,  const FP11: u8 = 47, const FP12: u8 = 15,
-// const FP13: u8 = 55, const FP14: u8 = 23, const FP15: u8 = 63, const FP16: u8 = 31,
-// const FP17: u8 = 38, const FP18: u8 = 6,  const FP19: u8 = 46, const FP20: u8 = 14,
-// const FP21: u8 = 54, const FP22: u8 = 22, const FP23: u8 = 62, const FP24: u8 = 30,
-// const FP25: u8 = 37, const FP26: u8 = 5,  const FP27: u8 = 45, const FP28: u8 = 13,
-// const FP29: u8 = 53, const FP30: u8 = 21, const FP31: u8 = 61, const FP32: u8 = 29,
-// const FP33: u8 = 36, const FP34: u8 = 4,  const FP35: u8 = 44, const FP36: u8 = 12,
-// const FP37: u8 = 52, const FP38: u8 = 20, const FP39: u8 = 60, const FP40: u8 = 28,
-// const FP41: u8 = 35, const FP42: u8 = 3,  const FP43: u8 = 43, const FP44: u8 = 11,
-// const FP45: u8 = 51, const FP46: u8 = 19, const FP47: u8 = 59, const FP48: u8 = 27,
-// const FP49: u8 = 34, const FP50: u8 = 2,  const FP51: u8 = 42, const FP52: u8 = 10,
-// const FP53: u8 = 50, const FP54: u8 = 18, const FP55: u8 = 58, const FP56: u8 = 26,
-// const FP57: u8 = 33, const FP58: u8 = 1,  const FP59: u8 = 41, const FP60: u8 = 9,
-// const FP61: u8 = 49, const FP62: u8 = 17, const FP63: u8 = 57, const FP64: u8 = 25,
 const S000: u8 = 0xe, const S001: u8 = 0x0, const S002: u8 = 0x4, const S003: u8 = 0xf,
 const S004: u8 = 0xd, const S005: u8 = 0x7, const S006: u8 = 0x1, const S007: u8 = 0x4,
 const S008: u8 = 0x2, const S009: u8 = 0xe, const S010: u8 = 0xf, const S011: u8 = 0x2,
@@ -346,15 +400,34 @@ const S748: u8 = 0x0, const S749: u8 = 0xf, const S750: u8 = 0x6, const S751: u8
 const S752: u8 = 0xa, const S753: u8 = 0x9, const S754: u8 = 0xd, const S755: u8 = 0x0,
 const S756: u8 = 0xf, const S757: u8 = 0x3, const S758: u8 = 0x3, const S759: u8 = 0x5,
 const S760: u8 = 0x5, const S761: u8 = 0x6, const S762: u8 = 0x8, const S763: u8 = 0xb,
+const EP01: u8 = 32, const EP02: u8 = 01, const EP03: u8 = 02, const EP04: u8 = 03,
+const EP05: u8 = 04, const EP06: u8 = 05, const EP07: u8 = 04, const EP08: u8 = 05,
+const EP09: u8 = 06, const EP10: u8 = 07, const EP11: u8 = 08, const EP12: u8 = 09,
+const EP13: u8 = 08, const EP14: u8 = 09, const EP15: u8 = 10, const EP16: u8 = 11,
+const EP17: u8 = 12, const EP18: u8 = 13, const EP19: u8 = 12, const EP20: u8 = 13,
+const EP21: u8 = 14, const EP22: u8 = 15, const EP23: u8 = 16, const EP24: u8 = 17,
+const EP25: u8 = 16, const EP26: u8 = 17, const EP27: u8 = 18, const EP28: u8 = 19,
+const EP29: u8 = 20, const EP30: u8 = 21, const EP31: u8 = 20, const EP32: u8 = 21,
+const EP33: u8 = 22, const EP34: u8 = 23, const EP35: u8 = 24, const EP36: u8 = 25,
+const EP37: u8 = 24, const EP38: u8 = 25, const EP39: u8 = 26, const EP40: u8 = 27,
+const EP41: u8 = 28, const EP42: u8 = 29, const EP43: u8 = 28, const EP44: u8 = 29,
+const EP45: u8 = 30, const EP46: u8 = 31, const EP47: u8 = 32, const EP48: u8 = 01,
+const TP01: u8 = 16, const TP02: u8 = 07, const TP03: u8 = 20, const TP04: u8 = 21,
+const TP05: u8 = 29, const TP06: u8 = 12, const TP07: u8 = 28, const TP08: u8 = 17,
+const TP09: u8 = 01, const TP10: u8 = 15, const TP11: u8 = 23, const TP12: u8 = 26,
+const TP13: u8 = 05, const TP14: u8 = 18, const TP15: u8 = 31, const TP16: u8 = 10,
+const TP17: u8 = 02, const TP18: u8 = 08, const TP19: u8 = 24, const TP20: u8 = 14,
+const TP21: u8 = 32, const TP22: u8 = 27, const TP23: u8 = 03, const TP24: u8 = 09,
+const TP25: u8 = 19, const TP26: u8 = 13, const TP27: u8 = 30, const TP28: u8 = 06,
+const TP29: u8 = 22, const TP30: u8 = 11, const TP31: u8 = 04, const TP32: u8 = 25
 >
 {
-#[allow(dead_code)]
     key: LongUnion,
-#[allow(dead_code)]
     block: LongUnion,
+    round_key: [u32; ROUND],
 }
 
-impl <
+impl <const ROUND: usize,
 const PC101: u8, const PC102: u8, const PC103: u8, const PC104: u8,
 const PC105: u8, const PC106: u8, const PC107: u8, const PC108: u8,
 const PC109: u8, const PC110: u8, const PC111: u8, const PC112: u8,
@@ -397,22 +470,6 @@ const IP49: u8, const IP50: u8, const IP51: u8, const IP52: u8,
 const IP53: u8, const IP54: u8, const IP55: u8, const IP56: u8,
 const IP57: u8, const IP58: u8, const IP59: u8, const IP60: u8,
 const IP61: u8, const IP62: u8, const IP63: u8, const IP64: u8,
-// const FP01: u8, const FP02: u8, const FP03: u8, const FP04: u8,
-// const FP05: u8, const FP06: u8, const FP07: u8, const FP08: u8,
-// const FP09: u8, const FP10: u8, const FP11: u8, const FP12: u8,
-// const FP13: u8, const FP14: u8, const FP15: u8, const FP16: u8,
-// const FP17: u8, const FP18: u8, const FP19: u8, const FP20: u8,
-// const FP21: u8, const FP22: u8, const FP23: u8, const FP24: u8,
-// const FP25: u8, const FP26: u8, const FP27: u8, const FP28: u8,
-// const FP29: u8, const FP30: u8, const FP31: u8, const FP32: u8,
-// const FP33: u8, const FP34: u8, const FP35: u8, const FP36: u8,
-// const FP37: u8, const FP38: u8, const FP39: u8, const FP40: u8,
-// const FP41: u8, const FP42: u8, const FP43: u8, const FP44: u8,
-// const FP45: u8, const FP46: u8, const FP47: u8, const FP48: u8,
-// const FP49: u8, const FP50: u8, const FP51: u8, const FP52: u8,
-// const FP53: u8, const FP54: u8, const FP55: u8, const FP56: u8,
-// const FP57: u8, const FP58: u8, const FP59: u8, const FP60: u8,
-// const FP61: u8, const FP62: u8, const FP63: u8, const FP64: u8,
 const S000: u8, const S001: u8, const S002: u8, const S003: u8,
 const S004: u8, const S005: u8, const S006: u8, const S007: u8,
 const S008: u8, const S009: u8, const S010: u8, const S011: u8,
@@ -541,8 +598,28 @@ const S748: u8, const S749: u8, const S750: u8, const S751: u8,
 const S752: u8, const S753: u8, const S754: u8, const S755: u8,
 const S756: u8, const S757: u8, const S758: u8, const S759: u8,
 const S760: u8, const S761: u8, const S762: u8, const S763: u8,
+const EP01: u8, const EP02: u8, const EP03: u8, const EP04: u8,
+const EP05: u8, const EP06: u8, const EP07: u8, const EP08: u8,
+const EP09: u8, const EP10: u8, const EP11: u8, const EP12: u8,
+const EP13: u8, const EP14: u8, const EP15: u8, const EP16: u8,
+const EP17: u8, const EP18: u8, const EP19: u8, const EP20: u8,
+const EP21: u8, const EP22: u8, const EP23: u8, const EP24: u8,
+const EP25: u8, const EP26: u8, const EP27: u8, const EP28: u8,
+const EP29: u8, const EP30: u8, const EP31: u8, const EP32: u8,
+const EP33: u8, const EP34: u8, const EP35: u8, const EP36: u8,
+const EP37: u8, const EP38: u8, const EP39: u8, const EP40: u8,
+const EP41: u8, const EP42: u8, const EP43: u8, const EP44: u8,
+const EP45: u8, const EP46: u8, const EP47: u8, const EP48: u8,
+const TP01: u8, const TP02: u8, const TP03: u8, const TP04: u8,
+const TP05: u8, const TP06: u8, const TP07: u8, const TP08: u8,
+const TP09: u8, const TP10: u8, const TP11: u8, const TP12: u8,
+const TP13: u8, const TP14: u8, const TP15: u8, const TP16: u8,
+const TP17: u8, const TP18: u8, const TP19: u8, const TP20: u8,
+const TP21: u8, const TP22: u8, const TP23: u8, const TP24: u8,
+const TP25: u8, const TP26: u8, const TP27: u8, const TP28: u8,
+const TP29: u8, const TP30: u8, const TP31: u8, const TP32: u8
 >
-DES_Generic<
+DES_Generic<ROUND,
 PC101, PC102, PC103, PC104, PC105, PC106, PC107, PC108,
 PC109, PC110, PC111, PC112, PC113, PC114, PC115, PC116,
 PC117, PC118, PC119, PC120, PC121, PC122, PC123, PC124,
@@ -564,14 +641,6 @@ IP33, IP34, IP35, IP36, IP37, IP38, IP39, IP40,
 IP41, IP42, IP43, IP44, IP45, IP46, IP47, IP48,
 IP49, IP50, IP51, IP52, IP53, IP54, IP55, IP56,
 IP57, IP58, IP59, IP60, IP61, IP62, IP63, IP64,
-// FP01, FP02, FP03, FP04, FP05, FP06, FP07, FP08,
-// FP09, FP10, FP11, FP12, FP13, FP14, FP15, FP16,
-// FP17, FP18, FP19, FP20, FP21, FP22, FP23, FP24,
-// FP25, FP26, FP27, FP28, FP29, FP30, FP31, FP32,
-// FP33, FP34, FP35, FP36, FP37, FP38, FP39, FP40,
-// FP41, FP42, FP43, FP44, FP45, FP46, FP47, FP48,
-// FP49, FP50, FP51, FP52, FP53, FP54, FP55, FP56,
-// FP57, FP58, FP59, FP60, FP61, FP62, FP63, FP64,
 S000, S001, S002, S003, S004, S005, S006, S007,
 S008, S009, S010, S011, S012, S013, S014, S015,
 S016, S017, S018, S019, S020, S021, S022, S023,
@@ -636,9 +705,18 @@ S732, S733, S734, S735, S736, S737, S738, S739,
 S740, S741, S742, S743, S744, S745, S746, S747,
 S748, S749, S750, S751, S752, S753, S754, S755,
 S756, S757, S758, S759, S760, S761, S762, S763,
+EP01, EP02, EP03, EP04, EP05, EP06, EP07, EP08,
+EP09, EP10, EP11, EP12, EP13, EP14, EP15, EP16,
+EP17, EP18, EP19, EP20, EP21, EP22, EP23, EP24,
+EP25, EP26, EP27, EP28, EP29, EP30, EP31, EP32,
+EP33, EP34, EP35, EP36, EP37, EP38, EP39, EP40,
+EP41, EP42, EP43, EP44, EP45, EP46, EP47, EP48,
+TP01, TP02, TP03, TP04, TP05, TP06, TP07, TP08,
+TP09, TP10, TP11, TP12, TP13, TP14, TP15, TP16,
+TP17, TP18, TP19, TP20, TP21, TP22, TP23, TP24,
+TP25, TP26, TP27, TP28, TP29, TP30, TP31, TP32
 >
 {
-    #[allow(dead_code)]
     const SBOX: [[u8; 64]; 8] = [
               [ S000, S001, S002, S003, S004, S005, S006, S007,
                 S008, S009, S010, S011, S012, S013, S014, S015,
@@ -705,30 +783,101 @@ S756, S757, S758, S759, S760, S761, S762, S763,
                 S748, S749, S750, S751, S752, S753, S754, S755,
                 S756, S757, S758, S759, S760, S761, S762, S763 ]
     ];
-    #[allow(dead_code)]
+
+    // Initial Permutation Table changed to be 0-based in little endianness
+    // So, LSB is 0-th bit and MSB is 63-rd bit in u64.
+    #[cfg(target_endian = "little")]
     const IP: [u8; 64] = [
-              64-IP01, 64-IP02, 64-IP03, 64-IP04, 64-IP05, 64-IP06, 64-IP07, 64-IP08,
-              64-IP09, 64-IP10, 64-IP11, 64-IP12, 64-IP13, 64-IP14, 64-IP15, 64-IP16,
-              64-IP17, 64-IP18, 64-IP19, 64-IP20, 64-IP21, 64-IP22, 64-IP23, 64-IP24,
-              64-IP25, 64-IP26, 64-IP27, 64-IP28, 64-IP29, 64-IP30, 64-IP31, 64-IP32,
-              64-IP33, 64-IP34, 64-IP35, 64-IP36, 64-IP37, 64-IP38, 64-IP39, 64-IP40,
-              64-IP41, 64-IP42, 64-IP43, 64-IP44, 64-IP45, 64-IP46, 64-IP47, 64-IP48,
-              64-IP49, 64-IP50, 64-IP51, 64-IP52, 64-IP53, 64-IP54, 64-IP55, 64-IP56,
-              64-IP57, 64-IP58, 64-IP59, 64-IP60, 64-IP61, 64-IP62, 64-IP63, 64-IP64
+            convert!(IP08), convert!(IP07), convert!(IP06), convert!(IP05),
+            convert!(IP04), convert!(IP03), convert!(IP02), convert!(IP01),
+            convert!(IP16), convert!(IP15), convert!(IP14), convert!(IP13),
+            convert!(IP12), convert!(IP11), convert!(IP10), convert!(IP09),
+            convert!(IP24), convert!(IP23), convert!(IP22), convert!(IP21),
+            convert!(IP20), convert!(IP19), convert!(IP18), convert!(IP17),
+            convert!(IP32), convert!(IP31), convert!(IP30), convert!(IP29),
+            convert!(IP28), convert!(IP27), convert!(IP26), convert!(IP25),
+            convert!(IP40), convert!(IP39), convert!(IP38), convert!(IP37),
+            convert!(IP36), convert!(IP35), convert!(IP34), convert!(IP33),
+            convert!(IP48), convert!(IP47), convert!(IP46), convert!(IP45),
+            convert!(IP44), convert!(IP43), convert!(IP42), convert!(IP41),
+            convert!(IP56), convert!(IP55), convert!(IP54), convert!(IP53),
+            convert!(IP52), convert!(IP51), convert!(IP50), convert!(IP49),
+            convert!(IP64), convert!(IP63), convert!(IP62), convert!(IP61),
+            convert!(IP60), convert!(IP59), convert!(IP58), convert!(IP57)
     ];
-    #[allow(dead_code)]
+
+    #[cfg(target_endian = "big")]
+    const IP: [u8; 64] = [
+            convert!(IP01), convert!(IP02), convert!(IP03), convert!(IP04),
+            convert!(IP05), convert!(IP06), convert!(IP07), convert!(IP08),
+            convert!(IP09), convert!(IP10), convert!(IP11), convert!(IP12),
+            convert!(IP13), convert!(IP14), convert!(IP15), convert!(IP16),
+            convert!(IP17), convert!(IP18), convert!(IP19), convert!(IP20),
+            convert!(IP21), convert!(IP22), convert!(IP23), convert!(IP24),
+            convert!(IP25), convert!(IP26), convert!(IP27), convert!(IP28),
+            convert!(IP29), convert!(IP30), convert!(IP31), convert!(IP32),
+            convert!(IP33), convert!(IP34), convert!(IP35), convert!(IP36),
+            convert!(IP37), convert!(IP38), convert!(IP39), convert!(IP40),
+            convert!(IP41), convert!(IP42), convert!(IP43), convert!(IP44),
+            convert!(IP45), convert!(IP46), convert!(IP47), convert!(IP48),
+            convert!(IP49), convert!(IP50), convert!(IP51), convert!(IP52),
+            convert!(IP53), convert!(IP54), convert!(IP55), convert!(IP56),
+            convert!(IP57), convert!(IP58), convert!(IP59), convert!(IP60),
+            convert!(IP61), convert!(IP62), convert!(IP63), convert!(IP64)
+    ];
+
+    // Final Permutation Table changed to be 0-based in little endianness
+    // So, LSB is 0-th bit and MSB is 63-rd bit in u64.
     const FP: [u8; 64] = make_FP!();
-    // const FP: [u8; 64] = [  
-    //           64-FP01, 64-FP02, 64-FP03, 64-FP04, 64-FP05, 64-FP06, 64-FP07, 64-FP08,
-    //           64-FP09, 64-FP10, 64-FP11, 64-FP12, 64-FP13, 64-FP14, 64-FP15, 64-FP16,
-    //           64-FP17, 64-FP18, 64-FP19, 64-FP20, 64-FP21, 64-FP22, 64-FP23, 64-FP24,
-    //           64-FP25, 64-FP26, 64-FP27, 64-FP28, 64-FP29, 64-FP30, 64-FP31, 64-FP32,
-    //           64-FP33, 64-FP34, 64-FP35, 64-FP36, 64-FP37, 64-FP38, 64-FP39, 64-FP40,
-    //           64-FP41, 64-FP42, 64-FP43, 64-FP44, 64-FP45, 64-FP46, 64-FP47, 64-FP48,
-    //           64-FP49, 64-FP50, 64-FP51, 64-FP52, 64-FP53, 64-FP54, 64-FP55, 64-FP56,
-    //           64-FP57, 64-FP58, 64-FP59, 64-FP60, 64-FP61, 64-FP62, 64-FP63, 64-FP64
-    // ];
-    #[allow(dead_code)]
+
+    // Expansion Permutation Table changed to be 0-based in little endianness
+    // So, LSB is 0-th bit and MSB is 48-th bit in u48.
+    #[cfg(target_endian = "little")]
+    const EP: [u8; 48] = [
+        convert!(EP08), convert!(EP07), convert!(EP06), convert!(EP05),
+        convert!(EP04), convert!(EP03), convert!(EP02), convert!(EP01),
+        convert!(EP16), convert!(EP15), convert!(EP14), convert!(EP13),
+        convert!(EP12), convert!(EP11), convert!(EP10), convert!(EP09),
+        convert!(EP24), convert!(EP23), convert!(EP22), convert!(EP21),
+        convert!(EP20), convert!(EP19), convert!(EP18), convert!(EP17),
+        convert!(EP32), convert!(EP31), convert!(EP30), convert!(EP29),
+        convert!(EP28), convert!(EP27), convert!(EP26), convert!(EP25),
+        convert!(EP40), convert!(EP39), convert!(EP38), convert!(EP37),
+        convert!(EP36), convert!(EP35), convert!(EP34), convert!(EP33),
+        convert!(EP48), convert!(EP47), convert!(EP46), convert!(EP45),
+        convert!(EP44), convert!(EP43), convert!(EP42), convert!(EP41)
+    ];
+
+    #[cfg(target_endian = "big")]
+    const EP: [u8; 48] = [
+        convert!(EP01), convert!(EP02), convert!(EP03), convert!(EP04), 
+        convert!(EP05), convert!(EP06), convert!(EP07), convert!(EP08),
+        convert!(EP09), convert!(EP10), convert!(EP11), convert!(EP12), 
+        convert!(EP13), convert!(EP14), convert!(EP15), convert!(EP16),
+        convert!(EP17), convert!(EP18), convert!(EP19), convert!(EP20), 
+        convert!(EP21), convert!(EP22), convert!(EP23), convert!(EP24),
+        convert!(EP25), convert!(EP26), convert!(EP27), convert!(EP28), 
+        convert!(EP29), convert!(EP30), convert!(EP31), convert!(EP32),
+        convert!(EP33), convert!(EP34), convert!(EP35), convert!(EP36), 
+        convert!(EP37), convert!(EP38), convert!(EP39), convert!(EP40),
+        convert!(EP41), convert!(EP42), convert!(EP43), convert!(EP44), 
+        convert!(EP45), convert!(EP46), convert!(EP47), convert!(EP48)
+    ];
+
+    // Initial Permutation Table changed to be 0-based in little endianness
+    // So, LSB is 0-th bit and MSB is 63-rd bit in u64.
+    #[cfg(target_endian = "little")]
+    const TP: [u8; 32] = [
+        convert!(TP08), convert!(TP07), convert!(TP06), convert!(TP05),
+        convert!(TP04), convert!(TP03), convert!(TP02), convert!(TP01),
+        convert!(TP16), convert!(TP15), convert!(TP14), convert!(TP13),
+        convert!(TP12), convert!(TP11), convert!(TP10), convert!(TP09),
+        convert!(TP24), convert!(TP23), convert!(TP22), convert!(TP21),
+        convert!(TP20), convert!(TP19), convert!(TP18), convert!(TP17),
+        convert!(TP32), convert!(TP31), convert!(TP30), convert!(TP29),
+        convert!(TP28), convert!(TP27), convert!(TP26), convert!(TP25)
+    ];
+
     const PC1: [u8; 56] = [
         64-PC101, 64-PC102, 64-PC103, 64-PC104, 64-PC105, 64-PC106, 64-PC107, 64-PC108,
         64-PC109, 64-PC110, 64-PC111, 64-PC112, 64-PC113, 64-PC114, 64-PC115, 64-PC116,
@@ -738,7 +887,7 @@ S756, S757, S758, S759, S760, S761, S762, S763,
         64-PC141, 64-PC142, 64-PC143, 64-PC144, 64-PC145, 64-PC146, 64-PC147, 64-PC148,
         64-PC149, 64-PC150, 64-PC151, 64-PC152, 64-PC153, 64-PC154, 64-PC155, 64-PC156,
     ];
-    #[allow(dead_code)]
+
     const PC2: [u8; 48] = [
         64-PC201, 64-PC202, 64-PC203, 64-PC204, 64-PC205, 64-PC206, 64-PC207, 64-PC208,
         64-PC209, 64-PC210, 64-PC211, 64-PC212, 64-PC213, 64-PC214, 64-PC215, 64-PC216,
@@ -747,39 +896,76 @@ S756, S757, S758, S759, S760, S761, S762, S763,
         64-PC233, 64-PC234, 64-PC235, 64-PC236, 64-PC237, 64-PC238, 64-PC239, 64-PC240,
         64-PC241, 64-PC242, 64-PC243, 64-PC244, 64-PC245, 64-PC246, 64-PC247, 64-PC248,
     ];
+
     /// Constructs a new object DES_Generic.
     /// 
     #[inline]
-    #[allow(dead_code)]
-    pub fn new(key: [u8; 8]) -> Self
+    pub fn new() -> Self
     {
-        Self { key: LongUnion::new_with_ubytes(key), block: LongUnion::new(), }
+        Self::new_with_key([0_u8; 8])
     }
 
-    #[allow(dead_code)]
+    /// Constructs a new object DES_Generic.
+    /// 
+    #[inline]
+    pub fn new_with_key(key: [u8; 8]) -> Self
+    {
+        Self
+        {
+            key:        LongUnion::new_with_ubytes(key),
+            block:      LongUnion::new(),
+            round_key:  [0_u32; ROUND],
+        }
+    }
+
+    pub fn make_round_keys(&mut self)
+    {
+        todo!();
+    }
+
+    // // for unit test
+    // fn set_block(&mut self, block: u64) { self.block.set(block); }
+    // // for unit test
+    // fn get_block(&mut self) -> u64 { self.block.get() }
+
     fn permutate_initially(&mut self)
     {
-        let data = self.block.get().to_be();
-        let mut permuted = 0_u64;
-        for pos in Self::IP
-        {
-            permuted <<= 1;
-            permuted |= data.is_bit_set_(pos as usize) as u64;
-        }
-        self.block.set(permuted.to_be());
+        permutate_data!(self, Self::IP);
     }
 
-    #[allow(dead_code)]
     fn permutate_finally(&mut self)
     {
-        let data = self.block.get().to_be();
-        let mut permuted = 0_u64;
-        for pos in Self::FP
-        {
-            permuted <<= 1;
-            permuted |= data.is_bit_set_(pos as usize) as u64;
-        }
-        self.block.set(permuted.to_be());
+        permutate_data!(self, Self::FP);
+    }
+
+    fn expand(&mut self, right: u32) -> u64
+    {
+        permutate_data!(Self::EP, u64, right);
+        // let mut permuted = 0_u64;
+        // let mut idx = 0_usize;
+        // // EP and pos are already changed to be 0-based in little endianness.
+        // for pos in Self::EP
+        // {
+        //     if right.is_bit_set_(pos as usize)
+        //         { permuted |= 1 << idx; }
+        //     idx += 1;
+        // }
+        // permuted
+    }
+
+    fn translate(&mut self, right: u32) -> u32
+    {
+        permutate_data!(Self::TP, u32, right);
+        // let mut permuted = 0_u32;
+        // let mut idx = 0_usize;
+        // // TP and pos are already changed to be 0-based in little endianness.
+        // for pos in Self::TP
+        // {
+        //     if right.is_bit_set_(pos as usize)
+        //         { permuted |= 1 << idx; }
+        //     idx += 1;
+        // }
+        // permuted
     }
 
     #[allow(dead_code)]
@@ -815,5 +1001,29 @@ S756, S757, S758, S759, S760, S761, S762, S763,
         out
     }
 
+    #[allow(dead_code)]
+    fn f(&mut self, key: u32, right: u32) -> u32
+    {
+        todo!();
+    }
+
+    #[allow(dead_code)]
+    fn feistel(&mut self, round_key: u32)
+    {
+        const LEFT: usize = 0;
+        const RIGHT: usize = 1;
+        let right = self.block.get_uint_(RIGHT);
+        let left = self.block.get_uint_(LEFT) ^ self.f(round_key, right);
+        self.block.set_uint_(LEFT, right);
+        self.block.set_uint_(RIGHT, left);
+    }
+
+    pub fn enc(&mut self)
+    {
+        self.permutate_initially();
+        for round in 0..ROUND
+            { self.feistel(self.round_key[round]); }
+        self.permutate_finally();
+    }
 
 }
