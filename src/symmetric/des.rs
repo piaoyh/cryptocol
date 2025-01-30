@@ -7,7 +7,10 @@
 // except according to those terms.
 
 
-// #![warn(missing_docs)]
+#![allow(missing_docs)]
+#![allow(unused_must_use)]
+#![allow(dead_code)]
+#![allow(unused_variables)]
 // #![warn(rustdoc::missing_doc_code_examples)]
 
 
@@ -16,7 +19,7 @@
 // use std::fmt::{ self, Debug, Display, Formatter };
 // use std::collections::HashMap;
 
-use crate::number::{ SmallUInt, LongUnion };
+use crate::number::{ SmallUInt, IntUnion, LongUnion };
 
 // Converts bit number into 0-based bit number in Little Endianness.
 macro_rules! convert {
@@ -140,14 +143,14 @@ macro_rules! permutate_data {
             for pos in $permut
             {
                 if $right.is_bit_set_(pos as usize)
-                    { permuted |= 1 << idx; } // ((7 - idx % 8) + (idx / 8) * 8); }
+                    { permuted |= 1 as $type << idx; } // ((7 - idx % 8) + (idx / 8) * 8); }
                 idx += 1;
             }
-            return permuted
+            permuted
         }
         else
         {
-            return 0 as $type
+            0 as $type
         }
     };
     // permutate_data!(Self::TP, u32, right);
@@ -162,6 +165,70 @@ macro_rules! permutate_data {
     //     idx += 1;
     // }
     // permuted
+}
+
+macro_rules! shift_right_union {
+    ($u:expr, $n:expr) => {
+        let mut carry = 0_u8;
+        for i in 0..4
+        {
+            let tmp = $u.get_ubyte_(i) << (8 - $n);
+            $u.set_ubyte_(i, ($u.get_ubyte_(i) >> $n) | carry);
+            carry = tmp;
+        }
+    };
+}
+
+macro_rules! shift_left_union {
+    ($u:expr, $n:expr) => {
+        let mut carry = 0_u8;
+        for i in 0..4
+        {
+            let tmp = $u.get_ubyte_(3 - i) >> (8 - $n);
+            $u.set_ubyte_(3 - i, ($u.get_ubyte_(3 - i) << $n) | carry);
+            carry = tmp;
+        }
+    };
+    ($u:expr, $n:expr, $size:expr) => {
+        let mut carry = 0_u8;
+        for i in 0..$size
+        {
+            let tmp = $u.get_ubyte_($size - 1 - i) >> (8 - $n);
+            $u.set_ubyte_($size - 1 - i, ($u.get_ubyte_($size - 1 - i) << $n) | carry);
+            carry = tmp;
+        }
+    };
+}
+
+macro_rules! rotate_halfkey {
+    ($u:expr, $even:expr) => {
+        let n = if $even {2} else {1};
+        let mut carry = ($u.get_ubyte_(0) >> (4 - n)) & 0b11110000;
+        for i in 0..4
+        {
+            let tmp = $u.get_ubyte_(3 - i) >> (8 - n);
+            $u.set_ubyte_(3 - i, ($u.get_ubyte_(3 - i) << n) | carry);
+            carry = tmp;
+        }
+    };
+}
+
+macro_rules! slice_index {
+    ($indices:expr, $array:expr) => {
+        let mut idx = LongUnion::new_with($indices);
+        for i in 0..8_usize
+        {
+            $array[i] = ((idx.get_ubyte_(0) & 0b_111_111_00_u8) >> 2) as usize;
+            shift_left_union!(idx, 6, 6);
+        }
+    };
+}
+
+macro_rules! combine_pieces {
+    ($body:expr, $piece:expr) => {
+        $body >>= 8;
+        $body |= ($piece << 24);
+    };
 }
 
 // /// You have freedom of changing H0 ~ H3, and ROUND.
@@ -198,18 +265,47 @@ pub type DES = DES_Generic;    // equivalent to `pub type DES = DES_Expanded;`
 /// // Todo
 /// 
 /// # Generic Parameters
-/// - PC101 ~ PC248: 
-/// - IP01 ~ IP64: Inital permutation constants, and is 1-based.
-/// For example, `IP01 = 58` means that the 58th bit of data
-/// is moved to the first bit of the data which is MSB at initial permutation.
-/// You can change inital permutation wire by changing these constants
-/// The change of these constants does not change the security level.
-/// Final permutation constants is automatically calculated from Inital
-/// permutation constants.
+/// - ROUND: You can determine how many times the Fiestel network will be
+///   repeated. Its maximum value will 128.
+/// - SHIFT: You can determine how many bits the half keys will be rotated left
+///   for the corresponding round in the key generator.
+///   If SHIFT is '0b10011001', the half keys will be rotated left by one bit
+///   for the first round, and will be rotated left by 2 bits for the second
+///   round, and will be rotated left by 2 bits for the third round, and so on.
+///   The LSB is for the first round and the MSB is for the 128th round. `0`
+///   means that the half keys will be rotated left by two bits and `1` means
+///   that the half keys will be rotated left by one bit. Up to only `ROUND`
+///   bits from the LSB of SHIFT will be meaningful. For example, if `ROUND` is
+///   5 and SHIFT is '0b10011001', only '0b11001' out of '0b10011001' is
+///   meaningful. If `ROUND` is 16 and SHIFT is '0b10011001', SHIFT will be
+///   understood to be '0b0000000010011001'.
+/// - PC101 ~ PC248: Permutation compression.
+/// - IP01 ~ IP64: Inital permutation constants. They are 1-based.
+///   For example, `IP01 = 58` means that the 58th bit of data
+///   is moved to the first bit of the data which is MSB at initial permutation.
+///   You can change inital permutation wire by changing these constants
+///   The change of these constants does not change the security level.
+///   Final permutation constants is automatically calculated from Inital
+///   permutation constants. FP01 ~ FP64 is inverse version of IP01 ~ IP64.
+///   So, FP01 ~ FP64 will be automagically calculated. You don't have to
+///   determine them.
 /// - S000 ~ S763: S-Box constants, and its index such as 000, 212, etc. is
-/// 0-based. S0XX means S-Box 0, S1XX means S-Box 1, and so on. S000 is the
-/// first element of S-Box 0. You cange S-Box by changing these constants.
-/// The change of these constants DOES change the security level a lot.
+///   0-based. S0XX means S-Box 0, S1XX means S-Box 1, and so on. S000 is the
+///   first element of S-Box 0.
+///   According to [the document](https://page.math.tu-berlin.de/~kant/teaching/hess/krypto-ws2006/des.htm),
+///   the input six bits determines the output of S-Box. The first and the last
+///   bit of the six bits represent in base 2 a number in the decimal range 0 to
+///   3 (or binary 00 to 11) which is row number. The rest middle four bits
+///   represent in base 2 a number in the decimal range 0 to 15 (binary 0000 to
+///   1111) which is column number. However, in this crate, S-boxes are
+///   implemented to be two-dimensional array which is an array of S-box.
+///   Each S-box is an array of 64 four-bit numbers. The input six-bit number
+///   is used as the index of the array of these 64 four-bit numbers. So, the
+///   S-box tables have been rearranged to be the 2-dimensional array.
+///   You can cange S-Box by changing these constants.
+///   *The change of these constants may hurt the security a lot.*
+/// - EP01 ~ EP48: Expansion permutation constants.
+/// - TP01 ~ TP32: Translation permutation constans.
 /// 
 /// // Todo
 /// 
@@ -227,7 +323,7 @@ pub type DES = DES_Generic;    // equivalent to `pub type DES = DES_Expanded;`
 /// // Todo
 /// 
 #[allow(non_camel_case_types)]
-pub struct DES_Generic<const ROUND: usize = 16,
+pub struct DES_Generic<const ROUND: usize = 16, const SHIFT: u128 = 0b_1000000100000011,
 const PC101: u8 = 57, const PC102: u8 = 49, const PC103: u8 = 41, const PC104: u8 = 33,
 const PC105: u8 = 25, const PC106: u8 = 17, const PC107: u8 = 09, const PC108: u8 = 01,
 const PC109: u8 = 58, const PC110: u8 = 50, const PC111: u8 = 42, const PC112: u8 = 34,
@@ -270,6 +366,26 @@ const IP49: u8 = 61, const IP50: u8 = 53, const IP51: u8 = 45, const IP52: u8 = 
 const IP53: u8 = 29, const IP54: u8 = 21, const IP55: u8 = 13, const IP56: u8 = 05,
 const IP57: u8 = 63, const IP58: u8 = 55, const IP59: u8 = 47, const IP60: u8 = 39,
 const IP61: u8 = 31, const IP62: u8 = 23, const IP63: u8 = 15, const IP64: u8 = 07,
+const EP01: u8 = 32, const EP02: u8 = 01, const EP03: u8 = 02, const EP04: u8 = 03,
+const EP05: u8 = 04, const EP06: u8 = 05, const EP07: u8 = 04, const EP08: u8 = 05,
+const EP09: u8 = 06, const EP10: u8 = 07, const EP11: u8 = 08, const EP12: u8 = 09,
+const EP13: u8 = 08, const EP14: u8 = 09, const EP15: u8 = 10, const EP16: u8 = 11,
+const EP17: u8 = 12, const EP18: u8 = 13, const EP19: u8 = 12, const EP20: u8 = 13,
+const EP21: u8 = 14, const EP22: u8 = 15, const EP23: u8 = 16, const EP24: u8 = 17,
+const EP25: u8 = 16, const EP26: u8 = 17, const EP27: u8 = 18, const EP28: u8 = 19,
+const EP29: u8 = 20, const EP30: u8 = 21, const EP31: u8 = 20, const EP32: u8 = 21,
+const EP33: u8 = 22, const EP34: u8 = 23, const EP35: u8 = 24, const EP36: u8 = 25,
+const EP37: u8 = 24, const EP38: u8 = 25, const EP39: u8 = 26, const EP40: u8 = 27,
+const EP41: u8 = 28, const EP42: u8 = 29, const EP43: u8 = 28, const EP44: u8 = 29,
+const EP45: u8 = 30, const EP46: u8 = 31, const EP47: u8 = 32, const EP48: u8 = 01,
+const TP01: u8 = 16, const TP02: u8 = 07, const TP03: u8 = 20, const TP04: u8 = 21,
+const TP05: u8 = 29, const TP06: u8 = 12, const TP07: u8 = 28, const TP08: u8 = 17,
+const TP09: u8 = 01, const TP10: u8 = 15, const TP11: u8 = 23, const TP12: u8 = 26,
+const TP13: u8 = 05, const TP14: u8 = 18, const TP15: u8 = 31, const TP16: u8 = 10,
+const TP17: u8 = 02, const TP18: u8 = 08, const TP19: u8 = 24, const TP20: u8 = 14,
+const TP21: u8 = 32, const TP22: u8 = 27, const TP23: u8 = 03, const TP24: u8 = 09,
+const TP25: u8 = 19, const TP26: u8 = 13, const TP27: u8 = 30, const TP28: u8 = 06,
+const TP29: u8 = 22, const TP30: u8 = 11, const TP31: u8 = 04, const TP32: u8 = 25,
 // https://page.math.tu-berlin.de/~kant/teaching/hess/krypto-ws2006/des.htm
 // https://m.blog.naver.com/wnrjsxo/221708511553
 const S000: u8 = 0xe, const S001: u8 = 0x0, const S002: u8 = 0x4, const S003: u8 = 0xf,
@@ -399,35 +515,15 @@ const S744: u8 = 0xe, const S745: u8 = 0x8, const S746: u8 = 0x2, const S747: u8
 const S748: u8 = 0x0, const S749: u8 = 0xf, const S750: u8 = 0x6, const S751: u8 = 0xc,
 const S752: u8 = 0xa, const S753: u8 = 0x9, const S754: u8 = 0xd, const S755: u8 = 0x0,
 const S756: u8 = 0xf, const S757: u8 = 0x3, const S758: u8 = 0x3, const S759: u8 = 0x5,
-const S760: u8 = 0x5, const S761: u8 = 0x6, const S762: u8 = 0x8, const S763: u8 = 0xb,
-const EP01: u8 = 32, const EP02: u8 = 01, const EP03: u8 = 02, const EP04: u8 = 03,
-const EP05: u8 = 04, const EP06: u8 = 05, const EP07: u8 = 04, const EP08: u8 = 05,
-const EP09: u8 = 06, const EP10: u8 = 07, const EP11: u8 = 08, const EP12: u8 = 09,
-const EP13: u8 = 08, const EP14: u8 = 09, const EP15: u8 = 10, const EP16: u8 = 11,
-const EP17: u8 = 12, const EP18: u8 = 13, const EP19: u8 = 12, const EP20: u8 = 13,
-const EP21: u8 = 14, const EP22: u8 = 15, const EP23: u8 = 16, const EP24: u8 = 17,
-const EP25: u8 = 16, const EP26: u8 = 17, const EP27: u8 = 18, const EP28: u8 = 19,
-const EP29: u8 = 20, const EP30: u8 = 21, const EP31: u8 = 20, const EP32: u8 = 21,
-const EP33: u8 = 22, const EP34: u8 = 23, const EP35: u8 = 24, const EP36: u8 = 25,
-const EP37: u8 = 24, const EP38: u8 = 25, const EP39: u8 = 26, const EP40: u8 = 27,
-const EP41: u8 = 28, const EP42: u8 = 29, const EP43: u8 = 28, const EP44: u8 = 29,
-const EP45: u8 = 30, const EP46: u8 = 31, const EP47: u8 = 32, const EP48: u8 = 01,
-const TP01: u8 = 16, const TP02: u8 = 07, const TP03: u8 = 20, const TP04: u8 = 21,
-const TP05: u8 = 29, const TP06: u8 = 12, const TP07: u8 = 28, const TP08: u8 = 17,
-const TP09: u8 = 01, const TP10: u8 = 15, const TP11: u8 = 23, const TP12: u8 = 26,
-const TP13: u8 = 05, const TP14: u8 = 18, const TP15: u8 = 31, const TP16: u8 = 10,
-const TP17: u8 = 02, const TP18: u8 = 08, const TP19: u8 = 24, const TP20: u8 = 14,
-const TP21: u8 = 32, const TP22: u8 = 27, const TP23: u8 = 03, const TP24: u8 = 09,
-const TP25: u8 = 19, const TP26: u8 = 13, const TP27: u8 = 30, const TP28: u8 = 06,
-const TP29: u8 = 22, const TP30: u8 = 11, const TP31: u8 = 04, const TP32: u8 = 25
+const S760: u8 = 0x5, const S761: u8 = 0x6, const S762: u8 = 0x8, const S763: u8 = 0xb
 >
 {
     key: LongUnion,
     block: LongUnion,
-    round_key: [u32; ROUND],
+    round_key: [u64; ROUND],
 }
 
-impl <const ROUND: usize,
+impl <const ROUND: usize, const SHIFT: u128,
 const PC101: u8, const PC102: u8, const PC103: u8, const PC104: u8,
 const PC105: u8, const PC106: u8, const PC107: u8, const PC108: u8,
 const PC109: u8, const PC110: u8, const PC111: u8, const PC112: u8,
@@ -470,6 +566,26 @@ const IP49: u8, const IP50: u8, const IP51: u8, const IP52: u8,
 const IP53: u8, const IP54: u8, const IP55: u8, const IP56: u8,
 const IP57: u8, const IP58: u8, const IP59: u8, const IP60: u8,
 const IP61: u8, const IP62: u8, const IP63: u8, const IP64: u8,
+const EP01: u8, const EP02: u8, const EP03: u8, const EP04: u8,
+const EP05: u8, const EP06: u8, const EP07: u8, const EP08: u8,
+const EP09: u8, const EP10: u8, const EP11: u8, const EP12: u8,
+const EP13: u8, const EP14: u8, const EP15: u8, const EP16: u8,
+const EP17: u8, const EP18: u8, const EP19: u8, const EP20: u8,
+const EP21: u8, const EP22: u8, const EP23: u8, const EP24: u8,
+const EP25: u8, const EP26: u8, const EP27: u8, const EP28: u8,
+const EP29: u8, const EP30: u8, const EP31: u8, const EP32: u8,
+const EP33: u8, const EP34: u8, const EP35: u8, const EP36: u8,
+const EP37: u8, const EP38: u8, const EP39: u8, const EP40: u8,
+const EP41: u8, const EP42: u8, const EP43: u8, const EP44: u8,
+const EP45: u8, const EP46: u8, const EP47: u8, const EP48: u8,
+const TP01: u8, const TP02: u8, const TP03: u8, const TP04: u8,
+const TP05: u8, const TP06: u8, const TP07: u8, const TP08: u8,
+const TP09: u8, const TP10: u8, const TP11: u8, const TP12: u8,
+const TP13: u8, const TP14: u8, const TP15: u8, const TP16: u8,
+const TP17: u8, const TP18: u8, const TP19: u8, const TP20: u8,
+const TP21: u8, const TP22: u8, const TP23: u8, const TP24: u8,
+const TP25: u8, const TP26: u8, const TP27: u8, const TP28: u8,
+const TP29: u8, const TP30: u8, const TP31: u8, const TP32: u8,
 const S000: u8, const S001: u8, const S002: u8, const S003: u8,
 const S004: u8, const S005: u8, const S006: u8, const S007: u8,
 const S008: u8, const S009: u8, const S010: u8, const S011: u8,
@@ -597,29 +713,9 @@ const S744: u8, const S745: u8, const S746: u8, const S747: u8,
 const S748: u8, const S749: u8, const S750: u8, const S751: u8,
 const S752: u8, const S753: u8, const S754: u8, const S755: u8,
 const S756: u8, const S757: u8, const S758: u8, const S759: u8,
-const S760: u8, const S761: u8, const S762: u8, const S763: u8,
-const EP01: u8, const EP02: u8, const EP03: u8, const EP04: u8,
-const EP05: u8, const EP06: u8, const EP07: u8, const EP08: u8,
-const EP09: u8, const EP10: u8, const EP11: u8, const EP12: u8,
-const EP13: u8, const EP14: u8, const EP15: u8, const EP16: u8,
-const EP17: u8, const EP18: u8, const EP19: u8, const EP20: u8,
-const EP21: u8, const EP22: u8, const EP23: u8, const EP24: u8,
-const EP25: u8, const EP26: u8, const EP27: u8, const EP28: u8,
-const EP29: u8, const EP30: u8, const EP31: u8, const EP32: u8,
-const EP33: u8, const EP34: u8, const EP35: u8, const EP36: u8,
-const EP37: u8, const EP38: u8, const EP39: u8, const EP40: u8,
-const EP41: u8, const EP42: u8, const EP43: u8, const EP44: u8,
-const EP45: u8, const EP46: u8, const EP47: u8, const EP48: u8,
-const TP01: u8, const TP02: u8, const TP03: u8, const TP04: u8,
-const TP05: u8, const TP06: u8, const TP07: u8, const TP08: u8,
-const TP09: u8, const TP10: u8, const TP11: u8, const TP12: u8,
-const TP13: u8, const TP14: u8, const TP15: u8, const TP16: u8,
-const TP17: u8, const TP18: u8, const TP19: u8, const TP20: u8,
-const TP21: u8, const TP22: u8, const TP23: u8, const TP24: u8,
-const TP25: u8, const TP26: u8, const TP27: u8, const TP28: u8,
-const TP29: u8, const TP30: u8, const TP31: u8, const TP32: u8
+const S760: u8, const S761: u8, const S762: u8, const S763: u8
 >
-DES_Generic<ROUND,
+DES_Generic<ROUND, SHIFT,
 PC101, PC102, PC103, PC104, PC105, PC106, PC107, PC108,
 PC109, PC110, PC111, PC112, PC113, PC114, PC115, PC116,
 PC117, PC118, PC119, PC120, PC121, PC122, PC123, PC124,
@@ -641,6 +737,16 @@ IP33, IP34, IP35, IP36, IP37, IP38, IP39, IP40,
 IP41, IP42, IP43, IP44, IP45, IP46, IP47, IP48,
 IP49, IP50, IP51, IP52, IP53, IP54, IP55, IP56,
 IP57, IP58, IP59, IP60, IP61, IP62, IP63, IP64,
+EP01, EP02, EP03, EP04, EP05, EP06, EP07, EP08,
+EP09, EP10, EP11, EP12, EP13, EP14, EP15, EP16,
+EP17, EP18, EP19, EP20, EP21, EP22, EP23, EP24,
+EP25, EP26, EP27, EP28, EP29, EP30, EP31, EP32,
+EP33, EP34, EP35, EP36, EP37, EP38, EP39, EP40,
+EP41, EP42, EP43, EP44, EP45, EP46, EP47, EP48,
+TP01, TP02, TP03, TP04, TP05, TP06, TP07, TP08,
+TP09, TP10, TP11, TP12, TP13, TP14, TP15, TP16,
+TP17, TP18, TP19, TP20, TP21, TP22, TP23, TP24,
+TP25, TP26, TP27, TP28, TP29, TP30, TP31, TP32,
 S000, S001, S002, S003, S004, S005, S006, S007,
 S008, S009, S010, S011, S012, S013, S014, S015,
 S016, S017, S018, S019, S020, S021, S022, S023,
@@ -704,17 +810,7 @@ S724, S725, S726, S727, S728, S729, S730, S731,
 S732, S733, S734, S735, S736, S737, S738, S739,
 S740, S741, S742, S743, S744, S745, S746, S747,
 S748, S749, S750, S751, S752, S753, S754, S755,
-S756, S757, S758, S759, S760, S761, S762, S763,
-EP01, EP02, EP03, EP04, EP05, EP06, EP07, EP08,
-EP09, EP10, EP11, EP12, EP13, EP14, EP15, EP16,
-EP17, EP18, EP19, EP20, EP21, EP22, EP23, EP24,
-EP25, EP26, EP27, EP28, EP29, EP30, EP31, EP32,
-EP33, EP34, EP35, EP36, EP37, EP38, EP39, EP40,
-EP41, EP42, EP43, EP44, EP45, EP46, EP47, EP48,
-TP01, TP02, TP03, TP04, TP05, TP06, TP07, TP08,
-TP09, TP10, TP11, TP12, TP13, TP14, TP15, TP16,
-TP17, TP18, TP19, TP20, TP21, TP22, TP23, TP24,
-TP25, TP26, TP27, TP28, TP29, TP30, TP31, TP32
+S756, S757, S758, S759, S760, S761, S762, S763
 >
 {
     const SBOX: [[u8; 64]; 8] = [
@@ -786,7 +882,6 @@ TP25, TP26, TP27, TP28, TP29, TP30, TP31, TP32
 
     // Initial Permutation Table changed to be 0-based in little endianness
     // So, LSB is 0-th bit and MSB is 63-rd bit in u64.
-    #[cfg(target_endian = "little")]
     const IP: [u8; 64] = [
             convert!(IP08), convert!(IP07), convert!(IP06), convert!(IP05),
             convert!(IP04), convert!(IP03), convert!(IP02), convert!(IP01),
@@ -806,33 +901,12 @@ TP25, TP26, TP27, TP28, TP29, TP30, TP31, TP32
             convert!(IP60), convert!(IP59), convert!(IP58), convert!(IP57)
     ];
 
-    #[cfg(target_endian = "big")]
-    const IP: [u8; 64] = [
-            convert!(IP01), convert!(IP02), convert!(IP03), convert!(IP04),
-            convert!(IP05), convert!(IP06), convert!(IP07), convert!(IP08),
-            convert!(IP09), convert!(IP10), convert!(IP11), convert!(IP12),
-            convert!(IP13), convert!(IP14), convert!(IP15), convert!(IP16),
-            convert!(IP17), convert!(IP18), convert!(IP19), convert!(IP20),
-            convert!(IP21), convert!(IP22), convert!(IP23), convert!(IP24),
-            convert!(IP25), convert!(IP26), convert!(IP27), convert!(IP28),
-            convert!(IP29), convert!(IP30), convert!(IP31), convert!(IP32),
-            convert!(IP33), convert!(IP34), convert!(IP35), convert!(IP36),
-            convert!(IP37), convert!(IP38), convert!(IP39), convert!(IP40),
-            convert!(IP41), convert!(IP42), convert!(IP43), convert!(IP44),
-            convert!(IP45), convert!(IP46), convert!(IP47), convert!(IP48),
-            convert!(IP49), convert!(IP50), convert!(IP51), convert!(IP52),
-            convert!(IP53), convert!(IP54), convert!(IP55), convert!(IP56),
-            convert!(IP57), convert!(IP58), convert!(IP59), convert!(IP60),
-            convert!(IP61), convert!(IP62), convert!(IP63), convert!(IP64)
-    ];
-
     // Final Permutation Table changed to be 0-based in little endianness
     // So, LSB is 0-th bit and MSB is 63-rd bit in u64.
     const FP: [u8; 64] = make_FP!();
 
     // Expansion Permutation Table changed to be 0-based in little endianness
     // So, LSB is 0-th bit and MSB is 48-th bit in u48.
-    #[cfg(target_endian = "little")]
     const EP: [u8; 48] = [
         convert!(EP08), convert!(EP07), convert!(EP06), convert!(EP05),
         convert!(EP04), convert!(EP03), convert!(EP02), convert!(EP01),
@@ -848,25 +922,8 @@ TP25, TP26, TP27, TP28, TP29, TP30, TP31, TP32
         convert!(EP44), convert!(EP43), convert!(EP42), convert!(EP41)
     ];
 
-    #[cfg(target_endian = "big")]
-    const EP: [u8; 48] = [
-        convert!(EP01), convert!(EP02), convert!(EP03), convert!(EP04), 
-        convert!(EP05), convert!(EP06), convert!(EP07), convert!(EP08),
-        convert!(EP09), convert!(EP10), convert!(EP11), convert!(EP12), 
-        convert!(EP13), convert!(EP14), convert!(EP15), convert!(EP16),
-        convert!(EP17), convert!(EP18), convert!(EP19), convert!(EP20), 
-        convert!(EP21), convert!(EP22), convert!(EP23), convert!(EP24),
-        convert!(EP25), convert!(EP26), convert!(EP27), convert!(EP28), 
-        convert!(EP29), convert!(EP30), convert!(EP31), convert!(EP32),
-        convert!(EP33), convert!(EP34), convert!(EP35), convert!(EP36), 
-        convert!(EP37), convert!(EP38), convert!(EP39), convert!(EP40),
-        convert!(EP41), convert!(EP42), convert!(EP43), convert!(EP44), 
-        convert!(EP45), convert!(EP46), convert!(EP47), convert!(EP48)
-    ];
-
     // Initial Permutation Table changed to be 0-based in little endianness
     // So, LSB is 0-th bit and MSB is 63-rd bit in u64.
-    #[cfg(target_endian = "little")]
     const TP: [u8; 32] = [
         convert!(TP08), convert!(TP07), convert!(TP06), convert!(TP05),
         convert!(TP04), convert!(TP03), convert!(TP02), convert!(TP01),
@@ -879,22 +936,35 @@ TP25, TP26, TP27, TP28, TP29, TP30, TP31, TP32
     ];
 
     const PC1: [u8; 56] = [
-        64-PC101, 64-PC102, 64-PC103, 64-PC104, 64-PC105, 64-PC106, 64-PC107, 64-PC108,
-        64-PC109, 64-PC110, 64-PC111, 64-PC112, 64-PC113, 64-PC114, 64-PC115, 64-PC116,
-        64-PC117, 64-PC118, 64-PC119, 64-PC120, 64-PC121, 64-PC122, 64-PC123, 64-PC124,
-        64-PC125, 64-PC126, 64-PC127, 64-PC128, 64-PC129, 64-PC130, 64-PC131, 64-PC132,
-        64-PC133, 64-PC134, 64-PC135, 64-PC136, 64-PC137, 64-PC138, 64-PC139, 64-PC140,
-        64-PC141, 64-PC142, 64-PC143, 64-PC144, 64-PC145, 64-PC146, 64-PC147, 64-PC148,
-        64-PC149, 64-PC150, 64-PC151, 64-PC152, 64-PC153, 64-PC154, 64-PC155, 64-PC156,
+        convert!(PC108), convert!(PC107), convert!(PC106), convert!(PC105),
+        convert!(PC104), convert!(PC103), convert!(PC102), convert!(PC101),
+        convert!(PC116), convert!(PC115), convert!(PC114), convert!(PC113),
+        convert!(PC112), convert!(PC111), convert!(PC110), convert!(PC109),
+        convert!(PC124), convert!(PC123), convert!(PC122), convert!(PC121),
+        convert!(PC120), convert!(PC119), convert!(PC118), convert!(PC117),
+        convert!(PC132), convert!(PC131), convert!(PC130), convert!(PC129),
+        convert!(PC128), convert!(PC127), convert!(PC126), convert!(PC125),
+        convert!(PC140), convert!(PC139), convert!(PC138), convert!(PC137),
+        convert!(PC136), convert!(PC135), convert!(PC134), convert!(PC133),
+        convert!(PC148), convert!(PC147), convert!(PC146), convert!(PC145),
+        convert!(PC144), convert!(PC143), convert!(PC142), convert!(PC141),
+        convert!(PC156), convert!(PC155), convert!(PC154), convert!(PC153),
+        convert!(PC152), convert!(PC151), convert!(PC150), convert!(PC149)
     ];
 
     const PC2: [u8; 48] = [
-        64-PC201, 64-PC202, 64-PC203, 64-PC204, 64-PC205, 64-PC206, 64-PC207, 64-PC208,
-        64-PC209, 64-PC210, 64-PC211, 64-PC212, 64-PC213, 64-PC214, 64-PC215, 64-PC216,
-        64-PC217, 64-PC218, 64-PC219, 64-PC220, 64-PC221, 64-PC222, 64-PC223, 64-PC224,
-        64-PC225, 64-PC226, 64-PC227, 64-PC228, 64-PC229, 64-PC230, 64-PC231, 64-PC232,
-        64-PC233, 64-PC234, 64-PC235, 64-PC236, 64-PC237, 64-PC238, 64-PC239, 64-PC240,
-        64-PC241, 64-PC242, 64-PC243, 64-PC244, 64-PC245, 64-PC246, 64-PC247, 64-PC248,
+        convert!(PC208), convert!(PC207), convert!(PC206), convert!(PC205),
+        convert!(PC204), convert!(PC203), convert!(PC202), convert!(PC201),
+        convert!(PC216), convert!(PC215), convert!(PC214), convert!(PC213),
+        convert!(PC212), convert!(PC211), convert!(PC210), convert!(PC209),
+        convert!(PC224), convert!(PC223), convert!(PC222), convert!(PC221),
+        convert!(PC220), convert!(PC219), convert!(PC218), convert!(PC217),
+        convert!(PC232), convert!(PC231), convert!(PC230), convert!(PC229),
+        convert!(PC228), convert!(PC227), convert!(PC226), convert!(PC225),
+        convert!(PC240), convert!(PC239), convert!(PC238), convert!(PC237),
+        convert!(PC236), convert!(PC235), convert!(PC234), convert!(PC233),
+        convert!(PC248), convert!(PC247), convert!(PC246), convert!(PC245),
+        convert!(PC244), convert!(PC243), convert!(PC242), convert!(PC241)
     ];
 
     /// Constructs a new object DES_Generic.
@@ -907,123 +977,145 @@ TP25, TP26, TP27, TP28, TP29, TP30, TP31, TP32
 
     /// Constructs a new object DES_Generic.
     /// 
-    #[inline]
     pub fn new_with_key(key: [u8; 8]) -> Self
     {
-        Self
+        let mut des = Self
         {
             key:        LongUnion::new_with_ubytes(key),
             block:      LongUnion::new(),
-            round_key:  [0_u32; ROUND],
-        }
+            round_key:  [0_u64; ROUND],
+        };
+        des.make_round_keys();
+        des
     }
 
-    pub fn make_round_keys(&mut self)
+    pub fn set_key(&mut self, key: [u8; 8])
     {
-        todo!();
-    }
-
-    // // for unit test
-    // fn set_block(&mut self, block: u64) { self.block.set(block); }
-    // // for unit test
-    // fn get_block(&mut self) -> u64 { self.block.get() }
-
-    fn permutate_initially(&mut self)
-    {
-        permutate_data!(self, Self::IP);
-    }
-
-    fn permutate_finally(&mut self)
-    {
-        permutate_data!(self, Self::FP);
-    }
-
-    fn expand(&mut self, right: u32) -> u64
-    {
-        permutate_data!(Self::EP, u64, right);
-        // let mut permuted = 0_u64;
-        // let mut idx = 0_usize;
-        // // EP and pos are already changed to be 0-based in little endianness.
-        // for pos in Self::EP
-        // {
-        //     if right.is_bit_set_(pos as usize)
-        //         { permuted |= 1 << idx; }
-        //     idx += 1;
-        // }
-        // permuted
-    }
-
-    fn translate(&mut self, right: u32) -> u32
-    {
-        permutate_data!(Self::TP, u32, right);
-        // let mut permuted = 0_u32;
-        // let mut idx = 0_usize;
-        // // TP and pos are already changed to be 0-based in little endianness.
-        // for pos in Self::TP
-        // {
-        //     if right.is_bit_set_(pos as usize)
-        //         { permuted |= 1 << idx; }
-        //     idx += 1;
-        // }
-        // permuted
-    }
-
-    #[allow(dead_code)]
-    fn permutate_key1(&mut self)
-    {
-        let key = self.key.get().to_be();
-        let mut permuted = 0_u64;
-        for pos in Self::PC1
+        let mut i = 0_usize;
+        for val in key
         {
-            permuted <<= 1;
-            permuted |= key.is_bit_set_(pos as usize) as u64;
+            self.key.set_ubyte_(i, val);
+            i += 1;
         }
-        self.key.set(permuted.to_be());
     }
 
-    #[allow(dead_code)]
-    fn permutate_key2(&self, key: &[u8; 7]) -> [u8; 6]
+    pub fn encrypt_array_u64<const N: usize>(&mut self, message: &[u64; N]) -> [u64; N]
     {
-        let mut key_union = LongUnion::new();
-        for i in 0..7
-            { key_union.set_ubyte_(i, key[i]); }
-        let key_bar = key_union.get().to_be();
-        let mut permuted = 0_u64;
-        for pos in Self::PC2
+        let mut out = [0_u64; N];
+        for i in 0..N
         {
-            permuted <<= 1;
-            permuted |= key_bar.is_bit_set_(pos as usize) as u64;
+            self.set_block(message[i]);
+            self.enc();
+            out[i] = self.get_block();
         }
-        let key_out = LongUnion::new_with((permuted << 16).to_be());
-        let mut out = [0_u8; 6];
-        for i in 0..6
-            { out[i] = key_out.get_ubyte_(i); }
         out
     }
 
-    #[allow(dead_code)]
-    fn f(&mut self, key: u32, right: u32) -> u32
+    fn enc(&mut self)
     {
-        todo!();
+        self.permutate_initially();
+        for round in 0..ROUND
+            { self.feistel(round); }
+        let left = self.block.get_uint_(0);
+        let right = self.block.get_uint_(1);
+        self.block.set_uint_(0, right);
+        self.block.set_uint_(1, left);
+        self.permutate_finally();
     }
 
+    fn permutate_initially(&mut self)   { permutate_data!(self, Self::IP); }
+    fn permutate_finally(&mut self)     { permutate_data!(self, Self::FP); }
+
     #[allow(dead_code)]
-    fn feistel(&mut self, round_key: u32)
+    fn feistel(&mut self, round: usize)
     {
         const LEFT: usize = 0;
         const RIGHT: usize = 1;
         let right = self.block.get_uint_(RIGHT);
-        let left = self.block.get_uint_(LEFT) ^ self.f(round_key, right);
+        let left = self.block.get_uint_(LEFT) ^ self.f(round, right);
         self.block.set_uint_(LEFT, right);
         self.block.set_uint_(RIGHT, left);
     }
 
-    pub fn enc(&mut self)
+    #[allow(dead_code)]
+    fn f(&mut self, round: usize, right: u32) -> u32
     {
-        self.permutate_initially();
-        for round in 0..ROUND
-            { self.feistel(self.round_key[round]); }
-        self.permutate_finally();
+        let expanded = self.expand(right);
+        let indices = expanded ^ self.round_key[round];
+        let mut idx = [0_usize; 8];
+        slice_index!(indices, idx);
+        let mut out = 0_u32;
+        for i in 0..4
+        {
+            let left = i * 2;
+            let right = left + 1;
+            combine_pieces!(out, ((Self::SBOX[left][idx[left]] << 4) | Self::SBOX[right][idx[right]]) as u32);
+        }
+        self.translate(out)
     }
 
+    pub fn make_round_keys(&mut self)
+    {
+        let (mut left, mut right) = self.split();
+        let mut shift = SHIFT;
+        for i in 0..ROUND
+        {
+            rotate_halfkey!(left, shift.is_even());
+            rotate_halfkey!(right, shift.is_even());
+            self.make_round_key(i, left, right);
+            shift >>= 1;
+        }
+    }
+
+    fn make_round_key(&mut self, round: usize, left: IntUnion, mut right: IntUnion)
+    {
+        let tail = right.get_ubyte_(0) >> 4;
+        shift_left_union!(right, 4);
+        let mut whole = LongUnion::new_with_uints([left.get(), right.get()]);
+        whole.set_ubyte_(3, whole.get_ubyte_(3) | tail);
+        self.round_key[round] = self.compress_into_48bits(whole.get());
+    }
+
+    fn split(&self) -> (IntUnion, IntUnion)
+    {
+        let key_56bit = self.compress_into_56bits();
+        let key = LongUnion::new_with(key_56bit);
+        let mut left = IntUnion::new_with(key.get_uint_(0));
+        left.set_ubyte_(3, left.get_ubyte_(3) & 0b_1111_0000);
+        let mut right = IntUnion::new_with(key.get_uint_(1));
+        shift_right_union!(right, 4);
+        right.set_ubyte_(0, (key.get_ubyte_(3) << 4) | right.get_ubyte_(0));
+        (left, right)
+    }
+
+    fn compress_into_56bits(&self) -> u64   { return permutate_data!(Self::PC1, u64, self.key.get()); }
+    fn compress_into_48bits(&self, whole: u64) -> u64   { return permutate_data!(Self::PC2, u64, whole); }
+    fn expand(&self, right: u32) -> u64     { return permutate_data!(Self::EP, u64, right);}
+    fn translate(&self, right: u32) -> u32  { return permutate_data!(Self::TP, u32, right); }
+
+    #[inline] fn get_block(&self) -> u64            { self.block.get() }
+    #[inline] fn set_block(&mut self, block: u64)   { self.block.set(block); }
+
+
+
+    ////// for unit test /////
+    #[inline] pub fn test_get_block(&self) -> u64           { self.block.get() }
+    #[inline] pub fn test_set_block(&mut self, block: u64)  { self.block.set(block); }
+
+    pub fn test_set_key(&mut self, key: [u8; 8])
+    {
+        for i in 0..8
+            { self.key.set_ubyte_(i, key[i]); }
+    }
+
+    pub fn test_permutate_initially(&mut self)    { permutate_data!(self, Self::IP); }
+    pub fn test_permutate_finally(&mut self)      { permutate_data!(self, Self::FP); }
+    #[inline] pub fn test_expand(&self, right: u32) -> u64  { self.expand(right) }
+    #[inline] pub fn test_compress_into_56bits(&self) -> u64    { self.compress_into_56bits() }
+    #[inline] pub fn test_split(&self) -> (IntUnion, IntUnion)  { self.split() }
+    #[inline] pub fn test_make_round_keys(&mut self)    { self.make_round_keys(); }
+    #[inline] pub fn test_get_round_key(&self, round: usize) -> u64  { self.round_key[round] }
+    pub fn test_slice_indices(&self, indices: u64, array: &mut [usize; 8])   { slice_index!(indices, array); }
+    pub fn test_combine(&self, collector: &mut u32, piece: u32) { combine_pieces!(*collector, piece); }
+    pub fn test_f(&mut self, round: usize, right: u32) -> u32   { self.f(round, right) }
 }
