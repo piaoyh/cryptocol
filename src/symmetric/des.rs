@@ -14,7 +14,7 @@
 // #![warn(rustdoc::missing_doc_code_examples)]
 
 
-// use std::ptr::copy_nonoverlapping;
+use std::ptr::copy_nonoverlapping;
 // use std::slice::from_raw_parts;
 // use std::fmt::{ self, Debug, Display, Formatter };
 // use std::collections::HashMap;
@@ -989,6 +989,20 @@ S756, S757, S758, S759, S760, S761, S762, S763
         des
     }
 
+    /// Constructs a new object DES_Generic.
+    /// 
+    pub fn new_with_key_u64(key: u64) -> Self
+    {
+        let mut des = Self
+        {
+            key:        LongUnion::new_with(key),
+            block:      LongUnion::new(),
+            round_key:  [0_u64; ROUND],
+        };
+        des.make_round_keys();
+        des
+    }
+
     pub fn set_key(&mut self, key: [u8; 8])
     {
         let mut i = 0_usize;
@@ -999,19 +1013,163 @@ S756, S757, S758, S759, S760, S761, S762, S763
         }
     }
 
-    pub fn encrypt_array_u64<const N: usize>(&mut self, message: &[u64; N]) -> [u64; N]
+    #[inline]
+    pub fn set_key_u64(&mut self, key: u64)
     {
-        let mut out = [0_u64; N];
+        self.key.set(key);
+    }
+
+    pub fn encrypt_with_padding_pkcs7(&mut self, message: *const u8, length_in_bytes: u64, cipher: *mut u8) -> u64
+    {
+        let mut progress = 0_u64;
+        let mut encoded: u64;
+        while length_in_bytes > progress
+        {
+            let block = unsafe { *(message.add(progress as usize) as *const u64 ) };
+            encoded = self.encrypt_u64(block);
+            unsafe { copy_nonoverlapping(&mut encoded as *mut u64 as *mut u8, cipher.add(progress as usize), 8); }
+            progress += 8;
+        }
+        let mut block = 0_u64;
+        let mut block_union = LongUnion::new_with(0x_08_08_08_08__08_08_08_08);
+        if progress != length_in_bytes
+        {
+            progress -= 8;
+            let tail = (length_in_bytes - progress) as usize;
+            let addr = unsafe { message.add(progress as usize) as *const u8 };
+            unsafe { copy_nonoverlapping(addr, &mut block as *mut u64 as *mut u8, tail); }
+            let padding = 8 - tail as u8;
+            block_union.set(block);
+            for i in tail..8
+                { block_union.set_ubyte_(i, padding); }
+        }
+        encoded = self.encrypt_u64(block_union.get());
+        unsafe { copy_nonoverlapping(&mut encoded as *mut u64 as *mut u8, cipher.add(progress as usize), 8); }
+        progress + 8
+    }
+
+    pub fn decrypt_with_padding_pkcs7(&mut self, cipher: *const u8, length_in_bytes: u64, message: *mut u8) -> u64
+    {
+        let mut progress = 0_u64;
+        let mut decoded: u64;
+        let mut block: u64;
+        for _ in 0..length_in_bytes as usize / 8 - 1
+        {
+            block = unsafe { *(cipher.add(progress as usize) as *const u64 ) };
+            decoded = self.decrypt_u64(block);
+            unsafe { copy_nonoverlapping(&mut decoded as *mut u64 as *mut u8, message.add(progress as usize), 8); }
+            progress += 8;
+        }
+        block = unsafe { *(cipher.add(progress as usize) as *const u64 ) };
+        decoded = self.decrypt_u64(block);
+        let decoded_union = LongUnion::new_with(decoded);
+        let padding_bytes = decoded_union.get_ubyte_(7);
+        let message_bytes = 8 - padding_bytes as usize;
+        for i in (message_bytes)..8
+        {
+            if decoded_union.get_ubyte_(i) != padding_bytes
+                { return 0; }
+        }
+        unsafe { copy_nonoverlapping(&mut decoded as *mut u64 as *mut u8, message.add(progress as usize), message_bytes); }
+        progress + message_bytes as u64
+    }
+
+    pub fn encrypt_with_padding_iso(&mut self, message: *const u8, length_in_bytes: u64, cipher: *mut u8) -> u64
+    {
+        let mut progress = 0_u64;
+        let mut encoded: u64;
+        while length_in_bytes > progress
+        {
+            let block = unsafe { *(message.add(progress as usize) as *const u64 ) };
+            encoded = self.encrypt_u64(block);
+            unsafe { copy_nonoverlapping(&mut encoded as *mut u64 as *mut u8, cipher.add(progress as usize), 8); }
+            progress += 8;
+        }
+        let mut block = 0_u64;
+        let mut block_union = LongUnion::new_with(0b_1000_0000);
+        if progress != length_in_bytes
+        {
+            progress -= 8;
+            let tail = (length_in_bytes - progress) as usize;
+            let addr = unsafe { message.add(progress as usize) as *const u8 };
+            unsafe { copy_nonoverlapping(addr, &mut block as *mut u64 as *mut u8, tail); }
+            block_union.set(block);
+            block_union.set_ubyte_(tail, 0b_1000_0000);
+        }
+        encoded = self.encrypt_u64(block_union.get());
+        unsafe { copy_nonoverlapping(&mut encoded as *mut u64 as *mut u8, cipher.add(progress as usize), 8); }
+        progress + 8
+    }
+
+    pub fn decrypt_with_padding_iso(&mut self, cipher: *const u8, length_in_bytes: u64, message: *mut u8) -> u64
+    {
+        let mut progress = 0_u64;
+        let mut decoded: u64;
+        let mut block: u64;
+        for i in 0..(length_in_bytes as usize / 8 - 1)
+        {
+            block = unsafe { *(cipher.add(progress as usize) as *const u64 ) };
+            decoded = self.decrypt_u64(block);
+            unsafe { copy_nonoverlapping(&mut decoded as *mut u64 as *mut u8, message.add(progress as usize), 8); }
+            progress += 8;
+        }
+
+        block = unsafe { *(cipher.add(progress as usize) as *const u64 ) };
+        decoded = self.decrypt_u64(block);
+        let decoded_union = LongUnion::new_with(decoded);
+        for i in 0..8_usize
+        {
+            if decoded_union.get_ubyte_(7-i) == 0
+                { continue; }
+            if decoded_union.get_ubyte_(7-i) == 0b_1000_0000_u8
+            {
+                let message_bytes = 7-i;
+                unsafe { copy_nonoverlapping(&mut decoded as *mut u64 as *mut u8, message.add(progress as usize), message_bytes); }
+                return progress + message_bytes as u64
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        return 0;
+    }
+
+    pub fn encrypt_array_u64<const N: usize>(&mut self, message: &[u64; N], cipher: &mut [u64; N])
+    {
         for i in 0..N
         {
             self.set_block(message[i]);
-            self.enc();
-            out[i] = self.get_block();
+            self.encrypt_block();
+            cipher[i] = self.get_block();
         }
-        out
     }
 
-    fn enc(&mut self)
+    pub fn decrypt_array_u64<const N: usize>(&mut self, cipher: &[u64; N], message: &mut [u64; N])
+    {
+        for i in 0..N
+        {
+            self.set_block(cipher[i]);
+            self.decrypt_block();
+            message[i] = self.get_block();
+        }
+    }
+
+    pub fn encrypt_u64(&mut self, message: u64) -> u64
+    {
+        self.set_block(message);
+        self.encrypt_block();
+        self.get_block()
+    }
+
+    pub fn decrypt_u64(&mut self, cioher: u64) -> u64
+    {
+        self.set_block(cioher);
+        self.decrypt_block();
+        self.get_block()
+    }
+
+    fn encrypt_block(&mut self)
     {
         self.permutate_initially();
         for round in 0..ROUND
@@ -1023,8 +1181,17 @@ S756, S757, S758, S759, S760, S761, S762, S763
         self.permutate_finally();
     }
 
-    fn permutate_initially(&mut self)   { permutate_data!(self, Self::IP); }
-    fn permutate_finally(&mut self)     { permutate_data!(self, Self::FP); }
+    fn decrypt_block(&mut self)
+    {
+        self.permutate_initially();
+        for round in 0..ROUND
+            { self.feistel(ROUND - 1 - round); }
+        let left = self.block.get_uint_(0);
+        let right = self.block.get_uint_(1);
+        self.block.set_uint_(0, right);
+        self.block.set_uint_(1, left);
+        self.permutate_finally();
+    }
 
     #[allow(dead_code)]
     fn feistel(&mut self, round: usize)
@@ -1054,7 +1221,7 @@ S756, S757, S758, S759, S760, S761, S762, S763
         self.translate(out)
     }
 
-    pub fn make_round_keys(&mut self)
+    fn make_round_keys(&mut self)
     {
         let (mut left, mut right) = self.split();
         let mut shift = SHIFT;
@@ -1062,12 +1229,12 @@ S756, S757, S758, S759, S760, S761, S762, S763
         {
             rotate_halfkey!(left, shift.is_even());
             rotate_halfkey!(right, shift.is_even());
-            self.make_round_key(i, left, right);
+            self.make_a_round_key(i, left, right);
             shift >>= 1;
         }
     }
 
-    fn make_round_key(&mut self, round: usize, left: IntUnion, mut right: IntUnion)
+    fn make_a_round_key(&mut self, round: usize, left: IntUnion, mut right: IntUnion)
     {
         let tail = right.get_ubyte_(0) >> 4;
         shift_left_union!(right, 4);
@@ -1088,6 +1255,8 @@ S756, S757, S758, S759, S760, S761, S762, S763
         (left, right)
     }
 
+    fn permutate_initially(&mut self)   { permutate_data!(self, Self::IP); }
+    fn permutate_finally(&mut self)     { permutate_data!(self, Self::FP); }
     fn compress_into_56bits(&self) -> u64   { return permutate_data!(Self::PC1, u64, self.key.get()); }
     fn compress_into_48bits(&self, whole: u64) -> u64   { return permutate_data!(Self::PC2, u64, whole); }
     fn expand(&self, right: u32) -> u64     { return permutate_data!(Self::EP, u64, right);}
@@ -1098,24 +1267,25 @@ S756, S757, S758, S759, S760, S761, S762, S763
 
 
 
+
     ////// for unit test /////
-    #[inline] pub fn test_get_block(&self) -> u64           { self.block.get() }
-    #[inline] pub fn test_set_block(&mut self, block: u64)  { self.block.set(block); }
-
-    pub fn test_set_key(&mut self, key: [u8; 8])
-    {
-        for i in 0..8
-            { self.key.set_ubyte_(i, key[i]); }
-    }
-
-    pub fn test_permutate_initially(&mut self)    { permutate_data!(self, Self::IP); }
-    pub fn test_permutate_finally(&mut self)      { permutate_data!(self, Self::FP); }
-    #[inline] pub fn test_expand(&self, right: u32) -> u64  { self.expand(right) }
-    #[inline] pub fn test_compress_into_56bits(&self) -> u64    { self.compress_into_56bits() }
-    #[inline] pub fn test_split(&self) -> (IntUnion, IntUnion)  { self.split() }
-    #[inline] pub fn test_make_round_keys(&mut self)    { self.make_round_keys(); }
-    #[inline] pub fn test_get_round_key(&self, round: usize) -> u64  { self.round_key[round] }
-    pub fn test_slice_indices(&self, indices: u64, array: &mut [usize; 8])   { slice_index!(indices, array); }
-    pub fn test_combine(&self, collector: &mut u32, piece: u32) { combine_pieces!(*collector, piece); }
-    pub fn test_f(&mut self, round: usize, right: u32) -> u32   { self.f(round, right) }
+    // #[inline] pub fn test_get_block(&self) -> u64           { self.block.get() }
+    // #[inline] pub fn test_set_block(&mut self, block: u64)  { self.block.set(block); }
+    //
+    // pub fn test_set_key(&mut self, key: [u8; 8])
+    // {
+    //     for i in 0..8
+    //         { self.key.set_ubyte_(i, key[i]); }
+    // }
+    //
+    // pub fn test_permutate_initially(&mut self)    { permutate_data!(self, Self::IP); }
+    // pub fn test_permutate_finally(&mut self)      { permutate_data!(self, Self::FP); }
+    // #[inline] pub fn test_expand(&self, right: u32) -> u64  { self.expand(right) }
+    // #[inline] pub fn test_compress_into_56bits(&self) -> u64    { self.compress_into_56bits() }
+    // #[inline] pub fn test_split(&self) -> (IntUnion, IntUnion)  { self.split() }
+    // #[inline] pub fn test_make_round_keys(&mut self)    { self.make_round_keys(); }
+    // #[inline] pub fn test_get_round_key(&self, round: usize) -> u64  { self.round_key[round] }
+    // pub fn test_slice_indices(&self, indices: u64, array: &mut [usize; 8])   { slice_index!(indices, array); }
+    // pub fn test_combine(&self, collector: &mut u32, piece: u32) { combine_pieces!(*collector, piece); }
+    // pub fn test_f(&mut self, round: usize, right: u32) -> u32   { self.f(round, right) }
 }
