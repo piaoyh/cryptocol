@@ -113,7 +113,7 @@ The checked items have already been implemented including documentation __at lea
 -->
 
 - [ ] DES symmetric-key encryption/decryption algorithm
-    --- Includes DES and its expanded versions. `DES_Generic`
+    --- Includes DES and its expanded versions. [`DES_Generic`](https://docs.rs/cryptocol/latest/cryptocol/symmetric/des/struct.DES_Generic.html#struct.DES_Generic)
 - [ ] NDES symmetric-key encryption/decryption algorithm
     --- Includes 2DES, 3DES, 4DES, etc., and their expanded versions. `NDES_Generic`
 - [ ] AES symmetric-key encryption/decryption algorithm

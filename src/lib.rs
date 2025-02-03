@@ -82,8 +82,7 @@
 //! ## Symmetric-key Algorithms for the Encryption/Decryption of digital data
 //! - [ ] DES symmetric-key encryption/decryption algorithm
 //!     --- Includes DES and its expanded versions.
-//!     `DES_Generic`
-// ! (symmetric/des/struct.DES_Generic.html#struct.DES_Generic)
+//!     [`DES_Generic`](symmetric/des/struct.DES_Generic.html#struct.DES_Generic)
 //! - [ ] NDES symmetric-key encryption/decryption algorithm
 //!     --- Includes 2DES, 3DES, 4DES, etc., and their expanded versions.
 //!     `NDES_Generic`
