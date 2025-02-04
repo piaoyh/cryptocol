@@ -15,11 +15,12 @@
 
 
 use std::ptr::copy_nonoverlapping;
+use std::vec::Vec;
 // use std::slice::from_raw_parts;
 // use std::fmt::{ self, Debug, Display, Formatter };
 // use std::collections::HashMap;
 
-use crate::number::{ SmallUint, IntUnion, LongUnion, SmallUInt };
+use crate::number::{ SmallUInt, IntUnion, LongUnion };
 
 // Converts bit number into 0-based bit number in Little Endianness.
 macro_rules! convert {
@@ -969,6 +970,8 @@ S756, S757, S758, S759, S760, S761, S762, S763
 
     /// Constructs a new object DES_Generic.
     /// 
+    /// # Features
+    /// This method sets the key to be [0, 0, 0, 0, 0, 0, 0, 0].
     #[inline]
     pub fn new() -> Self
     {
@@ -977,6 +980,11 @@ S756, S757, S758, S759, S760, S761, S762, S763
 
     /// Constructs a new object DES_Generic.
     /// 
+    /// # Arguments
+    /// The argument `key` is the array of u8 that has 8 elements.
+    /// 
+    /// # Features
+    /// This method sets the key to be the given argument `key`.
     pub fn new_with_key(key: [u8; 8]) -> Self
     {
         let mut des = Self
@@ -991,6 +999,11 @@ S756, S757, S758, S759, S760, S761, S762, S763
 
     /// Constructs a new object DES_Generic.
     /// 
+    /// # Arguments
+    /// The argument `key` is of `u64`.
+    /// 
+    /// # Features
+    /// This method sets the key to be the given argument `key`.
     pub fn new_with_key_u64(key: u64) -> Self
     {
         let mut des = Self
@@ -1003,6 +1016,14 @@ S756, S757, S758, S759, S760, S761, S762, S763
         des
     }
 
+    /// Sets the key.
+    /// 
+    /// # Arguments
+    /// The argument `key` is the array of u8 that has 8 elements.
+    /// 
+    /// # Features
+    /// This method sets the key to be the given argument `key`.
+    /// 
     pub fn set_key(&mut self, key: [u8; 8])
     {
         let mut i = 0_usize;
@@ -1013,33 +1034,37 @@ S756, S757, S758, S759, S760, S761, S762, S763
         }
     }
 
+    /// Sets the key.
+    /// 
+    /// # Arguments
+    /// The argument `key` is of `u64`.
+    /// 
+    /// # Features
+    /// This method sets the key to be the given argument `key`.
     #[inline]
     pub fn set_key_u64(&mut self, key: u64)
     {
         self.key.set(key);
     }
 
+    /// Encrypts the data with the padding defined in PKCS #7.
+    /// 
     pub fn encrypt_with_padding_pkcs7(&mut self, message: *const u8, length_in_bytes: u64, cipher: *mut u8) -> u64
     {
         let mut progress = 0_u64;
         let mut encoded: u64;
-        if length_in_bytes > progress + 8
+        for _ in 0..length_in_bytes >> 3    // length_in_bytes >> 3 == length_in_bytes / 8
         {
-            while length_in_bytes > progress
-            {
-                let block = unsafe { *(message.add(progress as usize) as *const u64 ) };
-                encoded = self.encrypt_u64(block);
-                unsafe { copy_nonoverlapping(&mut encoded as *mut u64 as *mut u8, cipher.add(progress as usize), 8); }
-                progress += 8;
-            }
+            let block = unsafe { *(message.add(progress as usize) as *const u64 ) };
+            encoded = self.encrypt_u64(block);
+            unsafe { copy_nonoverlapping(&encoded as *const u64 as *const u8, cipher.add(progress as usize), 8); }
+            progress += 8;
         }
 
         let mut block = 0_u64;
         let mut block_union = LongUnion::new_with(0x_08_08_08_08__08_08_08_08);
         if progress != length_in_bytes
         {
-            if progress != 0
-                { progress -= 8; }
             let tail = (length_in_bytes - progress) as usize;
             let addr = unsafe { message.add(progress as usize) as *const u8 };
             unsafe { copy_nonoverlapping(addr, &mut block as *mut u64 as *mut u8, tail); }
@@ -1049,8 +1074,42 @@ S756, S757, S758, S759, S760, S761, S762, S763
                 { block_union.set_ubyte_(i, padding); }
         }
         encoded = self.encrypt_u64(block_union.get());
-        unsafe { copy_nonoverlapping(&mut encoded as *mut u64 as *mut u8, cipher.add(progress as usize), 8); }
+        unsafe { copy_nonoverlapping(&encoded as *const u64 as *const u8, cipher.add(progress as usize), 8); }
         progress + 8
+    }
+
+    pub fn encrypt_with_padding_pkcs7_into_vec(&mut self, message: *const u8, length_in_bytes: u64, cipher: &mut Vec<u8>)
+    {
+        let mut progress = 0_u64;
+        let mut encoded: u64;
+        let mut encoded_union = LongUnion::new();
+        cipher.clear();
+        for _ in 0..length_in_bytes >> 3    // length_in_bytes >> 3 == length_in_bytes / 8
+        {
+            let block = unsafe { *(message.add(progress as usize) as *const u64 ) };
+            encoded = self.encrypt_u64(block);
+            encoded_union.set(encoded);
+            for i in 0..8
+                { cipher.push(encoded_union.get_ubyte_(i)); }
+            progress += 8;
+        }
+
+        let mut block = 0_u64;
+        let mut block_union = LongUnion::new_with(0x_08_08_08_08__08_08_08_08);
+        if progress != length_in_bytes
+        {
+            let tail = (length_in_bytes - progress) as usize;
+            let addr = unsafe { message.add(progress as usize) as *const u8 };
+            unsafe { copy_nonoverlapping(addr, &mut block as *mut u64 as *mut u8, tail); }
+            let padding = 8 - tail as u8;
+            block_union.set(block);
+            for i in tail..8
+                { block_union.set_ubyte_(i, padding); }
+        }
+        encoded = self.encrypt_u64(block_union.get());
+        encoded_union.set(encoded);
+        for i in 0..8
+            { cipher.push(encoded_union.get_ubyte_(i)); }
     }
 
     pub fn decrypt_with_padding_pkcs7(&mut self, cipher: *const u8, length_in_bytes: u64, message: *mut u8) -> u64
@@ -1058,11 +1117,11 @@ S756, S757, S758, S759, S760, S761, S762, S763
         let mut progress = 0_u64;
         let mut decoded: u64;
         let mut block: u64;
-        for _ in 0..length_in_bytes as usize / 8 - 1
+        for _ in 0..(length_in_bytes >> 3) - 1 // length_in_bytes >> 3 == length_in_bytes / 8
         {
             block = unsafe { *(cipher.add(progress as usize) as *const u64 ) };
             decoded = self.decrypt_u64(block);
-            unsafe { copy_nonoverlapping(&mut decoded as *mut u64 as *mut u8, message.add(progress as usize), 8); }
+            unsafe { copy_nonoverlapping(&decoded as *const u64 as *const u8, message.add(progress as usize), 8); }
             progress += 8;
         }
         block = unsafe { *(cipher.add(progress as usize) as *const u64 ) };
@@ -1075,30 +1134,60 @@ S756, S757, S758, S759, S760, S761, S762, S763
             if decoded_union.get_ubyte_(i) != padding_bytes
                 { return 0; }
         }
-        unsafe { copy_nonoverlapping(&mut decoded as *mut u64 as *mut u8, message.add(progress as usize), message_bytes); }
+        unsafe { copy_nonoverlapping(&decoded as *const u64 as *const u8, message.add(progress as usize), message_bytes); }
         progress + message_bytes as u64
+    }
+
+    pub fn decrypt_with_padding_pkcs7_into_vec(&mut self, cipher: *const u8, length_in_bytes: u64, message: &mut Vec<u8>)
+    {
+        let mut progress = 0_u64;
+        let mut decoded: u64;
+        let mut block: u64;
+        let mut decoded_union = LongUnion::new();
+        message.clear();
+        for _ in 0..(length_in_bytes >> 3) - 1 // length_in_bytes >> 3 == length_in_bytes / 8
+        {
+            block = unsafe { *(cipher.add(progress as usize) as *const u64 ) };
+            decoded = self.decrypt_u64(block);
+            decoded_union.set(decoded);
+            for i in 0..8
+                { message.push(decoded_union.get_ubyte_(i)); }
+            progress += 8;
+        }
+        block = unsafe { *(cipher.add(progress as usize) as *const u64 ) };
+        decoded = self.decrypt_u64(block);
+        decoded_union.set(decoded);
+        let padding_bytes = decoded_union.get_ubyte_(7);
+        let message_bytes = 8 - padding_bytes as usize;
+        for i in (message_bytes)..8
+        {
+            if decoded_union.get_ubyte_(i) != padding_bytes
+            { 
+                message.clear();
+                return;
+            }
+        }
+        decoded_union.set(decoded);
+        for i in 0..message_bytes
+            { message.push(decoded_union.get_ubyte_(i)); }
     }
 
     pub fn encrypt_with_padding_iso(&mut self, message: *const u8, length_in_bytes: u64, cipher: *mut u8) -> u64
     {
         let mut progress = 0_u64;
         let mut encoded: u64;
-        if length_in_bytes > progress + 8
+        for _ in 0..length_in_bytes >> 3    // length_in_bytes >> 3 == length_in_bytes / 8
         {
-            while length_in_bytes > progress
-            {
-                let block = unsafe { *(message.add(progress as usize) as *const u64 ) };
-                encoded = self.encrypt_u64(block);
-                unsafe { copy_nonoverlapping(&mut encoded as *mut u64 as *mut u8, cipher.add(progress as usize), 8); }
-                progress += 8;
-            }
+            let block = unsafe { *(message.add(progress as usize) as *const u64 ) };
+            encoded = self.encrypt_u64(block);
+            unsafe { copy_nonoverlapping(&encoded as *const u64 as *const u8, cipher.add(progress as usize), 8); }
+            progress += 8;
         }
+
         let mut block = 0_u64;
         let mut block_union = LongUnion::new_with(0b_1000_0000);
         if progress != length_in_bytes
         {
-            if progress != 0
-                { progress -= 8; }
             let tail = (length_in_bytes - progress) as usize;
             let addr = unsafe { message.add(progress as usize) as *const u8 };
             unsafe { copy_nonoverlapping(addr, &mut block as *mut u64 as *mut u8, tail); }
@@ -1106,8 +1195,40 @@ S756, S757, S758, S759, S760, S761, S762, S763
             block_union.set_ubyte_(tail, 0b_1000_0000);
         }
         encoded = self.encrypt_u64(block_union.get());
-        unsafe { copy_nonoverlapping(&mut encoded as *mut u64 as *mut u8, cipher.add(progress as usize), 8); }
+        unsafe { copy_nonoverlapping(&encoded as *const u64 as *const u8, cipher.add(progress as usize), 8); }
         progress + 8
+    }
+
+    pub fn encrypt_with_padding_iso_into_vec(&mut self, message: *const u8, length_in_bytes: u64, cipher: &mut Vec<u8>)
+    {
+        let mut progress = 0_u64;
+        let mut encoded: u64;
+        let mut encoded_union = LongUnion::new();
+        cipher.clear();
+        for _ in 0..length_in_bytes >> 3    // length_in_bytes >> 3 == length_in_bytes / 8
+        {
+            let block = unsafe { *(message.add(progress as usize) as *const u64 ) };
+            encoded = self.encrypt_u64(block);
+            encoded_union.set(encoded);
+            for i in 0..8
+                { cipher.push(encoded_union.get_ubyte_(i)); }
+            progress += 8;
+        }
+
+        let mut block = 0_u64;
+        let mut block_union = LongUnion::new_with(0b_1000_0000);
+        if progress != length_in_bytes
+        {
+            let tail = (length_in_bytes - progress) as usize;
+            let addr = unsafe { message.add(progress as usize) as *const u8 };
+            unsafe { copy_nonoverlapping(addr, &mut block as *mut u64 as *mut u8, tail); }
+            block_union.set(block);
+            block_union.set_ubyte_(tail, 0b_1000_0000);
+        }
+        encoded = self.encrypt_u64(block_union.get());
+        encoded_union.set(encoded);
+        for i in 0..8
+            { cipher.push(encoded_union.get_ubyte_(i)); }
     }
 
     pub fn decrypt_with_padding_iso(&mut self, cipher: *const u8, length_in_bytes: u64, message: *mut u8) -> u64
@@ -1119,7 +1240,7 @@ S756, S757, S758, S759, S760, S761, S762, S763
         {
             block = unsafe { *(cipher.add(progress as usize) as *const u64 ) };
             decoded = self.decrypt_u64(block);
-            unsafe { copy_nonoverlapping(&mut decoded as *mut u64 as *mut u8, message.add(progress as usize), 8); }
+            unsafe { copy_nonoverlapping(&decoded as *const u64 as *const u8, message.add(progress as usize), 8); }
             progress += 8;
         }
 
@@ -1133,7 +1254,7 @@ S756, S757, S758, S759, S760, S761, S762, S763
             if decoded_union.get_ubyte_(7-i) == 0b_1000_0000_u8
             {
                 let message_bytes = 7-i;
-                unsafe { copy_nonoverlapping(&mut decoded as *mut u64 as *mut u8, message.add(progress as usize), message_bytes); }
+                unsafe { copy_nonoverlapping(&decoded as *const u64 as *const u8, message.add(progress as usize), message_bytes); }
                 return progress + message_bytes as u64
             }
             else
@@ -1144,16 +1265,64 @@ S756, S757, S758, S759, S760, S761, S762, S763
         return 0;
     }
 
+    pub fn decrypt_with_padding_iso_into_vec(&mut self, cipher: *const u8, length_in_bytes: u64, message: &mut Vec<u8>)
+    {
+        let mut progress = 0_u64;
+        let mut decoded: u64;
+        let mut block: u64;
+        let mut decoded_union = LongUnion::new();
+        for i in 0..(length_in_bytes as usize / 8 - 1)
+        {
+            block = unsafe { *(cipher.add(progress as usize) as *const u64 ) };
+            decoded = self.decrypt_u64(block);
+            decoded_union.set(decoded);
+            for i in 0..8
+                { message.push(decoded_union.get_ubyte_(i)); }
+            progress += 8;
+        }
+
+        block = unsafe { *(cipher.add(progress as usize) as *const u64 ) };
+        decoded = self.decrypt_u64(block);
+        decoded_union.set(decoded);
+        for i in 0..8_usize
+        {
+            if decoded_union.get_ubyte_(7-i) == 0
+                { continue; }
+            if decoded_union.get_ubyte_(7-i) == 0b_1000_0000_u8
+            {
+                let message_bytes = 7-i;
+                for j in 0..message_bytes
+                    { message.push(decoded_union.get_ubyte_(j)); }
+            }
+            else
+            {
+                message.clear();
+            }
+        }
+    }
+
     #[inline]
     pub fn encrypt_str_with_padding_pkcs7(&mut self, message: &str, cipher: *mut u8) -> u64
     {
-        self.encrypt_with_padding_pkcs7( message.as_ptr(), message.len() as u64, cipher)
+        self.encrypt_with_padding_pkcs7(message.as_ptr(), message.len() as u64, cipher)
+    }
+
+    #[inline]
+    pub fn encrypt_str_with_padding_pkcs7_into_vec(&mut self, message: &str, cipher: &mut Vec<u8>)
+    {
+        self.encrypt_with_padding_pkcs7_into_vec(message.as_ptr(), message.len() as u64, cipher);
     }
 
     #[inline]
     pub fn encrypt_str_with_padding_iso(&mut self, message: &str, cipher: *mut u8) -> u64
     {
-        self.encrypt_with_padding_iso( message.as_ptr(), message.len() as u64, cipher)
+        self.encrypt_with_padding_iso(message.as_ptr(), message.len() as u64, cipher)
+    }
+
+    #[inline]
+    pub fn encrypt_str_with_padding_iso_into_vec(&mut self, message: &str, cipher: &mut Vec<u8>)
+    {
+        self.encrypt_with_padding_iso_into_vec(message.as_ptr(), message.len() as u64, cipher);
     }
 
     #[inline]
@@ -1163,9 +1332,21 @@ S756, S757, S758, S759, S760, S761, S762, S763
     }
 
     #[inline]
+    pub fn encrypt_string_with_padding_pkcs7_into_vec(&mut self, message: &String, cipher: &mut Vec<u8>)
+    {
+        self.encrypt_with_padding_pkcs7_into_vec(message.as_ptr(), message.len() as u64, cipher);
+    }
+
+    #[inline]
     pub fn encrypt_string_with_padding_iso(&mut self, message: &String, cipher: *mut u8) -> u64
     {
-        self.encrypt_with_padding_iso( message.as_ptr(), message.len() as u64, cipher)
+        self.encrypt_with_padding_iso(message.as_ptr(), message.len() as u64, cipher)
+    }
+
+    #[inline]
+    pub fn encrypt_string_with_padding_iso_into_vec(&mut self, message: &String, cipher: &mut Vec<u8>)
+    {
+        self.encrypt_with_padding_iso_into_vec(message.as_ptr(), message.len() as u64, cipher);
     }
 
     #[inline]
@@ -1176,10 +1357,24 @@ S756, S757, S758, S759, S760, S761, S762, S763
     }
 
     #[inline]
+    pub fn encrypt_array_with_padding_pkcs7_into_vec<T, const M: usize>(&mut self, message: &[T; M], cipher: &mut Vec<u8>)
+    where T: SmallUInt + Copy + Clone
+    {
+        self.encrypt_with_padding_pkcs7_into_vec(message.as_ptr() as *const u8, (M * T::size_in_bytes()) as u64, cipher);
+    }
+
+    #[inline]
     pub fn encrypt_array_with_padding_iso<T, const M: usize>(&mut self, message: &[T; M], cipher: *mut u8) -> u64
     where T: SmallUInt + Copy + Clone
     {
         self.encrypt_with_padding_iso( message.as_ptr() as *const u8, (M * T::size_in_bytes()) as u64, cipher)
+    }
+
+    #[inline]
+    pub fn encrypt_array_with_padding_iso_into_vec<T, const M: usize>(&mut self, message: &[T; M], cipher: &mut Vec<u8>)
+    where T: SmallUInt + Copy + Clone
+    {
+        self.encrypt_with_padding_iso_into_vec(message.as_ptr() as *const u8, (M * T::size_in_bytes()) as u64, cipher);
     }
 
     #[inline]
@@ -1190,10 +1385,24 @@ S756, S757, S758, S759, S760, S761, S762, S763
     }
 
     #[inline]
+    pub fn encrypt_vec_with_padding_pkcs7_into_vec<T>(&mut self, message: &Vec<T>, cipher: &mut Vec<u8>)
+    where T: SmallUInt + Copy + Clone
+    {
+        self.encrypt_with_padding_pkcs7_into_vec(message.as_ptr() as *const u8, (message.len() * T::size_in_bytes()) as u64, cipher);
+    }
+
+    #[inline]
     pub fn encrypt_vec_with_padding_iso<T>(&mut self, message: &Vec<T>, cipher: *mut u8) -> u64
     where T: SmallUInt + Copy + Clone
     {
         self.encrypt_with_padding_iso( message.as_ptr() as *const u8, (message.len() * T::size_in_bytes()) as u64, cipher)
+    }
+
+    #[inline]
+    pub fn encrypt_vec_with_padding_iso_into_vec<T>(&mut self, message: &Vec<T>, cipher: &mut Vec<u8>)
+    where T: SmallUInt + Copy + Clone
+    {
+        self.encrypt_with_padding_iso_into_vec(message.as_ptr() as *const u8, (message.len() * T::size_in_bytes()) as u64, cipher);
     }
 
     #[inline]
@@ -1276,22 +1485,17 @@ S756, S757, S758, S759, S760, S761, S762, S763
     {
         let mut progress = 0_u64;
         let mut encoded = iv;
-        if length_in_bytes > progress + 8
+        for _ in 0..length_in_bytes >> 3    // length_in_bytes >> 3 == length_in_bytes / 8
         {
-            while length_in_bytes > progress
-            {
-                let block = unsafe { *(message.add(progress as usize) as *const u64 ) };
-                encoded = self.encrypt_u64(block ^ encoded);
-                unsafe { copy_nonoverlapping(&mut encoded as *mut u64 as *mut u8, cipher.add(progress as usize), 8); }
-                progress += 8;
-            }
+            let block = unsafe { *(message.add(progress as usize) as *const u64 ) };
+            encoded = self.encrypt_u64(block ^ encoded);
+            unsafe { copy_nonoverlapping(&encoded as *const u64 as *const u8, cipher.add(progress as usize), 8); }
+            progress += 8;
         }
         let mut block = 0_u64;
         let mut block_union = LongUnion::new_with(0x_08_08_08_08__08_08_08_08);
         if progress != length_in_bytes
         {
-            if progress != 0
-                { progress -= 8; }
             let tail = (length_in_bytes - progress) as usize;
             let addr = unsafe { message.add(progress as usize) as *const u8 };
             unsafe { copy_nonoverlapping(addr, &mut block as *mut u64 as *mut u8, tail); }
@@ -1300,8 +1504,8 @@ S756, S757, S758, S759, S760, S761, S762, S763
             for i in tail..8
                 { block_union.set_ubyte_(i, padding); }
         }
-        encoded = self.encrypt_u64(block_union.get() * encoded);
-        unsafe { copy_nonoverlapping(&mut encoded as *mut u64 as *mut u8, cipher.add(progress as usize), 8); }
+        encoded = self.encrypt_u64(block_union.get() ^ encoded);
+        unsafe { copy_nonoverlapping(&encoded as *const u64 as *const u8, cipher.add(progress as usize), 8); }
         progress + 8
     }
 
@@ -1310,25 +1514,27 @@ S756, S757, S758, S759, S760, S761, S762, S763
         let mut progress = 0_u64;
         let mut decoded: u64;
         let mut block: u64;
-        for _ in 0..length_in_bytes as usize / 8 - 1
+        for _ in 0..(length_in_bytes >> 3) - 1  // length_in_bytes >> 3 == length_in_bytes / 8
         {
             block = unsafe { *(cipher.add(progress as usize) as *const u64 ) };
             decoded = iv ^ self.decrypt_u64(block);
             iv = block;
-            unsafe { copy_nonoverlapping(&mut decoded as *mut u64 as *mut u8, message.add(progress as usize), 8); }
+            unsafe { copy_nonoverlapping(&decoded as *const u64 as *const u8, message.add(progress as usize), 8); }
             progress += 8;
         }
         block = unsafe { *(cipher.add(progress as usize) as *const u64 ) };
         decoded = iv ^ self.decrypt_u64(block);
         let decoded_union = LongUnion::new_with(decoded);
         let padding_bytes = decoded_union.get_ubyte_(7);
+        if padding_bytes > 8
+            { return 0; }
         let message_bytes = 8 - padding_bytes as usize;
         for i in (message_bytes)..8
         {
             if decoded_union.get_ubyte_(i) != padding_bytes
                 { return 0; }
         }
-        unsafe { copy_nonoverlapping(&mut decoded as *mut u64 as *mut u8, message.add(progress as usize), message_bytes); }
+        unsafe { copy_nonoverlapping(&decoded as *const u64 as *const u8, message.add(progress as usize), message_bytes); }
         progress + message_bytes as u64
     }
 
@@ -1336,22 +1542,17 @@ S756, S757, S758, S759, S760, S761, S762, S763
     {
         let mut progress = 0_u64;
         let mut encoded = iv;
-        if length_in_bytes > progress + 8
+        for _ in 0..length_in_bytes >> 3    // length_in_bytes >> 3 == length_in_bytes / 8
         {
-            while length_in_bytes > progress
-            {
-                let block = unsafe { *(message.add(progress as usize) as *const u64 ) };
-                encoded = self.encrypt_u64(block ^ encoded);
-                unsafe { copy_nonoverlapping(&mut encoded as *mut u64 as *mut u8, cipher.add(progress as usize), 8); }
-                progress += 8;
-            }
+            let block = unsafe { *(message.add(progress as usize) as *const u64 ) };
+            encoded = self.encrypt_u64(block ^ encoded);
+            unsafe { copy_nonoverlapping(&encoded as *const u64 as *const u8, cipher.add(progress as usize), 8); }
+            progress += 8;
         }
         let mut block = 0_u64;
         let mut block_union = LongUnion::new_with(0b_1000_0000);
         if progress != length_in_bytes
         {
-            if progress != 0
-                { progress -= 8; }
             let tail = (length_in_bytes - progress) as usize;
             let addr = unsafe { message.add(progress as usize) as *const u8 };
             unsafe { copy_nonoverlapping(addr, &mut block as *mut u64 as *mut u8, tail); }
@@ -1359,7 +1560,7 @@ S756, S757, S758, S759, S760, S761, S762, S763
             block_union.set_ubyte_(tail, 0b_1000_0000);
         }
         encoded = self.encrypt_u64(block_union.get() ^ encoded);
-        unsafe { copy_nonoverlapping(&mut encoded as *mut u64 as *mut u8, cipher.add(progress as usize), 8); }
+        unsafe { copy_nonoverlapping(&encoded as *const u64 as *const u8, cipher.add(progress as usize), 8); }
         progress + 8
     }
 
@@ -1368,12 +1569,12 @@ S756, S757, S758, S759, S760, S761, S762, S763
         let mut progress = 0_u64;
         let mut decoded: u64;
         let mut block: u64;
-        for i in 0..(length_in_bytes as usize / 8 - 1)
+        for _ in 0..(length_in_bytes >> 3) - 1  // length_in_bytes >> 3 == length_in_bytes / 8
         {
             block = unsafe { *(cipher.add(progress as usize) as *const u64 ) };
             decoded = iv ^ self.decrypt_u64(block);
             iv = block;
-            unsafe { copy_nonoverlapping(&mut decoded as *mut u64 as *mut u8, message.add(progress as usize), 8); }
+            unsafe { copy_nonoverlapping(&decoded as *const u64 as *const u8, message.add(progress as usize), 8); }
             progress += 8;
         }
 
@@ -1387,7 +1588,7 @@ S756, S757, S758, S759, S760, S761, S762, S763
             if decoded_union.get_ubyte_(7-i) == 0b_1000_0000_u8
             {
                 let message_bytes = 7-i;
-                unsafe { copy_nonoverlapping(&mut decoded as *mut u64 as *mut u8, message.add(progress as usize), message_bytes); }
+                unsafe { copy_nonoverlapping(&decoded as *const u64 as *const u8, message.add(progress as usize), message_bytes); }
                 return progress + message_bytes as u64
             }
             else
@@ -1450,70 +1651,227 @@ S756, S757, S758, S759, S760, S761, S762, S763
         self.encrypt_with_padding_iso_cbc(iv, message.as_ptr() as *const u8, (message.len() * T::size_in_bytes()) as u64, cipher)
     }
 
+    pub fn encrypt_with_padding_pkcs7_pcbc(&mut self, mut iv: u64, message: *const u8, length_in_bytes: u64, cipher: *mut u8) -> u64
+    {
+        let mut progress = 0_u64;
+        for _ in 0..length_in_bytes >> 3    // length_in_bytes >> 3 == length_in_bytes / 8
+        {
+            let block = unsafe { *(message.add(progress as usize) as *const u64 ) };
+            let encoded = self.encrypt_u64(block ^ iv);
+            unsafe { copy_nonoverlapping(&encoded as *const u64 as *const u8, cipher.add(progress as usize), 8); }
+            iv = block ^ encoded;
+            progress += 8;
+        }
+
+        let mut block = 0_u64;
+        let mut block_union = LongUnion::new_with(0x_08_08_08_08__08_08_08_08);
+        if progress != length_in_bytes
+        {
+            let tail = (length_in_bytes - progress) as usize;
+            let addr = unsafe { message.add(progress as usize) as *const u8 };
+            unsafe { copy_nonoverlapping(addr, &mut block as *mut u64 as *mut u8, tail); }
+            let padding = 8 - tail as u8;
+            block_union.set(block);
+            for i in tail..8
+                { block_union.set_ubyte_(i, padding); }
+        }
+        let encoded = self.encrypt_u64(block_union.get() ^ iv);
+        unsafe { copy_nonoverlapping(&encoded as *const u64 as *const u8, cipher.add(progress as usize), 8); }
+        progress + 8
+    }
+
+    pub fn decrypt_with_padding_pkcs7_pcbc(&mut self, mut iv: u64, cipher: *const u8, length_in_bytes: u64, message: *mut u8) -> u64
+    {
+        let mut progress = 0_u64;
+        for _ in 0..(length_in_bytes >> 3) - 1
+        {
+            let block = unsafe { *(cipher.add(progress as usize) as *const u64 ) };
+            let decoded = iv ^ self.decrypt_u64(block);
+            iv = block ^ decoded;
+            unsafe { copy_nonoverlapping(&decoded as *const u64 as *const u8, message.add(progress as usize), 8); }
+            progress += 8;
+        }
+
+        let block = unsafe { *(cipher.add(progress as usize) as *const u64 ) };
+        let decoded = iv ^ self.decrypt_u64(block);
+        let decoded_union = LongUnion::new_with(decoded);
+        let padding_bytes = decoded_union.get_ubyte_(7);
+        let message_bytes = 8 - padding_bytes as usize;
+        for i in (message_bytes)..8
+        {
+            if decoded_union.get_ubyte_(i) != padding_bytes
+                { return 0; }
+        }
+        unsafe { copy_nonoverlapping(&decoded as *const u64 as *const u8, message.add(progress as usize), message_bytes); }
+        progress + message_bytes as u64
+    }
+
+    pub fn encrypt_with_padding_iso_pcbc(&mut self, mut iv: u64, message: *const u8, length_in_bytes: u64, cipher: *mut u8) -> u64
+    {
+        let mut progress = 0_u64;
+        for _ in 0..length_in_bytes >> 3    // length_in_bytes >> 3 == length_in_bytes / 8
+        {
+            let block = unsafe { *(message.add(progress as usize) as *const u64 ) };
+            let encoded = self.encrypt_u64(block ^ iv);
+            unsafe { copy_nonoverlapping(&encoded as *const u64 as *const u8, cipher.add(progress as usize), 8); }
+            iv = block ^ encoded;
+            progress += 8;
+        }
+
+        let mut block = 0_u64;
+        let mut block_union = LongUnion::new_with(0b_1000_0000);
+        if progress != length_in_bytes
+        {
+            let tail = (length_in_bytes - progress) as usize;
+            let addr = unsafe { message.add(progress as usize) as *const u8 };
+            unsafe { copy_nonoverlapping(addr, &mut block as *mut u64 as *mut u8, tail); }
+            block_union.set(block);
+            block_union.set_ubyte_(tail, 0b_1000_0000);
+        }
+        let encoded = self.encrypt_u64(block_union.get() ^ iv);
+        unsafe { copy_nonoverlapping(&encoded as *const u64 as *const u8, cipher.add(progress as usize), 8); }
+        progress + 8
+    }
+
+    pub fn decrypt_with_padding_iso_pcbc(&mut self, mut iv: u64, cipher: *const u8, length_in_bytes: u64, message: *mut u8) -> u64
+    {
+        let mut progress = 0_u64;
+        for i in 0..(length_in_bytes >> 3) - 1
+        {
+            let block = unsafe { *(cipher.add(progress as usize) as *const u64 ) };
+            let decoded = iv ^ self.decrypt_u64(block);
+            iv = block ^ decoded;
+            unsafe { copy_nonoverlapping(&decoded as *const u64 as *const u8, message.add(progress as usize), 8); }
+            progress += 8;
+        }
+
+        let block = unsafe { *(cipher.add(progress as usize) as *const u64 ) };
+        let decoded = iv ^ self.decrypt_u64(block);
+        let decoded_union = LongUnion::new_with(decoded);
+        for i in 0..8_usize
+        {
+            if decoded_union.get_ubyte_(7-i) == 0
+                { continue; }
+            if decoded_union.get_ubyte_(7-i) == 0b_1000_0000_u8
+            {
+                let message_bytes = 7-i;
+                unsafe { copy_nonoverlapping(&decoded as *const u64 as *const u8, message.add(progress as usize), message_bytes); }
+                return progress + message_bytes as u64
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        return 0;
+    }
+
+    #[inline]
+    pub fn encrypt_str_with_padding_pkcs7_pcbc(&mut self, iv: u64, message: &str, cipher: *mut u8) -> u64
+    {
+        self.encrypt_with_padding_pkcs7_pcbc(iv, message.as_ptr(), message.len() as u64, cipher)
+    }
+
+    #[inline]
+    pub fn encrypt_str_with_padding_iso_pcbc(&mut self, iv: u64, message: &str, cipher: *mut u8) -> u64
+    {
+        self.encrypt_with_padding_iso_pcbc(iv, message.as_ptr(), message.len() as u64, cipher)
+    }
+
+    #[inline]
+    pub fn encrypt_string_with_padding_pkcs7_pcbc(&mut self, iv: u64, message: &String, cipher: *mut u8) -> u64
+    {
+        self.encrypt_with_padding_pkcs7_pcbc(iv, message.as_ptr(), message.len() as u64, cipher)
+    }
+
+    #[inline]
+    pub fn encrypt_string_with_padding_iso_pcbc(&mut self, iv: u64, message: &String, cipher: *mut u8) -> u64
+    {
+        self.encrypt_with_padding_iso_pcbc(iv, message.as_ptr(), message.len() as u64, cipher)
+    }
+
+    #[inline]
+    pub fn encrypt_array_with_padding_pkcs7_pcbc<T, const M: usize>(&mut self, iv: u64, message: &[T; M], cipher: *mut u8) -> u64
+    where T: SmallUInt + Copy + Clone
+    {
+        self.encrypt_with_padding_pkcs7_pcbc(iv, message.as_ptr() as *const u8, (M * T::size_in_bytes()) as u64, cipher)
+    }
+
+    #[inline]
+    pub fn encrypt_array_with_padding_iso_pcbc<T, const M: usize>(&mut self, iv: u64, message: &[T; M], cipher: *mut u8) -> u64
+    where T: SmallUInt + Copy + Clone
+    {
+        self.encrypt_with_padding_iso_pcbc(iv, message.as_ptr() as *const u8, (M * T::size_in_bytes()) as u64, cipher)
+    }
+
+    #[inline]
+    pub fn encrypt_vec_with_padding_pkcs7_pcbc<T>(&mut self, iv: u64, message: &Vec<T>, cipher: *mut u8) -> u64
+    where T: SmallUInt + Copy + Clone
+    {
+        self.encrypt_with_padding_pkcs7_pcbc(iv, message.as_ptr() as *const u8, (message.len() * T::size_in_bytes()) as u64, cipher)
+    }
+
+    #[inline]
+    pub fn encrypt_vec_with_padding_iso_pcbc<T>(&mut self, iv: u64, message: &Vec<T>, cipher: *mut u8) -> u64
+    where T: SmallUInt + Copy + Clone
+    {
+        self.encrypt_with_padding_iso_pcbc(iv, message.as_ptr() as *const u8, (message.len() * T::size_in_bytes()) as u64, cipher)
+    }
+
     pub fn encrypt_cfb(&mut self, iv: u64, message: *const u8, length_in_bytes: u64, cipher: *mut u8) -> u64
     {
         let mut progress = 0_u64;
         let mut encoded = iv;
-        if length_in_bytes > progress + 8
+        for _ in 0..length_in_bytes >> 3    // length_in_bytes >> 3 == length_in_bytes / 8
         {
-            while length_in_bytes > progress
-            {
-                let block = unsafe { *(message.add(progress as usize) as *const u64 ) };
-                encoded = block ^ self.encrypt_u64(encoded);
-                unsafe { copy_nonoverlapping(&encoded as *const u64 as *const u8, cipher.add(progress as usize), 8); }
-                progress += 8;
-            }
+            let block = unsafe { *(message.add(progress as usize) as *const u64 ) };
+            encoded = block ^ self.encrypt_u64(encoded);
+            unsafe { copy_nonoverlapping(&encoded as *const u64 as *const u8, cipher.add(progress as usize), 8); }
+            progress += 8;
         }
 
-        let mut tail = 8_usize;
-        let mut block: u64;
-        if progress + 8 == length_in_bytes
+        if progress == length_in_bytes
         {
-            block = unsafe { *(message.add(progress as usize - 8) as *const u64 ) };
+            progress
         }
         else
         {
-            block = 0_u64;
-            tail = (length_in_bytes - progress) as usize;
+            let mut block = 0_u64;
+            let tail = (length_in_bytes - progress) as usize;
             let addr = unsafe { message.add(progress as usize) as *const u8 };
             unsafe { copy_nonoverlapping(addr, &mut block as *mut u64 as *mut u8, tail); }
+            encoded = block ^ self.encrypt_u64(encoded);
+            unsafe { copy_nonoverlapping(&encoded as *const u64 as *const u8, cipher.add(progress as usize), tail); }
+            progress + tail as u64
         }
-        encoded = block ^ self.encrypt_u64(encoded);
-        unsafe { copy_nonoverlapping(&encoded as *const u64 as *const u8, cipher.add(progress as usize), tail); }
-        progress + tail as u64
     }
 
     pub fn decrypt_cfb(&mut self, mut iv: u64, cipher: *const u8, length_in_bytes: u64, message: *mut u8) -> u64
     {
         let mut progress = 0_u64;
-        if length_in_bytes > progress + 8
+        for _ in 0..length_in_bytes >> 3    // length_in_bytes >> 3 == length_in_bytes / 8
         {
-            while length_in_bytes > progress
-            {
-                let block = unsafe { *(cipher.add(progress as usize) as *const u64 ) };
-                let decoded = block ^ self.encrypt_u64(iv);
-                iv = block;
-                unsafe { copy_nonoverlapping(&decoded as *const u64 as *const u8, message.add(progress as usize), 8); }
-                progress += 8;
-            }
+            let block = unsafe { *(cipher.add(progress as usize) as *const u64 ) };
+            let decoded = block ^ self.encrypt_u64(iv);
+            iv = block;
+            unsafe { copy_nonoverlapping(&decoded as *const u64 as *const u8, message.add(progress as usize), 8); }
+            progress += 8;
         }
 
-        let mut tail = 8_usize;
-        let mut block: u64;
-        if progress + 8 == length_in_bytes
+        if progress == length_in_bytes
         {
-            block = unsafe { *(message.add(progress as usize - 8) as *const u64 ) };
+            progress
         }
         else
         {
-            block = 0_u64;
-            tail = (length_in_bytes - progress) as usize;
-            let addr = unsafe { message.add(progress as usize) as *const u8 };
+            let mut block = 0_u64;
+            let tail = (length_in_bytes - progress) as usize;
+            let addr = unsafe { cipher.add(progress as usize) as *const u8 };
             unsafe { copy_nonoverlapping(addr, &mut block as *mut u64 as *mut u8, tail); }
+            let decoded = block ^ self.encrypt_u64(iv);
+            unsafe { copy_nonoverlapping(&decoded as *const u64 as *const u8, message.add(progress as usize), tail); }
+            progress + tail as u64
         }
-        let decoded = block ^ self.encrypt_u64(iv);
-        unsafe { copy_nonoverlapping(&decoded as *const u64 as *const u8, message.add(progress as usize), tail); }
-        progress + tail as u64
     }
 
     #[inline]
@@ -1545,34 +1903,29 @@ S756, S757, S758, S759, S760, S761, S762, S763
     pub fn crypt_ofb(&mut self, mut iv: u64, message: *const u8, length_in_bytes: u64, cipher: *mut u8) -> u64
     {
         let mut progress = 0_u64;
-        if length_in_bytes > progress + 8
+        for _ in 0..length_in_bytes >> 3    // length_in_bytes >> 3 == length_in_bytes / 8
         {
-            while length_in_bytes > progress
-            {
-                let block = unsafe { *(message.add(progress as usize) as *const u64 ) };
-                iv = self.encrypt_u64(iv);
-                let coded = block ^ iv;
-                unsafe { copy_nonoverlapping(&coded as *const u64 as *const u8, cipher.add(progress as usize), 8); }
-                progress += 8;
-            }
+            let block = unsafe { *(message.add(progress as usize) as *const u64 ) };
+            iv = self.encrypt_u64(iv);
+            let coded = block ^ iv;
+            unsafe { copy_nonoverlapping(&coded as *const u64 as *const u8, cipher.add(progress as usize), 8); }
+            progress += 8;
         }
 
-        let mut tail = 8_usize;
-        let mut block: u64;
-        if progress + 8 == length_in_bytes
+        if progress == length_in_bytes
         {
-            block = unsafe { *(message.add(progress as usize - 8) as *const u64 ) };
+            progress
         }
         else
         {
-            block = 0_u64;
-            tail = (length_in_bytes - progress) as usize;
+            let mut block = 0_u64;
+            let tail = (length_in_bytes - progress) as usize;
             let addr = unsafe { message.add(progress as usize) as *const u8 };
             unsafe { copy_nonoverlapping(addr, &mut block as *mut u64 as *mut u8, tail); }
+            let coded = block ^ self.encrypt_u64(iv);
+            unsafe { copy_nonoverlapping(&coded as *const u64 as *const u8, cipher.add(progress as usize), tail); }
+            progress + tail as u64
         }
-        let coded = block ^ self.encrypt_u64(iv);
-        unsafe { copy_nonoverlapping(&coded as *const u64 as *const u8, cipher.add(progress as usize), tail); }
-        progress + tail as u64
     }
 
     #[inline]
@@ -1617,16 +1970,13 @@ S756, S757, S758, S759, S760, S761, S762, S763
     {
         let mut progress = 0_u64;
         nonce = nonce.wrapping_add(1);
-        if length_in_bytes > progress + 8
+        for _ in 0..length_in_bytes >> 3    // length_in_bytes >> 3 == length_in_bytes / 8
         {
-            while length_in_bytes > progress
-            {
-                let block = unsafe { *(message.add(progress as usize) as *const u64 ) };
-                let coded = block ^ self.encrypt_u64(nonce);
-                nonce = nonce.wrapping_add(1);
-                unsafe { copy_nonoverlapping(&coded as *const u64 as *const u8, cipher.add(progress as usize), 8); }
-                progress += 8;
-            }
+            let block = unsafe { *(message.add(progress as usize) as *const u64 ) };
+            let coded = block ^ self.encrypt_u64(nonce);
+            nonce = nonce.wrapping_add(1);
+            unsafe { copy_nonoverlapping(&coded as *const u64 as *const u8, cipher.add(progress as usize), 8); }
+            progress += 8;
         }
 
         let mut tail = 8_usize;
